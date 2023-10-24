@@ -6,9 +6,16 @@ import {
     TouchableOpacity
 } from 'react-native'
 import React, { useState } from "react";
+import { useNavigation } from '@react-navigation/native';
 
   const ChiTietSanPham = (props) => {
 
+    const navigation = useNavigation();
+
+    const handleGioHang = () => {
+        console.log('giỏ hàng');
+        navigation.navigate('gioHang');
+      };
     return (
         <View style={styles.container} backgroundColor = "#DF5A5A">
             <View>
@@ -52,8 +59,12 @@ import React, { useState } from "react";
                 flexDirection: 'row'
             }}
             >
-            <TouchableOpacity>
-                <Text style={styles.button}>Add to card</Text>
+            <TouchableOpacity
+
+            >
+                <Text style={styles.button}
+                onPress={handleGioHang}
+                >Add to card</Text>
             </TouchableOpacity>
             <TouchableOpacity>
                 <Text style={styles.button}>Buy</Text>
@@ -69,7 +80,7 @@ const styles = StyleSheet.create({
       alignItems: "center",
     },
     texthello: {
-        paddingTop: 70,
+        paddingTop: 30,
         color: "#FFFFFF",
         fontSize: 15,
         paddingHorizontal: 50,

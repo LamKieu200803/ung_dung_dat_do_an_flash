@@ -5,9 +5,22 @@ import {
     View,
     TouchableOpacity
 } from 'react-native'
-import React, { useState } from "react";
+import React, { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
   const MhChao = (props) => {
+
+
+    const navigation = useNavigation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.navigate('Login');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [navigation]);
+
 
     return (
         <View style={styles.container} backgroundColor = "#D8ADAD">
