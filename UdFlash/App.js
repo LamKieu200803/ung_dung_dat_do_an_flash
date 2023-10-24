@@ -9,6 +9,7 @@ import DangKi from './Component/DangNhap_DangKi/dangKi';
 import MhChao from './Component/ManHinh/MhChao';
 import ChiTietSanPham from './Component/SanPham/ChiTietSanPham';
 import GioHang from './Component/ManHinh/gioHang';
+import ThanhToan from './Component/ManHinh/thanhToan';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ export default function App() {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="SanPham" component={ChiTietSanPham} />
           <Stack.Screen name="gioHang" component={GioHang} />
+          <Stack.Screen name="ThanhToan" component={ThanhToan} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>
