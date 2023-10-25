@@ -55,6 +55,9 @@ const GioHang = () => {
         navigation.navigate('SanPham');
     };
 
+    const handleThanhToan = () => {
+        navigation.navigate('ThanhToan');
+    };
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -68,7 +71,8 @@ const GioHang = () => {
                     />
                 </View>
                 <View style={{ marginTop: 20 }}>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                    onPress={handleThanhToan}>
                         <Text style={styles.button}>Buy</Text>
                     </TouchableOpacity>
                 </View>

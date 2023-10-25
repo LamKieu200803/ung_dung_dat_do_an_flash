@@ -35,9 +35,10 @@ const GioHang = () => {
 
     return (
         <View
-            style={{
-                paddingTop: 50
-            }}
+            style={
+                styles.container
+            }
+            
         >
             <TouchableOpacity>
             <View
@@ -67,16 +68,19 @@ const GioHang = () => {
             </Text>
             </View>
             </TouchableOpacity>
+            
             <ScrollView>
-                <View style={styles.container}>
-                    
-                    <View style={{ marginTop: 20,right: 90}}>
+                <View style={styles.container}
+                ScrollView
+                >
+                    <View style={{right: 90,}}>
                     <RadioGroup 
                         radioButtons={radioButtons} 
                         onPress={setSelectedId}
                         selectedId={selectedId}
                     />
-                    </View>
+                </View>
+                
                     <View
                         style={{flexDirection:'row', padding: 20}}>
                         <View style={{flexDirection:'column'}}>
@@ -101,31 +105,63 @@ const GioHang = () => {
                         </TouchableOpacity>
                         
                     </View>
-                    <View style={{flexDirection:'column',paddingLeft:20}}>
-                            <Text style={{fontSize: 30,}}>
+                    <TouchableOpacity>
+                    <View
+                    style={{
+                        flexDirection: 'row'
+                        
+                    }}
+                    >
+                        <View
+                        style={{
+                            flexDirection: 'row',
+                            borderWidth: 1,
+                            paddingHorizontal:110,
+                            paddingVertical:30,
+                            width: 1000
+                        }}
+                        >
+                            <Ionicons 
+                                name="add" size={25} color="black" 
+                            />
+                            <Text
+                                style={{
+                                    paddingTop:3,
+                                    textAlign:'center',
+                                    fontSize: 15,
+                                    color:"black" 
+                                }}
+                            >
+                                Add New Adress
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+                    <View style={{flexDirection:'column',paddingTop: 15}}>
+                            <Text style={{fontSize: 30,paddingLeft:20}}>
                                 Price Details
                             </Text>
-                            <View style={{flexDirection:'row',paddingTop: 20}}>
-                                <Text style={{fontSize:20,}}>
+                            <View style={{flexDirection:'row',paddingTop: 20,paddingLeft:20}}>
+                                <Text style={{fontSize:17,}}>
                                     Price
                                 </Text>
-                                <Text style={{fontSize:20,paddingLeft: 220}}>
+                                <Text style={{fontSize:17,paddingLeft: 220}}>
                                     $250
                                 </Text>
                             </View>
-                            <View style={{flexDirection:'row',paddingTop: 20}}>
-                                <Text style={{fontSize:20,}}>
+                            <View style={{flexDirection:'row',paddingVertical: 10,paddingLeft:20,}}>
+                                <Text style={{fontSize:17,}}>
                                     Delivery Fee
                                 </Text>
-                                <Text style={{fontSize:20,paddingLeft: 160}}>
+                                <Text style={{fontSize:17,paddingLeft: 172}}>
                                     Info
                                 </Text>
                             </View>
-                            <View style={{flexDirection:'row',paddingTop: 35}}>
-                                <Text style={{fontSize:25,}}>
+                            <View style={{flexDirection:'row',borderTopWidth:1}}>
+                                <Text style={{fontSize:20,fontWeight:'700',paddingTop: 30,paddingLeft:20}}>
                                     Total Amount
                                 </Text>
-                                <Text style={{fontSize:25,paddingLeft: 110}}>
+                                <Text style={{fontSize:20,paddingLeft: 140,fontWeight:'700',paddingTop: 30,}}>
                                 $250
                                 </Text>
                             </View>
@@ -150,6 +186,9 @@ export default GioHang
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'white',
+        paddingTop:50,
+        
     },
     menu: {
         justifyContent: 'space-between',
@@ -211,7 +250,7 @@ const styles = StyleSheet.create({
     },
     button: {
         left: 50,
-        margin: 40,
+        margin:30,
         width: 200,
         paddingVertical:10,
         borderRadius: 20,
@@ -222,33 +261,3 @@ const styles = StyleSheet.create({
         backgroundColor: "red",
     },
 });
-
-// import React, { useMemo, useState } from 'react';
-// import RadioGroup, {RadioButtonProps} from 'react-native-radio-buttons-group';
-
-// export default function RadioButtonExample() {
-
-//     const radioButtons = useMemo(() => ([
-//         {
-//             id: '1', // acts as primary key, should be unique and non-empty string
-//             label: 'Option 1',
-//             value: 'option1'
-//         },
-//         {
-//             id: '2',
-//             label: 'Option 2',
-//             value: 'option2'
-//         }
-//     ]), []);
-
-//     const [selectedId, setSelectedId] = useState("");
-
-//     return (
-//         <RadioGroup 
-//             radioButtons={radioButtons} 
-//             onPress={setSelectedId}
-//             selectedId={selectedId}
-//         />
-//     );
-
-// }

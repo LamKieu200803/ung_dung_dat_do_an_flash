@@ -15,7 +15,10 @@ import { useNavigation } from '@react-navigation/native';
     const handleGioHang = () => {
         console.log('giỏ hàng');
         navigation.navigate('gioHang');
-      };
+    };
+    const handleThanhToan = () => {
+        navigation.navigate('ThanhToan');
+    };
     return (
         <View style={styles.container} backgroundColor = "#DF5A5A">
             <View>
@@ -66,7 +69,8 @@ import { useNavigation } from '@react-navigation/native';
                 onPress={handleGioHang}
                 >Add to card</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+            onPress={handleThanhToan}>
                 <Text style={styles.button}>Buy</Text>
             </TouchableOpacity>
             </View>
