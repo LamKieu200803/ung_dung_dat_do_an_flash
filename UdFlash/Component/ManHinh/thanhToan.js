@@ -7,28 +7,28 @@ import { useNavigation } from '@react-navigation/native';
 
 
 const GioHang = () => {
-    const radioButtons = useMemo(() => ([
+    const radioButtons = ([
         {
-            id: '1', // acts as primary key, should be unique and non-empty string
+            id: 1, 
             label: 'Debit / Credit Card',
-            value: 'option1'
+            value: '1'
         },
         {
-            id: '2',
-            label: 'Netbanking             ',
-            value: 'option2'
+            id: 2,
+            label: 'Netbanking',
+            value: '2'
         },
         {
-            id: '3',
-            label: 'Cash on Delivery   ',
-            value: 'option2'
+            id: 3,
+            label: 'Cash on Delivery',
+            value: '3'
         },
         {
-            id: '4', 
-            label: 'Wallet                      ',
-            value: 'option2'
+            id: 4, 
+            label: 'Wallet',
+            value: '4'
         },
-    ]), []);
+    ]);
         
     const [selectedId, setSelectedId] = useState("");
 
@@ -70,10 +70,14 @@ const GioHang = () => {
             </TouchableOpacity>
             
             <ScrollView>
-                <View style={styles.container}
+                <View 
                 ScrollView
                 >
-                    <View style={{right: 90,}}>
+                    <View style={{
+                        flexDirection: 'row',
+                        paddingBottom:10,
+                        
+                    }}>
                     <RadioGroup 
                         radioButtons={radioButtons} 
                         onPress={setSelectedId}
@@ -82,7 +86,7 @@ const GioHang = () => {
                 </View>
                 
                     <View
-                        style={{flexDirection:'row', padding: 20}}>
+                        style={{flexDirection:'row', padding: 20,borderTopWidth:0.5}}>
                         <View style={{flexDirection:'column'}}>
                             <Text style={{}}>
                                 Deliver to Tradly Team, 75119
@@ -96,7 +100,7 @@ const GioHang = () => {
                                 backgroundColor: 'red',
                                 borderRadius: 20,
                                 padding:10,
-                                left:40,
+                                left:100,
                                 width: 100,
                                 textAlign: 'center',
                                 color: 'white'
@@ -106,19 +110,15 @@ const GioHang = () => {
                         
                     </View>
                     <TouchableOpacity>
-                    <View
-                    style={{
-                        flexDirection: 'row'
-                        
-                    }}
-                    >
+                    
                         <View
                         style={{
                             flexDirection: 'row',
-                            borderWidth: 1,
-                            paddingHorizontal:110,
-                            paddingVertical:30,
-                            width: 1000
+                            borderTopWidth: 0.5,
+                            borderBottomWidth: 0.5,
+                            paddingHorizontal:150,
+                            paddingVertical:20,
+                            width:1000
                         }}
                         >
                             <Ionicons 
@@ -135,7 +135,7 @@ const GioHang = () => {
                                 Add New Adress
                             </Text>
                         </View>
-                    </View>
+                    
                 </TouchableOpacity>
                     <View style={{flexDirection:'column',paddingTop: 15}}>
                             <Text style={{fontSize: 30,paddingLeft:20}}>
@@ -145,7 +145,7 @@ const GioHang = () => {
                                 <Text style={{fontSize:17,}}>
                                     Price
                                 </Text>
-                                <Text style={{fontSize:17,paddingLeft: 220}}>
+                                <Text style={{fontSize:17,paddingLeft: 310}}>
                                     $250
                                 </Text>
                             </View>
@@ -153,7 +153,7 @@ const GioHang = () => {
                                 <Text style={{fontSize:17,}}>
                                     Delivery Fee
                                 </Text>
-                                <Text style={{fontSize:17,paddingLeft: 172}}>
+                                <Text style={{fontSize:17,paddingLeft: 260}}>
                                     Info
                                 </Text>
                             </View>
@@ -161,7 +161,7 @@ const GioHang = () => {
                                 <Text style={{fontSize:20,fontWeight:'700',paddingTop: 30,paddingLeft:20}}>
                                     Total Amount
                                 </Text>
-                                <Text style={{fontSize:20,paddingLeft: 140,fontWeight:'700',paddingTop: 30,}}>
+                                <Text style={{fontSize:20,paddingLeft: 230,fontWeight:'700',paddingTop: 30,}}>
                                 $250
                                 </Text>
                             </View>
@@ -187,69 +187,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
-        paddingTop:50,
-        
-    },
-    menu: {
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        marginHorizontal: 10,
-        marginTop: 15
-    },
-    icon: {
-        margin: 20,
-        flexDirection: 'row',
-        backgroundColor: 'white',
-        borderRadius: 20
-    },
-
-    input: {
-        flex: 1,
-        fontSize: 20,
-        color: '#333',
-    },
-    itemContainer: {
-        margin: 10,
-    },
-    imageContainer: {
-        borderRadius: 20,
-        overflow: 'hidden',
-        position: 'relative',
-    },
-    image: {
-        width: 500,
-        height: 200,
-    },
-
-    price: {
-        marginBottom: 2,
-        size: '20',
-    },
-    overlay: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        padding: 10,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-    },
-    name: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
-    discountedPrice: {
-        fontSize: 16,
-        color: 'green',
-    },
-    strikeThrough: {
-        textDecorationLine: 'line-through',
-        color: 'red',
     },
     button: {
-        left: 50,
+        left: 90,
         margin:30,
         width: 200,
         paddingVertical:10,

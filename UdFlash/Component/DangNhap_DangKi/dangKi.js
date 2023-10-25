@@ -26,18 +26,10 @@ const DangKi = (props) => {
         <TextInput style={styles.textInput} placeholder="Email/Phone Number" />
       </View>
       <View style={styles.inputcontainer}>
-        <View
-          style={[styles.textInput, { flexDirection: 'row', alignItems: 'center' }]}
-        >
-          <TextInput style={{ flex: 1 }} placeholder="Nhập mật khẩu" />
-        </View>
+        <TextInput style={styles.textInput} placeholder="Nhập mật khẩu" />
       </View>
       <View style={styles.inputcontainer}>
-        <View
-          style={[styles.textInput, { flexDirection: 'row', alignItems: 'center' }]}
-        >
-          <TextInput style={{ flex: 1 }} placeholder="Nhập lại mật khẩu" />
-        </View>
+        <TextInput style={styles.textInput} placeholder="Nhập lại mật khẩu" />
       </View>
       <TouchableOpacity
       onPress={handleLogin}
@@ -87,6 +79,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 8,
     borderColor: 'white',
+    color:'white'
   },
   bottominput: {
     flexDirection: 'row',

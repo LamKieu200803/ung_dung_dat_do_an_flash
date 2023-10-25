@@ -27,7 +27,7 @@ import { useNavigation } from '@react-navigation/native';
             <View>
                 <Image
                 style={{
-                    width: 360, height: 250, borderWidth: 1, backgroundColor: "white",
+                    width: 500, height: 250, borderWidth: 1, backgroundColor: "white",
                     borderColor: "black"
                 }}
                 source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTocfSsilou6XtJ7f4Y5Sn6IcMgIV6LGMj_JQ&usqp=CAU' }}

@@ -33,15 +33,24 @@ const GioHang = () => {
                                 <Text style={styles.strikeThrough}> ${item.price.toFixed(2)}</Text>
                                 <Text> ${discountedPrice.toFixed(2)}</Text>
                             </Text>
+                            
                             <View
-                                style={{
+                            style={{
                                     flexDirection: "row"
                                 }}
+                                
                             >
+                                <TouchableOpacity >
                                 <Ionicons name="remove" size={24} color="red" />
+                                
+                                </TouchableOpacity>
                                 <Text style={styles.name}>{item.stt}</Text>
+                                <TouchableOpacity>
+                                
                                 <Ionicons name="add" size={24} color="red" />
+                                </TouchableOpacity>
                             </View>
+                            
                         </View>
                     </View>
                 </View>
@@ -59,11 +68,12 @@ const GioHang = () => {
         navigation.navigate('ThanhToan');
     };
     return (
-        <ScrollView>
+        
             <View style={styles.container}>
                 
                 <View style={{ marginTop: 20 }}>
                     <FlatList
+                        ScrollView
                         data={products}
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={(item) => item.id.toString()}
@@ -79,7 +89,7 @@ const GioHang = () => {
 
             
             </View>
-        </ScrollView>
+        
 
     );
 };
@@ -132,7 +142,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        padding: 10,
+        padding: 5,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
     },
@@ -150,7 +160,7 @@ const styles = StyleSheet.create({
         color: 'red',
     },
     button: {
-        left: 50,
+        left: 100,
         margin: 40,
         width: 150,
         paddingVertical:10,
