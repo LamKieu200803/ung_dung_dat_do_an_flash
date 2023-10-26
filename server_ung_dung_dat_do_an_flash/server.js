@@ -120,26 +120,26 @@ app.post("/dangki",(req,res)=>{
   })
 })
 
-// dang nhap
-app.post('/dangnhap',(req,res)=>{
-  var email = req.body.email
-  var password = req.body.password
+app.post('/dangnhap', (req, res) => {
+  var email = req.body.email;
+  var password = req.body.password;
 
   User.findOne({
-    email:email,
-    password:password
+    email: email,
+    password: password
   })
-  .then(data=>{
-    if(data){
-      res.json({msg:"dang nhap thanh cong",data})
-      
-    }else{
-      res.status(300).json("tai khoan ko dung")
-    }
-  }).catch(err=>{
-    res.status(500).json("loi server")
-  })
-})
+    .then(data => {
+      if (data) {
+        res.json({ success: true, message: "Đăng nhập thành công", data });
+      } else {
+        res.status(400).json({ success: false, message: "Email hoặc mật khẩu không chính xác" });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ success: false, message: "Lỗi server" });
+    });
+});
 
 // xem toàn bộ tài khoản
 app.get('/user',async(req,res)=>{
@@ -151,6 +151,24 @@ app.get('/user',async(req,res)=>{
     res.status(500).send("lỗi server")
   }
 })
+
+// xem chi tiết tk theo email
+app.get('/user/email', async (req, res) => {
+  try {
+    const email = req.query.email;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "Tài khoản không tồn tại" });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.log("error", err);
+    res.status(500).send("Lỗi server");
+  }
+});
 
 // xóa tài khoản
 app.delete("/User/xoa/:id",(req,res)=>{
