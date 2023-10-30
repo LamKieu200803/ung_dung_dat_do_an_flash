@@ -10,6 +10,9 @@ import MhChao from './Component/ManHinh/MhChao';
 import ChiTietSanPham from './Component/SanPham/ChiTietSanPham';
 import GioHang from './Component/ManHinh/gioHang';
 import ThanhToan from './Component/ManHinh/thanhToan';
+import DoiMatKhau from './Component/ManHinh/doiMk';
+import AddDiaChi from './Component/ManHinh/addDiaChi';
+import AddThe from './Component/ManHinh/addCard';
 
 const Stack = createStackNavigator();
 
@@ -17,7 +20,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='MhChao'>
+        <Stack.Navigator initialRouteName='addThe'>
           <Stack.Screen name="MhChao" component={MhChao} />
           <Stack.Screen name="SignUp" component={DangKi} />
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -25,6 +28,9 @@ export default function App() {
           <Stack.Screen name="SanPham" component={ChiTietSanPham} />
           <Stack.Screen name="gioHang" component={GioHang} />
           <Stack.Screen name="ThanhToan" component={ThanhToan} />
+          <Stack.Screen name="DoiMatKhau" component={DoiMatKhau} />
+          <Stack.Screen name="addDiaChis" component={AddDiaChi} />
+          <Stack.Screen name="addThe" component={AddThe} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

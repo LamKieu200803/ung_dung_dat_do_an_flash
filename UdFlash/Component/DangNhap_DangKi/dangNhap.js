@@ -1,19 +1,48 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [emaildn, setemaildn] = useState('');
+  const [passworddn, setpassworddn] = useState('');
 
-  const handleLogin = () => {
-    // Xử lý logic đăng nhập ở đây
-    console.log('Đăng nhập với tên người dùng:', username);
-    console.log('Mật khẩu:', password);
-    navigation.navigate('Home');
+  const doLogin = async () => {
+    if (emaildn.length === 0) {
+      alert("Chưa nhập email");
+      return;
+    }
+    if (passworddn.length === 0) {
+      alert("Chưa nhập password");
+      return;
+    }
+
+    try {
+      let url_api = `http://192.168.0.141:9997/user?email=${emaildn}`;
+      const response = await fetch(url_api);
+      const res_login = await response.json();
+
+      if (res_login.length !== 1) {
+        console.log(res_login);
+        alert("Sai username hoặc lỗi trùng lặp dữ liệu");
+        return;
+      } else {
+        let objU = res_login[0];
+        if (objU.password !== passworddn) {
+          alert("Sai password");
+          return;
+        } else {
+          await AsyncStorage.setItem('loginInfo', JSON.stringify(objU));
+          navigation.navigate('Home');
+          alert("Đăng nhập thành công");
+        }
+      }
+    } catch (error) {
+      console.log("Lỗi rồi sửa lại đi");
+      alert("Đã xảy ra lỗi trong quá trình đăng nhập");
+    }
   };
 
   const handleForgotPassword = () => {
-    // Xử lý logic quên mật khẩu ở đây
     console.log('Quên mật khẩu');
   };
 
@@ -29,29 +58,24 @@ const LoginScreen = ({ navigation }) => {
       <TextInput
         style={styles.input}
         placeholder="Email/Mobile Number"
-        value={username}
-        onChangeText={text => setUsername(text)}
+        value={emaildn}
+        onChangeText={(txt) => setemaildn(txt)}
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={text => setPassword(text)}
+        value={passworddn}
+        onChangeText={(txt) => setpassworddn(txt)}
       />
       <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={styles.forgotPassword}>Forgot your Password?</Text>
       </TouchableOpacity>
 
-
-     <View style={{
-      paddingTop: 80
-     }}>
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Đăng nhập</Text>
-      </TouchableOpacity>
-     </View>
-
+      <View style={{ paddingTop: 80 }}>
+        <TouchableOpacity style={styles.button} onPress={doLogin}>
+          <Text style={styles.buttonText}>Đăng nhập</Text>
+        </TouchableOpacity>
+      </View>
 
       <TouchableOpacity onPress={handleSignUp}>
         <Text style={styles.signUp}>Don’t have an account? Sign up</Text>
@@ -86,10 +110,8 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 8,
     borderColor: 'white',
-    color:'white'
   },
   button: {
-    
     width: '100%',
     paddingVertical: 10,
     borderRadius: 8,

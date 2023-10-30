@@ -6,7 +6,14 @@ import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 
-const GioHang = () => {
+const ThanhToan = () => {
+    const navigation = useNavigation();
+    const handleAddDiaChi = () => {
+        navigation.navigate('addDiaChis');
+    };
+    const handleAddCard = () => {
+        navigation.navigate('addThe');
+    };
     const radioButtons = ([
         {
             id: 1, 
@@ -40,7 +47,7 @@ const GioHang = () => {
             }
             
         >
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleAddCard}>
             <View
             style={{
                 margin: 10,
@@ -48,6 +55,7 @@ const GioHang = () => {
                 borderWidth: 2,
                 borderColor:'grey'
             }}
+            
             >
             <Ionicons 
                 style={{
@@ -112,14 +120,15 @@ const GioHang = () => {
                     <TouchableOpacity>
                     
                         <View
-                        style={{
-                            flexDirection: 'row',
-                            borderTopWidth: 0.5,
-                            borderBottomWidth: 0.5,
-                            paddingHorizontal:150,
-                            paddingVertical:20,
-                            width:1000
-                        }}
+                            style={{
+                                flexDirection: 'row',
+                                borderTopWidth: 0.5,
+                                borderBottomWidth: 0.5,
+                                paddingHorizontal:150,
+                                paddingVertical:20,
+                                width:1000,
+                            }}
+                            onPress={handleAddDiaChi}
                         >
                             <Ionicons 
                                 name="add" size={25} color="black" 
@@ -181,7 +190,7 @@ const GioHang = () => {
     );
 };
 
-export default GioHang
+export default ThanhToan
 
 const styles = StyleSheet.create({
     container: {

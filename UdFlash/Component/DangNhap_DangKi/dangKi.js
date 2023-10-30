@@ -9,6 +9,48 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 const DangKi = (props) => {
+
+  const [email, setemail] = useState('');
+  const [password, setpassword] = useState('');
+  const [enterpasswd, setenterpasswd] = useState('');
+
+
+  const SaveUser = () =>{
+
+
+    if(email ==0){
+        return
+    }if(password ==0){
+        return
+    }if(password != enterpasswd){
+        return
+    }
+
+    let objUser  = {email:email, password:password }
+    let url_api = "http://192.168.0.141:9997/dangki"
+
+    fetch(url_api,{
+        method:'POST',
+        headers:{
+            Accept: 'application/json',
+            'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify(objUser),
+    }).then((res)=>{
+        if(res.status==201)
+        props.navigation.navigate('Login',{email,password})
+        alert("dang ki thanh cong")
+    })
+    .catch((e)=>{
+        console.log(e);
+    })
+
+}
+
+
+
+
+
   const navigation = useNavigation();
 
   const handleLogin = () => {
@@ -23,13 +65,21 @@ const DangKi = (props) => {
         Sign Up to your account
       </Text>
       <View style={styles.inputcontainer}>
-        <TextInput style={styles.textInput} placeholder="Email/Phone Number" />
+        <TextInput style={styles.textInput} placeholder="Email/Phone Number"  value={email} onChangeText={(txt)=>setemail(txt)} />
       </View>
       <View style={styles.inputcontainer}>
-        <TextInput style={styles.textInput} placeholder="Nhập mật khẩu" />
+        <View
+          style={[styles.textInput, { flexDirection: 'row', alignItems: 'center' }]}
+        >
+          <TextInput style={{ flex: 1 }} placeholder="Nhập mật khẩu" onChangeText={(txt)=>setpassword(txt)} />
+        </View>
       </View>
       <View style={styles.inputcontainer}>
-        <TextInput style={styles.textInput} placeholder="Nhập lại mật khẩu" />
+        <View
+          style={[styles.textInput, { flexDirection: 'row', alignItems: 'center' }]}
+        >
+          <TextInput style={{ flex: 1 }} placeholder="Nhập lại mật khẩu" onChangeText={(txt)=>setenterpasswd(txt)} />
+        </View>
       </View>
       <TouchableOpacity
       onPress={handleLogin}
@@ -43,10 +93,10 @@ const DangKi = (props) => {
           
         }}
       >
-        <Text style={styles.button}>Đăng ký</Text>
+        <Text style={styles.button} onPress={SaveUser}>Đăng ký</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleLogin}>
-        <Text style={styles.signIn}>Have an account? Sign in</Text>
+        <Text style={styles.signIn} >Have an account? Sign in</Text>
       </TouchableOpacity>
     </View>
   );
@@ -79,7 +129,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 8,
     borderColor: 'white',
-    color:'white'
   },
   bottominput: {
     flexDirection: 'row',
