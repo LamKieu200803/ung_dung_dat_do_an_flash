@@ -17,7 +17,7 @@ const LoginScreen = ({ navigation }) => {
     }
 
     try {
-      let url_api = `http://192.168.250.254:9997/user?email=${emaildn}`;
+      let url_api = `http://192.168.19.254:9997/user?email=${emaildn}`;
       const response = await fetch(url_api);
       const res_login = await response.json();
 
@@ -32,7 +32,7 @@ const LoginScreen = ({ navigation }) => {
           return;
         } else {
           await AsyncStorage.setItem('loginInfo', JSON.stringify(objU));
-          navigation.navigate('Home');
+          navigation.navigate('Main');
           alert("Đăng nhập thành công");
         }
       }
