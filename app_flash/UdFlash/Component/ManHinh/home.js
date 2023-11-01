@@ -20,7 +20,7 @@ const HomeScreen = (props) => {
     const [isLoading, setisLoading] = useState(true);
     const [showDialog, setshowDialog] = useState(true)
     const [dsPro, setdsPro] = useState([]);
-
+    const [searchText, setSearchText] = useState("");
 
 const getListPro = async () =>{
 
@@ -36,32 +36,32 @@ const getListPro = async () =>{
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
-      // khi màn hình đc active thì lệnh hoạt động
-      getListPro();
+  const filterProducts = () => {
+    if (searchText === "") {
+      return dsPro;
+    }
+    return dsPro.filter((item) =>
+      item.tensp.toLowerCase().includes(searchText.toLowerCase())
+    );
+  };
 
-    });
-
-    return unsubscribe;
-  }, [props.navigation]);
 
 
 
     const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={handleImagePress}>
+        <TouchableOpacity  >
             <View style={{ marginHorizontal: 10, borderRadius: 20 }}>
                 <Image source={item.image} style={styles.image1} />
             </View>
         </TouchableOpacity>
     );
     
-    const renderItem1 = ({ item }) => {
+    const renderItem1 = ({item }) => {
         // const discountedPrice = item.price - (item.price * item.discount);
         return (
-        <TouchableOpacity onPress={handleImagePress}>
+        <TouchableOpacity onPress={()=>{props.navigation.navigate('SanPham',{item_sp:item})}}>
             <View style={styles.itemContainer}>
-                <View style={styles.imageContainer}onPress={handleImagePress}>
+                <View style={styles.imageContainer}>
                     <Image source={{uri: item.img}} style={styles.image} />
                     <View style={styles.overlay}>
                         <Text style={styles.name}>{item.tensp}</Text>
@@ -79,10 +79,19 @@ const getListPro = async () =>{
 
     // const navigation = useNavigation();
 
-    const handleImagePress = () => {
-        props.navigation.navigate('SanPham');
-    };
+ const xoa=()=>{
+    setSearchText("");
+ }
 
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+          // khi màn hình đc active thì lệnh hoạt động
+          getListPro();
+    
+        });
+    
+        return unsubscribe;
+      }, [props.navigation]);
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -93,12 +102,12 @@ const getListPro = async () =>{
                 <View style={styles.icon}>
                     <Ionicons name="search" size={24} color="#888"  />
                     <TextInput
-
+                      onChangeText={(text) => setSearchText(text)}
                         style={styles.input}
                         placeholder="Tìm kiếm..."
                         placeholderTextColor="#888"
                     />
-                    <Ionicons name="close-circle" size={24} color="#888"  />
+                    <Ionicons name="close-circle" size={24} color="#888" onPress={()=>{setSearchText("")}} />
                 </View>
                 <View style={{ marginTop: 20 }}>
                     <FlatList
@@ -117,7 +126,7 @@ const getListPro = async () =>{
                 <View>
                     <FlatList
                         
-                        data={dsPro}
+                        data={filterProducts()}
                         horizontal
                         showsHorizontalScrollIndicator={true}
                         keyExtractor={(item_db) => item_db.id}
@@ -130,7 +139,7 @@ const getListPro = async () =>{
                     <FlatList
                         
                         horizontal
-                        data={dsPro}
+                        data={filterProducts()}
                         keyExtractor={(item_db) => item_db.id}
                         renderItem={renderItem1}
                     />

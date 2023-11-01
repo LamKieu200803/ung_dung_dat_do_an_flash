@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 // Screens
 import HomeScreen from './ManHinh/home';
 import GioHang from './ManHinh/gioHang';
+import Profile from './ManHinh/Profile';
 
 
 
@@ -14,6 +15,7 @@ import GioHang from './ManHinh/gioHang';
 // Screen names
 const TrangChuName = 'Home'
 const GioHangName = 'Cart'
+const ProfileName = 'Profile'
 
 
 
@@ -34,8 +36,8 @@ export default function Main(){
                       iconName = focused ? "cart" : "cart-outline";
                     // } else if (rn == LichSuName) {
                     //   iconName = focused ? "md-receipt" : "md-receipt-outline";
-                    // }   else if (rn == TaiKhoanName) {
-                    //     iconName = focused ? "menu" : "menu-outline";
+                   }   else if (rn == ProfileName) {
+                        iconName = focused ? "menu" : "menu-outline";
                     } 
                     return <Ionicons name={iconName} size={size} color={color} />;
                 }
@@ -43,8 +45,8 @@ export default function Main(){
         >
             <Tab.Screen name={TrangChuName} component={HomeScreen} options={{ headerShown: false }} />
             <Tab.Screen name={GioHangName} component={GioHang} options={{ headerShown: false }} />
-            {/* { <Tab.Screen name={LichSuName} component={LichSu} options={{ headerShown: false }}/>
-            <Tab.Screen name={TaiKhoanName} component={TaiKhoan} options={{ headerShown: false }}/> } */}
+        {/* //    <Tab.Screen name={LichSuName} component={LichSu} options={{ headerShown: false }}/> */}
+            <Tab.Screen name={ProfileName} component={Profile} options={{ headerShown: false }}/> 
           
         </Tab.Navigator>
     )

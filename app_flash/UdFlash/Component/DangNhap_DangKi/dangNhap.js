@@ -21,7 +21,7 @@ const LoginScreen = ({ navigation }) => {
       const response = await fetch(url_api);
       const res_login = await response.json();
 
-      if (res_login.length !== 1) {
+      if (res_login.length != 1) {
         console.log(res_login);
         alert("Sai username hoặc lỗi trùng lặp dữ liệu");
         return;
@@ -32,7 +32,7 @@ const LoginScreen = ({ navigation }) => {
           return;
         } else {
           await AsyncStorage.setItem('loginInfo', JSON.stringify(objU));
-          navigation.navigate('Main');
+          navigation.navigate('Home');
           alert("Đăng nhập thành công");
         }
       }

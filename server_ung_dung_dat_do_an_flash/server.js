@@ -52,22 +52,18 @@ const gioHangSchema = new mongoose.Schema({
   tensp: String,
   giasp: String,
   img: String,
-  soluongmua: String
+  soluongmua: Number
 })
 
 const gioHang = mongoose.model("GioHangs", gioHangSchema)
 
 // Schema và model hóa đơn 
 const hoaDonSchema = new mongoose.Schema({
-  tensp: String,
-  giasp: String,
-  img: String,
-  soluongmua: String,
   diachi: String,
   sdt: String,
   tennguoimua: String,
-  ngaymua: String,
-  tongtien:String
+  pttt: String,
+  tongtien:Number
 })
 
 const hoaDon = mongoose.model("HoaDons", hoaDonSchema)
@@ -326,9 +322,9 @@ app.get("/hoadon",async(req,res)=>{
 
 // thêm hóa đơn
 app.post("/hoadon/them",(req,res)=>{
-  const {tensp,giasp,img,soluongmua,diachi,sdt,tennguoimua,ngaymua,tongtien} = req.body;
+  const {diachi,sdt,tennguoimua,pttt,tongtien} = req.body;
 
-  const newHoaDon = new hoaDon({tensp,giasp,img,soluongmua,diachi,sdt,tennguoimua,ngaymua,tongtien})
+  const newHoaDon = new hoaDon({diachi,sdt,tennguoimua,pttt,tongtien})
   newHoaDon.save()
   .then(()=>{
     res.status(201).json({message:"thanh toán thành công"})
