@@ -28,7 +28,7 @@ const ThanhToan = (props) => {
     const Save_UserMua = () => {
         let objUserMua = { tennguoimua: tennguoimua, sdt: sdt, diachi: diachi, pttt: value
             , tongtien: tongtien }
-        let url_api_hoadon = 'http://192.168.19.254:9997/hoadon/them'
+        let url_api_hoadon = 'http://172.16.10.103:9997/hoadon/them'
 
 
 

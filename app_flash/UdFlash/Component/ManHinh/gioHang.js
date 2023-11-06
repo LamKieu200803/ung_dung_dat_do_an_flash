@@ -11,7 +11,7 @@ const GioHang = (props) => {
   const [isLoading, setisLoading] = useState(true);
 
   const getListPro = async () => {
-    let url_api_giohang = 'http://192.168.19.254:9997/giohang'
+    let url_api_giohang = 'http://172.16.10.103:9997/giohang'
 
     try {
         const response = await fetch(url_api_giohang);
@@ -67,7 +67,7 @@ React.useEffect(() => {
   const renderCartItem = ({ item }) =>{ 
     
     const DelPro = () =>{
-      let url_api_del = 'http://192.168.19.254:9997/giohang/xoa/' +item._id ;
+      let url_api_del = 'http://172.16.10.103:9997/giohang/xoa/' +item._id ;
   
       fetch(url_api_del,{
   

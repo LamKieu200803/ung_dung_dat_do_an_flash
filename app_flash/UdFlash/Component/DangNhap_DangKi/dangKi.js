@@ -16,17 +16,19 @@ const DangKi = (props) => {
 
   const SaveUser = () =>{
 
-
     if(email ==0){
+      alert("chưa nhập email")
         return
     }if(password ==0){
+      alert("chưa nhập password")
         return
     }if(password != enterpasswd){
+      alert("password nhập lại không trùng khớp ")
         return
     }
 
     let objUser  = {email:email, password:password }
-    let url_api = "http://192.168.19.254:9997/dangki"
+    let url_api = "http://172.16.10.103:9997/dangki"
 
     fetch(url_api,{
         method:'POST',
@@ -37,8 +39,8 @@ const DangKi = (props) => {
         body: JSON.stringify(objUser),
     }).then((res)=>{
         if(res.status==201)
-        props.navigation.navigate('Login',{email,password})
         alert("dang ki thanh cong")
+        props.navigation.navigate('Login',{email,password})
     })
     .catch((e)=>{
         console.log(e);
@@ -46,11 +48,11 @@ const DangKi = (props) => {
 
 }
 
-  const navigation = useNavigation();
+
 
   const handleLogin = () => {
     console.log('Đăng nhập');
-    navigation.navigate('Login');
+    props.navigation.navigate('Login');
   };
 
   return (

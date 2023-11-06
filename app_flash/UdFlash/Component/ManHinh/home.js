@@ -24,7 +24,7 @@ const HomeScreen = (props) => {
 
 const getListPro = async () =>{
 
-    let api_url_pro = 'http://192.168.19.254:9997/sanpham';
+    let api_url_pro = 'http://172.16.10.103:9997/sanpham';
     try {
       const response = await fetch(api_url_pro);
       const json = await response.json();

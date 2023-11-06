@@ -1,4 +1,4 @@
-const e = require("express");
+
 const express = require("express");
 const mongoose = require("mongoose");
 
@@ -49,16 +49,24 @@ const chiTietSanPham = mongoose.model("ChiTietSanPhams", chiTietSanPhamSchema)
 
 // Schema và model giohang
 const gioHangSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true
+  },
   tensp: String,
   giasp: String,
   img: String,
   soluongmua: Number
-})
+});
 
-const gioHang = mongoose.model("GioHangs", gioHangSchema)
+const gioHang = mongoose.model("GioHangs", gioHangSchema);
 
 // Schema và model hóa đơn 
 const hoaDonSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true
+  },
   diachi: String,
   sdt: String,
   tennguoimua: String,
@@ -70,22 +78,31 @@ const hoaDon = mongoose.model("HoaDons", hoaDonSchema)
 
 // Schema và model thông tin 
 const thongTinSchema = new mongoose.Schema({
+  
+  userId: {
+    type: String,
+    required: true
+  },
   email: String,
   anh: String,
   tennguoimua: String,
-  trangthai: String
+
 })
 
 const thongTin = mongoose.model("ThongTins", thongTinSchema);
 
 // Schema và model đơn trạng thái
 const trangThaiSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true
+  },
   tensp: String,
   giasp: String,
   img: String,
   soluongmua: String,
   trangthai: String,
-  ngaymua: String,
+  pttt: String,
   tongtien:String
 })
 
@@ -93,11 +110,15 @@ const trangThai = mongoose.model("TrangThais", trangThaiSchema)
 
 // Schema và model lịch sử mua hàng
 const lichSuSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true
+  },
   tensp: String,
   giasp: String,
   img: String,
   soluongmua: String,
-  ngaymua:String,
+  pttt:String,
   tennguoimua:String,
 tongtien:String,
 phanhoi:String
@@ -268,51 +289,61 @@ app.get('/chitietsanpham/:id',async(req,res)=>{
   }
 })
 
-// xem giỏ hàng
-app.get("/giohang",async(req,res)=>{
-  try{
-    const giohang = await gioHang.find({})
-    res.json(giohang)
-  }catch(err){
-    console.log("error ",err);
-    res.status(500).send("lỗi server")
+// Xem giỏ hàng của người dùng
+
+app.get("/giohang/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const giohang = await gioHang.find({ userId: userId });
+    res.json(giohang);
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
   }
-})
+});
 
-// thêm vào giỏ hàng
-app.post("/giohang/them",(req,res)=>{
-  const {tensp,giasp,img,soluongmua} = req.body;
+// Thêm vào giỏ hàng của người dùng
+app.post("/giohang/them/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const { tensp, giasp, img, soluongmua } = req.body;
 
-  const newGioHang = new gioHang({tensp,giasp,img,soluongmua})
-  newGioHang.save()
-  .then(()=>{
-    res.status(201).json({message:"thêm sản phẩm vào giỏ hàng thành công"})
-  })
-})
+  try {
+    const giohang = await gioHang.create({
+      userId: userId,
+      tensp: tensp,
+      giasp: giasp,
+      img: img,
+      soluongmua: soluongmua
+    });
+
+    res.json(giohang);
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
+  }
+});
 
 // xóa sản phẩm trong giỏ
 
-app.delete("/giohang/xoa/:id",(req,res)=>{
-  const deletegiohang = req.params.id ;
-  gioHang.findByIdAndRemove(deletegiohang)
-  .then((data)=>{
-    if (data) {
-      res
-        .status(200)
-        .json({ message: "Dữ liệu đã được xóa thành công", data: data });
-    } else {
-      res.status(404).json({ error: "Không tìm thấy dữ liệu" });
-    }
-  })
-  .catch((error) => {
-    res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
-  });
-});
+app.delete("/giohang/xoa/:userId/:productId", async (req, res) => {
+  const userId = req.params.userId;
+  const productId = req.params.productId;
 
-// xem hóa đơn 
-app.get("/hoadon",async(req,res)=>{
+  try {
+    await gioHang.deleteOne({ userId: userId, _id: productId });
+    res.status(200).send("Sản phẩm đã được xóa khỏi giỏ hàng thành công");
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
+  }
+});
+// xem hóa đơn theo id người dùng
+app.get("/hoadon/:userId",async(req,res)=>{
+  
+  const userId = req.params.userId;
   try{
-    const hoadon = await hoaDon.find({})
+    const hoadon = await hoaDon.find(userId)
     res.json(hoadon)
   }catch(err){
     console.log("error ",err);
@@ -320,84 +351,135 @@ app.get("/hoadon",async(req,res)=>{
   }
 })
 
-// thêm hóa đơn
-app.post("/hoadon/them",(req,res)=>{
-  const {diachi,sdt,tennguoimua,pttt,tongtien} = req.body;
 
-  const newHoaDon = new hoaDon({diachi,sdt,tennguoimua,pttt,tongtien})
-  newHoaDon.save()
-  .then(()=>{
-    res.status(201).json({message:"thanh toán thành công"})
-  })
-})
+// thêm hóa đơn theo id người dùng
+app.post("/hoadon/them/:userId", (req, res) => {
+  const userId = req.params.userId;
+  const { diachi, sdt, tennguoimua, pttt, tongtien } = req.body;
 
-// thông tin người dùng
+  const newHoaDon = new hoaDon({ userId, diachi, sdt, tennguoimua, pttt, tongtien });
+  newHoaDon
+    .save()
+    .then(() => {
+      res.status(201).json({ message: "Thêm hóa đơn thành công" });
+    })
+    .catch((err) => {
+      console.log("error ", err);
+      res.status(500).send("lỗi server");
+    });
+});
+// thông tin người dùng theo idUser
 
-app.get("/thongtin",async(req,res)=>{
-  try{
-    const thongtin = await thongTin.find({})
-    res.json(thongtin)
-  }catch(err){
-    console.log("error ",err);
-    res.status(500).send("lỗi server")
+app.get("/thongtin/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const thongtin = await thongTin.find({userId: userId});
+    if (thongtin) {
+      res.json(thongtin);
+    } else {
+      res.status(404).json({ message: "Không tìm thấy thông tin người dùng" });
+    }
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server");
   }
-})
+});
 
 // thêm thông tin người dùng
+app.post("/thongtin/them/:userId", (req, res) => {
+  const userId = req.params.userId;
+  const { tennguoimua, anh, trangthai, email } = req.body;
 
-app.post("/thongtin/them",(req,res)=>{
-  const {tennguoimua,email,anh,trangthai} = req.body;
+  const newThongTin = new thongTin({ userId, tennguoimua, anh, trangthai, email });
+  newThongTin
+    .save()
+    .then(() => {
+      res.status(201).json({ message: "Thêm thông tin người dùng thành công" });
+    })
+    .catch((err) => {
+      console.log("error ", err);
+      res.status(500).send("lỗi server");
+    });
+});
 
-  const newThongTin = new thongTin({tennguoimua,email,anh,trangthai})
-  newThongTin.save()
-  .then(()=>{
-    res.status(201).json({message:"thêm thông tin người dùng thành công"})
-  })
-})
 
 // xem đơn trạng thái
-app.get("/trangthai",async(req,res)=>{
-  try{
-    const trangthai = await trangThai.find({})
-    res.json(trangthai)
-  }catch(err){
-    console.log("error ",err);
-    res.status(500).send("lỗi server")
+app.get("/trangthai/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const trangthai = await trangThai.find({ userId: userId });
+    res.json(trangthai);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server");
   }
 })
 
 // thêm đơn trạng thái
-app.post("/trangthai/them",(req,res)=>{
-  const {tensp,giasp,img,soluongmua,ngaymua,tongtien,trangthai} = req.body;
+app.post("/trangthai/them/:userId", (req, res) => {
+  const userId = req.params.userId;
+  const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai } = req.body;
 
-  const newTrangThai = new trangThai({tensp,giasp,img,soluongmua,ngaymua,tongtien,trangthai})
-  newTrangThai.save()
-  .then(()=>{
-    res.status(201).json({message:"thêm trạng thái thành công"})
-  })
-})
+  const newTrangThai = new trangThai({
+    userId,
+    tensp,
+    giasp,
+    img,
+    soluongmua,
+    pttt,
+    tongtien,
+    trangthai,
+  });
+  newTrangThai
+    .save()
+    .then(() => {
+      res.status(201).json({ message: "Thêm đơn trạng thái thành công" });
+    })
+    .catch((err) => {
+      console.log("error ", err);
+      res.status(500).send("lỗi server");
+    });
+});
 
 // xem lịch sử mua hàng
-app.get("/lichsu",async(req,res)=>{
-  try{
-    const lichsu = await lichSu.find({})
-    res.json(lichsu)
-  }catch(err){
-    console.log("error ",err);
-    res.status(500).send("lỗi server")
+app.get("/lichsu/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const lichsu = await lichSu.find({ userId: userId });
+    res.json(lichsu);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server");
   }
-})
+});
 
 // thêm lịch sử mua hàng
-app.post("/lichsu/them",(req,res)=>{
-  const {tensp,giasp,img,soluongmua,ngaymua,tongtien,trangthai,tennguoimua,phanhoi} = req.body;
+app.post("/lichsu/them/:userId", (req, res) => {
+  const userId = req.params.userId;
+  const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, tennguoimua, phanhoi } = req.body;
 
-  const newLichSu = new lichSu({tensp,giasp,img,soluongmua,ngaymua,tongtien,trangthai,tennguoimua,phanhoi})
-  newLichSu.save()
-  .then(()=>{
-    res.status(201).json({message:"thêm trạng thái thành công"})
-  })
-})
+  const newLichSu = new lichSu({
+    userId,
+    tensp,
+    giasp,
+    img,
+    soluongmua,
+    pttt,
+    tongtien,
+    trangthai,
+    tennguoimua,
+    phanhoi,
+  });
+  newLichSu
+    .save()
+    .then(() => {
+      res.status(201).json({ message: "Thêm lịch sử mua hàng thành công" });
+    })
+    .catch((err) => {
+      console.log("error ", err);
+      res.status(500).send("lỗi server");
+    });
+});
 
 
 

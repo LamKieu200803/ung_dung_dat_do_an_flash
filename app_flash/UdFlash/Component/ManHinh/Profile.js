@@ -13,21 +13,31 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Profile = (props) => {
 
+const [loginInfo, setloginInfo] = useState('');
 
 
-    const getListPro = async () => {
-
-        let api_url_pro = 'http://192.168.19.254:9997/thongtin';
+    const getLoginInfo = async () => {
         try {
-            const response = await fetch(api_url_pro);
-            const json = await response.json();
-            setdsPro(json);
+            const value = await AsyncStorage.getItem('loginInfo')
+            if (value !== null) {
+                // láy được dữ liệu 
+                setloginInfo(JSON.parse(value))
+            }
         } catch (e) {
+    
             console.log(e);
-        } finally {
-            setisLoading(false);
         }
+       
     };
+
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+          // khi màn hình đc active thì lệnh hoạt động
+          getLoginInfo();
+        });
+      
+        return unsubscribe;
+      }, [props.navigation]);
     return (
 
         <View style={styles.bagach}>
@@ -43,14 +53,14 @@ const Profile = (props) => {
                     <Text style={styles.texthello}>Flash Shop</Text>
                 </View>
                 <View>
-                    <Text style={styles.gmail}>Email:</Text>
+                    <Text style={styles.gmail}>Email: {loginInfo.email}</Text>
                     <Text style={styles.ten}>Tên người dùng:</Text>
                 </View>
             </View>
             <View >
 
                 <Text style={styles.chu1}>Phan Hoi</Text>
-                <Text style={styles.chu1}>Log out</Text>
+                <Text style={styles.chu1} onPress={()=>{props.navigation.navigate('Login')}}>Log out</Text>
                 <TouchableOpacity onPress={() => {props.navigation.navigate('Doipass')}}>
                       <Text style={styles.chu1}>Đổi mật khẩu</Text>
                 </TouchableOpacity>

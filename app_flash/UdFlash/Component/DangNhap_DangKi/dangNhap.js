@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = (props) => {
   const [emaildn, setemaildn] = useState('');
   const [passworddn, setpassworddn] = useState('');
 
   const doLogin = async () => {
+    // Lưu thông tin giỏ hàng vào AsyncStorage
+      await AsyncStorage.setItem('gioHang', JSON.stringify({}));
     if (emaildn.length === 0) {
       alert("Chưa nhập email");
       return;
@@ -15,32 +17,48 @@ const LoginScreen = ({ navigation }) => {
       alert("Chưa nhập password");
       return;
     }
-
-    try {
-      let url_api = `http://192.168.19.254:9997/user?email=${emaildn}`;
-      const response = await fetch(url_api);
-      const res_login = await response.json();
-
-      if (res_login.length != 1) {
+      let url_api = "http://172.16.10.103:9997/user/email?email=" + emaildn;
+      fetch(url_api)
+      .then ((res)=>{
+       return res.json();
+      })
+      .then(async(res_login)=>{
         console.log(res_login);
-        alert("Sai username hoặc lỗi trùng lặp dữ liệu");
-        return;
-      } else {
-        let objU = res_login[0];
-        if (objU.password !== passworddn) {
-          alert("Sai password");
+       if(res_login.length ===0 || res_login.length>1  ){
+           alert("không tồn tại người dùng hoặc lỗi trùng lặp dữ liệu");
+           return;
+       }
+       
+       else{
+    
+        const objU = res_login;
+        
+        if (objU.password != passworddn) {
+          alert("sai tài khoản hoặc mật khẩu");
           return;
-        } else {
-          await AsyncStorage.setItem('loginInfo', JSON.stringify(objU));
-          navigation.navigate('Home');
-          alert("Đăng nhập thành công");
         }
-      }
-    } catch (error) {
-      console.log(error);
-      alert("Đã xảy ra lỗi trong quá trình đăng nhập");
-    }
-  };
+           else{
+               try {
+                   await AsyncStorage.setItem('loginInfo', JSON.stringify(objU))   // từ khóa : loginInfo -- truyền vào mảng là chuỗi json
+                   props.navigation.navigate('Main'),
+                   alert("đăng nhập thành công")
+                 } catch (e) {
+                 console.log(e);
+                 }
+           }
+       }
+      })
+   
+   
+   }
+   useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      setemaildn("");
+      setpassworddn("");
+    });
+  
+    return unsubscribe;
+  }, [props.navigation]);
 
   const handleForgotPassword = () => {
     console.log('Quên mật khẩu');
@@ -48,7 +66,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleSignUp = () => {
     console.log('Đăng ký');
-    navigation.navigate('SignUp');
+    props.navigation.navigate('SignUp');
   };
 
   return (
@@ -58,14 +76,14 @@ const LoginScreen = ({ navigation }) => {
       <TextInput
         style={styles.input}
         placeholder="Email/Mobile Number"
-        value={emaildn}
         onChangeText={(txt) => setemaildn(txt)}
+        value={emaildn}
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
-        value={passworddn}
         onChangeText={(txt) => setpassworddn(txt)}
+        value={passworddn}
       />
       <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={styles.forgotPassword}>Forgot your Password?</Text>
