@@ -482,10 +482,6 @@ app.post("/lichsu/them/:userId", (req, res) => {
 });
 
 
-
-
-
-
 //khởi chạy server
 const port = 9997;
 app.listen(port, () => {
