@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, TextInput, StyleSheet, FlatList, Image, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { ScrollView } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native';
-import ChiTietSanPham from '../SanPham/ChiTietSanPham';
+import { useState, useEffect } from "react";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const data = [
     { id: '1', image: require('../images/image1.png') },
@@ -12,34 +13,61 @@ const data = [
     { id: '3', image: require('../images/image3.png') },
 ];
 
-const products = [
-    { id: 1, name: 'Burger', price: 5.99, discount: 0.5, image: require('../images/image2.png') },
-    { id: 2, name: 'Fries', price: 2.99, discount: 0.25, image: require('../images/image2.png') },
-    { id: 3, name: 'Pizza', price: 7.99, discount: 0.75, image: require('../images/image2.png') },
-    // Thêm các sản phẩm khác tại đây
-];
 
-const HomeScreen = () => {
+
+const HomeScreen = (props) => {
+
+    const [isLoading, setisLoading] = useState(true);
+    const [showDialog, setshowDialog] = useState(true)
+    const [dsPro, setdsPro] = useState([]);
+    const [searchText, setSearchText] = useState("");
+
+const getListPro = async () =>{
+
+    let api_url_pro = 'http://192.168.19.254:9997/sanpham';
+    try {
+      const response = await fetch(api_url_pro);
+      const json = await response.json();
+      setdsPro(json);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setisLoading(false);
+    }
+  };
+
+  const filterProducts = () => {
+    if (searchText === "") {
+      return dsPro;
+    }
+    return dsPro.filter((item) =>
+      item.tensp.toLowerCase().includes(searchText.toLowerCase())
+    );
+  };
+
+
+
+
     const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={handleImagePress}>
+        <TouchableOpacity  >
             <View style={{ marginHorizontal: 10, borderRadius: 20 }}>
                 <Image source={item.image} style={styles.image1} />
             </View>
         </TouchableOpacity>
     );
     
-    const renderItem1 = ({ item }) => {
-        const discountedPrice = item.price - (item.price * item.discount);
+    const renderItem1 = ({item }) => {
+        // const discountedPrice = item.price - (item.price * item.discount);
         return (
-        <TouchableOpacity onPress={handleImagePress}>
+        <TouchableOpacity onPress={()=>{props.navigation.navigate('SanPham',{item_sp:item})}}>
             <View style={styles.itemContainer}>
-                <View style={styles.imageContainer}onPress={handleImagePress}>
-                    <Image source={item.image} style={styles.image} />
+                <View style={styles.imageContainer}>
+                    <Image source={{uri: item.img}} style={styles.image} />
                     <View style={styles.overlay}>
-                        <Text style={styles.name}>{item.name}</Text>
+                        <Text style={styles.name}>{item.tensp}</Text>
                         <Text style={styles.discountedPrice}>
-                            <Text style={styles.strikeThrough}> ${item.price.toFixed(2)}</Text>
-                            <Text> ${discountedPrice.toFixed(2)}</Text>
+                            <Text> ${item.giasp}</Text>
+                            {/* <Text> ${discountedPrice.toFixed(2)}</Text> */}
                         </Text>
                     </View>
                 </View>
@@ -49,35 +77,44 @@ const HomeScreen = () => {
         );
     };
 
-    const navigation = useNavigation();
+    // const navigation = useNavigation();
 
-    const handleImagePress = () => {
-        navigation.navigate('SanPham');
-    };
+ const xoa=()=>{
+    setSearchText("");
+ }
 
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+          // khi màn hình đc active thì lệnh hoạt động
+          getListPro();
+    
+        });
+    
+        return unsubscribe;
+      }, [props.navigation]);
     return (
         <ScrollView>
             <View style={styles.container}>
                 <View style={styles.menu}>
-                    <Ionicons name="menu" size={24} color="#8a6fcf" />
+                    {/* <Ionicons name="menu" size={24} color="#8a6fcf" /> */}
                     <Ionicons name="notifications" size={24} color="#8a6fcf" />
                 </View>
                 <View style={styles.icon}>
-                    <Ionicons name="search" size={24} color="#888" style={styles.icon1} />
+                    <Ionicons name="search" size={24} color="#888"  />
                     <TextInput
-
+                      onChangeText={(text) => setSearchText(text)}
                         style={styles.input}
                         placeholder="Tìm kiếm..."
                         placeholderTextColor="#888"
                     />
-                    <Ionicons name="close-circle" size={24} color="#888" style={styles.icon1} />
+                    <Ionicons name="close-circle" size={24} color="#888" onPress={()=>{setSearchText("")}} />
                 </View>
                 <View style={{ marginTop: 20 }}>
                     <FlatList
                         data={data}
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        keyExtractor={(item) => item.id.toString()}
+                        keyExtractor={(item_db) => item_db.id.toString()}
                         renderItem={renderItem}
                     />
                 </View>
@@ -89,10 +126,10 @@ const HomeScreen = () => {
                 <View>
                     <FlatList
                         
-                        data={products}
+                        data={filterProducts()}
                         horizontal
                         showsHorizontalScrollIndicator={true}
-                        keyExtractor={(item) => item.id.toString()}
+                        keyExtractor={(item_db) => item_db.id}
                         renderItem={renderItem1}
                         
                     />
@@ -102,8 +139,8 @@ const HomeScreen = () => {
                     <FlatList
                         
                         horizontal
-                        data={products}
-                        keyExtractor={(item) => item.id.toString()}
+                        data={filterProducts()}
+                        keyExtractor={(item_db) => item_db.id}
                         renderItem={renderItem1}
                     />
                 </View>

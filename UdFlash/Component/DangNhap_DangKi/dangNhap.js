@@ -17,11 +17,11 @@ const LoginScreen = ({ navigation }) => {
     }
 
     try {
-      let url_api = `http://192.168.0.141:9997/user?email=${emaildn}`;
+      let url_api = `http://192.168.19.254:9997/user?email=${emaildn}`;
       const response = await fetch(url_api);
       const res_login = await response.json();
 
-      if (res_login.length !== 1) {
+      if (res_login.length != 1) {
         console.log(res_login);
         alert("Sai username hoặc lỗi trùng lặp dữ liệu");
         return;
@@ -37,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
         }
       }
     } catch (error) {
-      console.log("Lỗi rồi sửa lại đi");
+      console.log(error);
       alert("Đã xảy ra lỗi trong quá trình đăng nhập");
     }
   };

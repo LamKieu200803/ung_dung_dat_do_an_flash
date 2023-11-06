@@ -14,7 +14,6 @@ const DangKi = (props) => {
   const [password, setpassword] = useState('');
   const [enterpasswd, setenterpasswd] = useState('');
 
-
   const SaveUser = () =>{
 
 
@@ -27,7 +26,7 @@ const DangKi = (props) => {
     }
 
     let objUser  = {email:email, password:password }
-    let url_api = "http://192.168.0.141:9997/dangki"
+    let url_api = "http://192.168.19.254:9997/dangki"
 
     fetch(url_api,{
         method:'POST',
@@ -46,10 +45,6 @@ const DangKi = (props) => {
     })
 
 }
-
-
-
-
 
   const navigation = useNavigation();
 

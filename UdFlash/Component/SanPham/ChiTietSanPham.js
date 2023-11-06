@@ -8,9 +8,40 @@ import {
 import React, { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 
-  const ChiTietSanPham = (props) => {
+  const ChiTietSanPham = ({route, navigation}) => {
+    const [img, setimg] = useState(route.params.item_sp.img);
+    const [tensp, settensp] = useState(route.params.item_sp.tensp);
+    const [giasp, setgiasp] = useState(route.params.item_sp.giasp);
+    const [motasp, setmotasp] = useState(route.params.item_sp.motasp);
+    const [soluong, setsoluong] = useState(route.params.item_sp.soluong);
 
-    const navigation = useNavigation();
+
+    
+    const Save_Pro = () =>{
+        let objPro = {img: img , tensp:tensp , giasp:giasp , soluongmua: "1" }
+        let url_api_giohang = 'http://192.168.19.254:9997/giohang/them'
+    
+        fetch(url_api_giohang, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(objPro)
+        }).then((res) => {
+            if (res.status == 201)
+                alert("them thanh cong")
+            console.log("thanh cong")
+      
+        })
+            .catch((e) => {
+                console.log(e);
+            })
+      
+        }
+
+
+  
 
     const handleGioHang = () => {
         console.log('giỏ hàng');
@@ -24,7 +55,7 @@ import { useNavigation } from '@react-navigation/native';
                     width: 360, height: 250, borderWidth: 1, backgroundColor: "white",
                     borderColor: "black"
                 }}
-                source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTocfSsilou6XtJ7f4Y5Sn6IcMgIV6LGMj_JQ&usqp=CAU' }}
+                source={{uri: route.params.item_sp.img}}
                 />
             </View>
             
@@ -32,25 +63,25 @@ import { useNavigation } from '@react-navigation/native';
             style={{
                 backgroundColor: "white",
                 width: "100%",
-                height: 100
+                height: 150
             }}
             >
                 <Text style={{color: "red",left: 10,  paddingTop: 20, fontSize: 20, fontWeight: '900'}}>
-                    Coca Cola
+                {route.params.item_sp.tensp}
                 </Text>
                 <Text style={{color: "#33907C",left: 10, paddingTop: 10, fontSize: 20, fontWeight: '900'}}>
-                    $25
+                ${route.params.item_sp.giasp}
                 </Text>
+
+              
+                <Text style={{color: "#33907C",left: 10, paddingTop: 10, fontSize: 20, fontWeight: '900'}}>
+                số lượng: {route.params.item_sp.soluong}
+                </Text>
+                
             </View>
             
             <View>
-            <Text style={styles.texthello}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Lobortis cras placerat diam ipsum ut. Nisi vel adipiscing massa bibendum diam.
-                Suspendisse mattis dui maecenas duis mattis. Mattis aliquam at arcu,
-                semper nunc, venenatis et pellentesque eu. Id tristique maecenas tristique habitasse
-                eu elementum sed. Aliquam eget lacus, arcu, adipiscing eget feugiat in dolor sagittis.
-                Non commodo, a justo massa porttitor sed placerat in. Orci tristique etiam tempus 
-                sed. Mi varius morbi egestas dictum tempor nisl.
+            <Text style={styles.texthello}>{route.params.item_sp.motasp}
             </Text>
             </View>
             
@@ -60,15 +91,13 @@ import { useNavigation } from '@react-navigation/native';
             }}
             >
             <TouchableOpacity
-
+onPress={Save_Pro}
             >
                 <Text style={styles.button}
-                onPress={handleGioHang}
+              
                 >Add to card</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
-                <Text style={styles.button}>Buy</Text>
-            </TouchableOpacity>
+           
             </View>
         </View>
     )
