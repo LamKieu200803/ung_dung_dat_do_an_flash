@@ -11,7 +11,7 @@ const trangChuAd = (props) => {
 
     const navigation = useNavigation();
     const handleqlhd = () => {
-        navigation.navigate('quanLiHD');
+        navigation.navigate('quanliHD');
     };
     const handleListSp = () => {
         navigation.navigate('danhSachSanPham');
@@ -44,7 +44,8 @@ const trangChuAd = (props) => {
                     <TouchableOpacity
                     style={{
                         flexDirection: 'row'
-                    }}>
+                    }}
+                    onPress={handleqlhd}>
                         <Text style={styles.button} >Quản lí hóa đơn</Text>
                         <View style={{
                             right:70,

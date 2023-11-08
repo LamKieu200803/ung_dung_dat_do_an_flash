@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, Image, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -17,9 +18,12 @@ const danhSachSanPham = () => {
     const removeItem = (itemId) => {
         setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
     };
-    
+    const navigation = useNavigation();
+    const handledsSanPham = () => {
+        navigation.navigate('chiTietSanPhams');
+    };
     const renderCartItem = ({ item }) => (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handledsSanPham}>
             <View style={styles.cartItemContainer}>
                 <Image source={item.image} style={styles.productImage} />
                 <View style={styles.productDetails}>
