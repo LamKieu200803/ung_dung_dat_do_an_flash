@@ -33,9 +33,12 @@ const danhSachSanPham = () => {
                 <Text style={styles.productName}>{item.name}</Text>
                 <Text style={styles.productPrice}>Price: ${item.price}</Text>
             </View>
-          <TouchableOpacity onPress={() => removeItem(item.id)} style={styles.deleteButton}>
-            <Icon name="trash" size={20} color="#000" />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => removeItem(item.id)} style={styles.deleteButton}>
+                <Icon name="updateStatus" size={20} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => removeItem(item.id)} style={styles.deleteButton}>
+                <Icon name="trash" size={20} color="#000" />
+            </TouchableOpacity>
         </View>
         </TouchableOpacity>
     );

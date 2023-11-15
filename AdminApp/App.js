@@ -7,6 +7,7 @@ import danhSachSanPham from './ComponentAdmin/danhSachSanPham';
 import quanLiHoaDon from './ComponentAdmin/quanLiHoaDon';
 import AddProductScreen from './ComponentAdmin/themSanPham';
 import chiTietHoaDon from './ComponentAdmin/chiTietHoaDon';
+import EditProductScreen from './ComponentAdmin/suaSp';
 
 const Stack = createStackNavigator();
 
@@ -14,12 +15,13 @@ export default function App() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='trangChu'>
+        <Stack.Navigator initialRouteName='danhSachSanPham'>
           <Stack.Screen name="trangChu" component={trangChuAd} />
           <Stack.Screen name="danhSachSanPham" component={danhSachSanPham} />
           <Stack.Screen name="chiTietHoaDon" component={chiTietHoaDon} />
           <Stack.Screen name="quanliHD" component={quanLiHoaDon} />
           <Stack.Screen name="themSp" component={AddProductScreen} />
+          <Stack.Screen name="suaSp" component={EditProductScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>
