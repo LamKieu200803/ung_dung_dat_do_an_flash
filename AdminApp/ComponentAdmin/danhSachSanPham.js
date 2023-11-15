@@ -22,6 +22,9 @@ const danhSachSanPham = () => {
     const handledsSanPham = () => {
         navigation.navigate('chiTietSanPhams');
     };
+    const handleThemSanPham = () => {
+        navigation.navigate('themSp');
+    };
     const renderCartItem = ({ item }) => (
         <TouchableOpacity onPress={handledsSanPham}>
             <View style={styles.cartItemContainer}>
@@ -61,7 +64,7 @@ const danhSachSanPham = () => {
               <Text style={styles.emptyCartText}>Your cart is empty.</Text>
             </View>
         )}
-          <TouchableOpacity style={styles.buyButton} onPress={() => alert('Chuyển sang màn thêm')}>
+          <TouchableOpacity style={styles.buyButton} onPress={handleThemSanPham}>
             <Text style={styles.buyButtonText}>Thêm sản phẩm</Text>
           </TouchableOpacity>
         </View>

@@ -1,24 +1,28 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-web';
 
 const quanLiHoaDon = () => {
-    return (
-        <View style={styles.container}>
 
-            <View>
-                <Text style={{ fontSize: 40, marginBottom: 30,  }}>Hóa Đơn</Text>
+    return (
+        <TouchableOpacity>
+            <View style={styles.container}>
+
+                <View>
+                    <Text style={{ fontSize: 40, marginBottom: 30,  }}>Hóa Đơn</Text>
+                </View>
+                <View style ={styles.form}>
+                        <Text style={styles.date}>Ngày: 07/11/2023</Text>
+                    <View style={styles.divider} />
+                    <View style={styles.customerInfo}>
+                        <Text style={styles.info}>Tên: </Text>
+                        <Text style={styles.info}>Số điện thoại: </Text>
+                        <Text style={styles.info}>Địa chỉ: </Text>
+                        <Text style={styles.info}>Tổng tiền: </Text>
+                    </View>
+                </View>
             </View>
-            <View style ={styles.form}>
-            <Text style={styles.date}>Ngày: 07/11/2023</Text>
-            <View style={styles.divider} />
-            <View style={styles.customerInfo}>
-                <Text style={styles.info}>Tên: </Text>
-                <Text style={styles.info}>Số điện thoại: </Text>
-                <Text style={styles.info}>Địa chỉ: </Text>
-                <Text style={styles.info}>Tổng tiền: </Text>
-            </View>
-            </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 

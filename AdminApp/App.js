@@ -5,7 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import trangChuAd from './ComponentAdmin/trangChu';
 import danhSachSanPham from './ComponentAdmin/danhSachSanPham';
 import quanLiHoaDon from './ComponentAdmin/quanLiHoaDon';
-import ChiTietSanPham from './ComponentAdmin/chiTietSanPham';
+import AddProductScreen from './ComponentAdmin/themSanPham';
+import chiTietHoaDon from './ComponentAdmin/chiTietHoaDon';
 
 const Stack = createStackNavigator();
 
@@ -16,8 +17,9 @@ export default function App() {
         <Stack.Navigator initialRouteName='trangChu'>
           <Stack.Screen name="trangChu" component={trangChuAd} />
           <Stack.Screen name="danhSachSanPham" component={danhSachSanPham} />
-          <Stack.Screen name="chiTietSanPhams" component={ChiTietSanPham} />
+          <Stack.Screen name="chiTietHoaDon" component={chiTietHoaDon} />
           <Stack.Screen name="quanliHD" component={quanLiHoaDon} />
+          <Stack.Screen name="themSp" component={AddProductScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

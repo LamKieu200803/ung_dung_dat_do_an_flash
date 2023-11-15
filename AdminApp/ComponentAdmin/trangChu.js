@@ -5,10 +5,6 @@ import { Ionicons } from '@expo/vector-icons';
 
 const trangChuAd = (props) => {
 
-
-
-
-
     const navigation = useNavigation();
     const handleqlhd = () => {
         navigation.navigate('quanliHD');
@@ -16,8 +12,6 @@ const trangChuAd = (props) => {
     const handleListSp = () => {
         navigation.navigate('danhSachSanPham');
     };
-
-
     return (
         <View
             style={
@@ -33,11 +27,7 @@ const trangChuAd = (props) => {
                 style={styles.image}
                     source={require('../ComponentAdmin/images/theFlash-removebg-preview.png')}
                 />
-                <Text
-                    style={styles.text}
-                >
-                    Flash Shop
-                </Text>
+                
             </View>
             <View>
                 <View style={{paddingVertical: 30, }}>
@@ -87,14 +77,15 @@ const trangChuAd = (props) => {
                 
             </View>
             <View style={{
-                flexDirection: 'row'
+                flexDirection: 'row',
+                right: 20
             }}>
                 <View style={{paddingVertical: 30}}>
                     <TouchableOpacity>
                         <Text style={styles.button1} >Đăng xuất</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={{paddingVertical: 30, paddingLeft: 20}}>
+                <View style={{paddingVertical: 30,paddingLeft: 10}}>
                     <TouchableOpacity>
                         <Text style={styles.button1} >Đổi mật khẩu</Text>
                     </TouchableOpacity>
@@ -113,12 +104,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F27171',
+        alignItems: 'center'
     },
     image:{
+        right:30,
         top: 10,
         width: 140,
         height:140,
-        left: 70
     },
     button: {
         marginHorizontal: 20,
@@ -133,7 +125,6 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     },
     button1: {
-        left: 10,
         width: 200,
         paddingVertical: 10,
         borderRadius: 20,
@@ -144,11 +135,6 @@ const styles = StyleSheet.create({
         color: 'red',
         
     },
-    text:{
-        left:80,
-        top:70,
-        color: 'white',
-        fontSize:30
-    }
+    
    
 });
