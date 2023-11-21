@@ -1,54 +1,64 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-const AddAddressScreen = () => {
+const AddAddressScreen = (props) => {
   const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [streetAddress, setStreetAddress] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
   const [state, setState] = useState('');
 
-  const handleAutoFillAddress = () => {
-    // Thực hiện tự động điền địa chỉ
-    // Gọi API hoặc thực hiện xử lý ở đây
-    const autoFilledAddress = {
-      name: 'Nguyễn Văn A',
-      phoneNumber: '0123456789',
-      streetAddress: '123 Đường ABC',
-      email: 'example@email.com',
-      state: 'Hà Nội',
-    };
+  // const handleAutoFillAddress = () => {
+  //   // Thực hiện tự động điền địa chỉ
+  //   // Gọi API hoặc thực hiện xử lý ở đây
+  //   const autoFilledAddress = {
+  //     name: 'Nguyễn Văn A',
+  //     phoneNumber: '0123456789',
+  //     streetAddress: '123 Đường ABC',
+  //     email: 'example@email.com',
+  //     state: 'Hà Nội',
+  //   };
 
-    setName(autoFilledAddress.name);
-    setPhoneNumber(autoFilledAddress.phoneNumber);
-    setStreetAddress(autoFilledAddress.streetAddress);
-    setEmail(autoFilledAddress.email);
-    setState(autoFilledAddress.state);
-  };
+  //   setName(autoFilledAddress.name);
+  //   setPhoneNumber(autoFilledAddress.phoneNumber);
+  //   setStreetAddress(autoFilledAddress.streetAddress);
+  //   setEmail(autoFilledAddress.email);
+  //   setState(autoFilledAddress.state);
+  // };
 
   const handleSaveAddress = () => {
-    // Thực hiện lưu địa chỉ
-    // Gọi API hoặc thực hiện xử lý ở đây
+    let objPro = { name: name, phone: phone, address: address, email:email,state:state }
+    let url_api_diachi = 'http://192.168.1.228:9997/themdiachi';
 
-    // Hiển thị thông báo lưu thành công
+    fetch(url_api_diachi, {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(objPro)
+    }).then((res) => {
+        if (res.status == 201)
+            alert("Bạn đã thêm địa chỉ thành công")
+            console.log("thanh cong")
+
+    })
+        .catch((e) => {
+            console.log(e);
+        })
     alert('Địa chỉ đã được lưu thành công');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Add a new address</Text>
-
-      <TouchableOpacity style={styles.button} onPress={handleAutoFillAddress}>
-        <Text style={styles.buttonText}>Use current location</Text>
-      </TouchableOpacity>
-
       <Text style={styles.label}>Name</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           placeholder="Name"
           value={name}
-          onChangeText={setName}
+          onChangeText={(txt)=>setName(txt)}
         />
       </View>
 
@@ -58,8 +68,8 @@ const AddAddressScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Phone"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
+          value={phone}
+          onChangeText={(txt)=>setPhone(txt)}
         />
       </View>
 
@@ -69,8 +79,8 @@ const AddAddressScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Street address"
-          value={streetAddress}
-          onChangeText={setStreetAddress}
+          value={address}
+          onChangeText={(txt)=>setAddress(txt)}
         />
       </View>
 
@@ -81,7 +91,7 @@ const AddAddressScreen = () => {
           style={styles.input}
           placeholder="Email"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(txt)=>setEmail(txt)}
         />
       </View>
 

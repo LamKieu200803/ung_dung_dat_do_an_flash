@@ -1,4 +1,3 @@
-
 const express = require("express");
 const mongoose = require("mongoose");
 
@@ -30,9 +29,18 @@ const sanPhamSchema = new mongoose.Schema({
   tensp: String,
   giasp: String,
   img: String,
-  motasp:String,
-  soluong:Number
+  motasp: String,
+  soluong: Number
 })
+
+const AddressSChema = new mongoose.Schema({
+  name: String,
+  phone:String,
+  address: String,
+  email: String,
+  state: Number
+})
+const Address = mongoose.model("Diachis",AddressSChema);
 
 const SanPham = mongoose.model("SanPhams", sanPhamSchema);
 
@@ -42,7 +50,7 @@ const chiTietSanPhamSchema = new mongoose.Schema({
   giasp: String,
   img: String,
   motasp: String,
-  soluong:Number
+  soluong: Number
 })
 
 const chiTietSanPham = mongoose.model("ChiTietSanPhams", chiTietSanPhamSchema)
@@ -71,19 +79,33 @@ const hoaDonSchema = new mongoose.Schema({
   sdt: String,
   tennguoimua: String,
   pttt: String,
-  tongtien:Number
+  tongtien: Number
 })
+app.delete("/giohang/xoa/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const { tensp, giasp, img, soluongmua } = req.body;
+
+  try {
+     await gioHang.deleteMany({
+     userId:userId
+    });
+    console.log("Giỏ hàng đã được làm mới");
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
+  }
+});
 
 const hoaDon = mongoose.model("HoaDons", hoaDonSchema)
 
 // Schema và model thông tin 
 const thongTinSchema = new mongoose.Schema({
-  
+
   userId: {
     type: String,
     required: true
   },
-  email: String,
+  phone:String,
   anh: String,
   tennguoimua: String,
 
@@ -103,7 +125,7 @@ const trangThaiSchema = new mongoose.Schema({
   soluongmua: String,
   trangthai: String,
   pttt: String,
-  tongtien:String
+  tongtien: String
 })
 
 const trangThai = mongoose.model("TrangThais", trangThaiSchema)
@@ -118,24 +140,47 @@ const lichSuSchema = new mongoose.Schema({
   giasp: String,
   img: String,
   soluongmua: String,
-  pttt:String,
-  tennguoimua:String,
-tongtien:String,
-phanhoi:String
+  pttt: String,
+  tennguoimua: String,
+  tongtien: String,
+  phanhoi: String
 })
 
-const lichSu= mongoose.model("LichSus", lichSuSchema)
+const lichSu = mongoose.model("LichSus", lichSuSchema)
 
 // dki tài khoản 
-app.post("/dangki",(req,res)=>{
-  const {email,password} = req.body
+app.post("/dangki", (req, res) => {
+  const { email, password } = req.body
 
-  const newUser = new User({email,password})
+  const newUser = new User({ email, password })
   newUser.save()
-  .then(()=>{
-    res.status(201).json({message:"tạo tài khoản thành công"})
-  })
+    .then(() => {
+      res.status(201).json({ message: "tạo tài khoản thành công" })
+    })
 })
+app.post("/themdiachi", (req, res) => {
+  const { name,
+    phone,
+    address,
+    email,
+    state } = req.body
+
+  const newUser = new Address({name,phone,address,email,state})
+  newUser.save()
+    .then(() => {
+      res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công" })
+    })
+})//thêm địa chỉ
+app.get('/diachi', async (req, res) => {
+  try {
+    const user = await Address.find({})
+    res.json(user)
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server")
+  }
+})//get địa chỉ
+
 
 app.post('/dangnhap', (req, res) => {
   var email = req.body.email;
@@ -159,12 +204,12 @@ app.post('/dangnhap', (req, res) => {
 });
 
 // xem toàn bộ tài khoản
-app.get('/user',async(req,res)=>{
-  try{
+app.get('/user', async (req, res) => {
+  try {
     const user = await User.find({})
     res.json(user)
-  }catch(err){
-    console.log("error ",err);
+  } catch (err) {
+    console.log("error ", err);
     res.status(500).send("lỗi server")
   }
 })
@@ -188,103 +233,103 @@ app.get('/user/email', async (req, res) => {
 });
 
 // xóa tài khoản
-app.delete("/User/xoa/:id",(req,res)=>{
-  const deleteUser = req.params.id ;
+app.delete("/User/xoa/:id", (req, res) => {
+  const deleteUser = req.params.id;
   User.findByIdAndRemove(deleteUser)
-  .then((data)=>{
-    if (data) {
-      res
-        .status(200)
-        .json({ message: "Dữ liệu đã được xóa thành công", data: data });
-    } else {
-      res.status(404).json({ error: "Không tìm thấy dữ liệu" });
-    }
-  })
-  .catch((error) => {
-    res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
-  });
+    .then((data) => {
+      if (data) {
+        res
+          .status(200)
+          .json({ message: "Dữ liệu đã được xóa thành công", data: data });
+      } else {
+        res.status(404).json({ error: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
+    });
 });
 
 // xem sản phẩm 
-app.get('/sanpham',async(req,res)=>{
-  try{
+app.get('/sanpham', async (req, res) => {
+  try {
     const sanpham = await SanPham.find({})
     res.json(sanpham)
-  }catch(err){
-    console.log("error ",err);
+  } catch (err) {
+    console.log("error ", err);
     res.status(500).send("lỗi server")
   }
 })
 
 // thêm sản phẩm
-app.post("/sanpham/them",(req,res)=>{
-  const {tensp,giasp,img,motasp,soluong} = req.body;
+app.post("/sanpham/them", (req, res) => {
+  const { tensp, giasp, img, motasp, soluong } = req.body;
 
-  const newSanPham = new SanPham({tensp,giasp,img,motasp,soluong})
+  const newSanPham = new SanPham({ tensp, giasp, img, motasp, soluong })
   newSanPham.save()
-  .then(()=>{
-    res.status(201).json({message:"thêm sản phẩm thành công"})
-  })
+    .then(() => {
+      res.status(201).json({ message: "thêm sản phẩm thành công" })
+    })
 })
 
 // sửa sản phẩm 
-app.put("/sanpham/sua/:id",(req,res)=>{
-  const id = req.params.id ;
+app.put("/sanpham/sua/:id", (req, res) => {
+  const id = req.params.id;
   const updateSanPham = {
-    tensp:req.body.tensp,
-    giasp:req.body.giasp,
-    img:req.body.img,
-    motasp:req.body.motasp,
-    soluong:req.body.soluong
+    tensp: req.body.tensp,
+    giasp: req.body.giasp,
+    img: req.body.img,
+    motasp: req.body.motasp,
+    soluong: req.body.soluong
   };
-  SanPham.findByIdAndUpdate(id,updateSanPham,{new:true})
-  .then((data)=>{
-    if(data){
-      res.status(200).json({
-        message:"cập nhật dữ liệu thành công",
-        data:data
-      });
-    }else{
-      res.status(404).json({err:"không tìm thấy dữ liệu"})
+  SanPham.findByIdAndUpdate(id, updateSanPham, { new: true })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "cập nhật dữ liệu thành công",
+          data: data
+        });
+      } else {
+        res.status(404).json({ err: "không tìm thấy dữ liệu" })
+      }
+
     }
-   
-  }
-  ).catch((err)=>{
-    res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
-  })
+    ).catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    })
 });
 
 // xóa sản phẩm
-app.delete("/sanpham/xoa/:id",(req,res)=>{
-  const deleteSanPham = req.params.id ;
+app.delete("/sanpham/xoa/:id", (req, res) => {
+  const deleteSanPham = req.params.id;
   SanPham.findByIdAndRemove(deleteSanPham)
-  .then((data)=>{
-    if (data) {
-      res
-        .status(200)
-        .json({ message: "Dữ liệu đã được xóa thành công", data: data });
-    } else {
-      res.status(404).json({ error: "Không tìm thấy dữ liệu" });
-    }
-  })
-  .catch((error) => {
-    res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
-  });
+    .then((data) => {
+      if (data) {
+        res
+          .status(200)
+          .json({ message: "Dữ liệu đã được xóa thành công", data: data });
+      } else {
+        res.status(404).json({ error: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
+    });
 });
 
 // xem chi tiết sản phẩm 
-app.get('/chitietsanpham/:id',async(req,res)=>{
+app.get('/chitietsanpham/:id', async (req, res) => {
   const productId = req.params.id;
-  try{
-   const spct = await SanPham.findById(productId);
-   if(!spct){
-    // sản phẩm ko tồn tại
-    res.status(404).json({message:"sản phẩm ko tồn tại"})
-   }else{
-    res.json(spct);
-   }
-  }catch(err){
-    console.log("error ",err);
+  try {
+    const spct = await SanPham.findById(productId);
+    if (!spct) {
+      // sản phẩm ko tồn tại
+      res.status(404).json({ message: "sản phẩm ko tồn tại" })
+    } else {
+      res.json(spct);
+    }
+  } catch (err) {
+    console.log("error ", err);
     res.status(500).send("lỗi server")
   }
 })
@@ -293,7 +338,6 @@ app.get('/chitietsanpham/:id',async(req,res)=>{
 
 app.get("/giohang/:userId", async (req, res) => {
   const userId = req.params.userId;
-
   try {
     const giohang = await gioHang.find({ userId: userId });
     res.json(giohang);
@@ -339,14 +383,14 @@ app.delete("/giohang/xoa/:userId/:productId", async (req, res) => {
   }
 });
 // xem hóa đơn theo id người dùng
-app.get("/hoadon/:userId",async(req,res)=>{
-  
+app.get("/hoadon/:userId", async (req, res) => {
+
   const userId = req.params.userId;
-  try{
+  try {
     const hoadon = await hoaDon.find(userId)
     res.json(hoadon)
-  }catch(err){
-    console.log("error ",err);
+  } catch (err) {
+    console.log("error ", err);
     res.status(500).send("lỗi server")
   }
 })
@@ -373,7 +417,7 @@ app.post("/hoadon/them/:userId", (req, res) => {
 app.get("/thongtin/:userId", async (req, res) => {
   const userId = req.params.userId;
   try {
-    const thongtin = await thongTin.find({userId: userId});
+    const thongtin = await thongTin.find({ userId: userId });
     if (thongtin) {
       res.json(thongtin);
     } else {
@@ -388,9 +432,9 @@ app.get("/thongtin/:userId", async (req, res) => {
 // thêm thông tin người dùng
 app.post("/thongtin/them/:userId", (req, res) => {
   const userId = req.params.userId;
-  const { tennguoimua, anh, trangthai, email } = req.body;
+  const { tennguoimua, anh, phone } = req.body;
 
-  const newThongTin = new thongTin({ userId, tennguoimua, anh, trangthai, email });
+  const newThongTin = new thongTin({ userId, tennguoimua, anh,phone });
   newThongTin
     .save()
     .then(() => {
@@ -482,8 +526,12 @@ app.post("/lichsu/them/:userId", (req, res) => {
 });
 
 
+
+
+
+
 //khởi chạy server
 const port = 9997;
 app.listen(port, () => {
-  console.log(`server đang lắng nghe tại cổng ${port}`);
+  console.log('server đang lắng nghe tại cổng ${port}');
 });

@@ -17,7 +17,7 @@ const LoginScreen = (props) => {
       alert("Chưa nhập password");
       return;
     }
-      let url_api = "http://172.16.10.103:9997/user/email?email=" + emaildn;
+      let url_api = "http://192.168.1.228:9997/user/email?email=" + emaildn;
       fetch(url_api)
       .then ((res)=>{
        return res.json();
@@ -110,14 +110,15 @@ const styles = StyleSheet.create({
   },
   welcome: {
     paddingTop: 100,
-    left: 50,
+    left: 90,
     color: '#FFFFFF',
-    fontSize: 24,
+    fontSize: 27,
     fontWeight: '700',
   },
   tx1: {
     marginTop: 50,
     marginBottom: 50,
+    fontSize:20,
     textAlign: 'center',
     color: 'white',
   },
@@ -127,13 +128,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginVertical: 5,
     borderRadius: 8,
+    marginTop:30,
+   color:'black',
     borderColor: 'white',
   },
   button: {
-    width: '100%',
+    width: 200,
     paddingVertical: 10,
     borderRadius: 8,
     color: 'red',
+    left:120,
     fontSize: 15,
     fontWeight: '700',
     textAlign: 'center',
@@ -147,6 +151,7 @@ const styles = StyleSheet.create({
   forgotPassword: {
     marginTop: 12,
     color: 'white',
+    marginTop:20,
     textDecorationLine: 'underline',
     textAlign: 'right',
   },
@@ -155,6 +160,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textDecorationLine: 'underline',
     textAlign: 'center',
+    fontSize:20
   },
 });
 

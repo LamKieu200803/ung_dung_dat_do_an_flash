@@ -1,65 +1,99 @@
-import React, { useState } from 'react';
+
+import React, { useState ,useEffect} from 'react';
 import { View, Image, Text, TouchableOpacity, FlatList, StyleSheet, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const GioHang = (props) => {
-
-
-
-
-  const [dsPro, setdsPro] = useState([]);
+  const [dspro, setdspro] = useState([]);  
+  const [cartItemsCount, setCartItemsCount] = useState(0);
   const [isLoading, setisLoading] = useState(true);
-
+  const [loginInfo, setloginInfo] = useState(''); 
+  const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const getListPro = async () => {
-    let url_api_giohang = 'http://172.16.10.103:9997/giohang'
-
+    let url_api_giohang = 'http://192.168.1.228:9997/giohang/'+loginInfo._id   
     try {
         const response = await fetch(url_api_giohang);
-        const json = await response.json();
-        setdsPro(json);
-    } catch (e) {
-        console.log(e);
-    } finally {
+        const json = await response.json();   
+        setdspro(json);
+        setCartItemsCount(json.length);
+    } catch (e) { 
+        console.log(e); 
+ 
+    } finally {  
         setisLoading(false)
-
     }
 }
+   
 
+   
+const getLoginInfo = async () => {
+  try {
+      const valuee = await AsyncStorage.getItem('loginInfo')
+      if (valuee !== null) {   
+          // láy được dữ liệu 
+          setloginInfo(JSON.parse(valuee));
+          setisLoading(false)
+      }
+  } catch (e) {
+      console.log(e);
+  }
+}
 
-React.useEffect(() => {
-    const unsubcribe = props.navigation.addListener('focus', () => {
+useEffect(() => { 
+  const loadData = async () => {  
+  await getLoginInfo();  
+  setIsLoginInfoLoaded(true);    
+};  
+loadData(); 
+}, []);   
+  
+useEffect(() => {     
+  if (isLoginInfoLoaded) {
+    getListPro();
+    setisLoading(true)
+    console.log(loginInfo._id);
+  }   
+       
+},[isLoginInfoLoaded]); 
+useEffect(() => {
+  const unsubscribe = props.navigation.addListener('focus', () => {
+      // khi màn hình đc active thì lệnh hoạt động
+      if (isLoginInfoLoaded) {
         getListPro();
-    
-    });
-    return unsubcribe
-}, [props.navigation]);
+        setisLoading(true)
+        console.log(loginInfo._id);
+      }
+  });
 
+  return unsubscribe;
+},  [isLoginInfoLoaded])
 React.useEffect(() => {
   
-  }, [dsPro]);
-
+  }, [dspro,cartItemsCount]);
+ 
 
 
   const increaseQuantity = (itemId) => {
-    setdsPro((prevItems) =>
+    setdspro((prevItems) =>
       prevItems.map((item) =>
         item._id === itemId ? { ...item, soluongmua: item.soluongmua + 1 } : item
       )
     );
+    setCartItemsCount(prevCount => prevCount + 1); // Or use -1 for decreasing count 
   };
   
   const decreaseQuantity = (itemId) => {
-    setdsPro((prevItems) =>
+    setdspro((prevItems) =>   
       prevItems.map((item) =>
         item._id === itemId && item.soluongmua > 1
           ? { ...item, soluongmua: item.soluongmua - 1 }
-          : item
+          : item  
       )
     );
   };
 
   
-
+  
 //   const removeItem = (itemId) => {
 //     setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
 //   };
@@ -67,7 +101,7 @@ React.useEffect(() => {
   const renderCartItem = ({ item }) =>{ 
     
     const DelPro = () =>{
-      let url_api_del = 'http://172.16.10.103:9997/giohang/xoa/' +item._id ;
+      let url_api_del = 'http://192.168.1.228:9997/giohang/xoa/'+loginInfo._id+"/" +item._id ;
   
       fetch(url_api_del,{
   
@@ -145,7 +179,7 @@ React.useEffect(() => {
   );
   const calculateTotalPrice = () => {
     let totalPrice = 0;
-    dsPro.forEach((item) => {
+    dspro.forEach((item) => {
       totalPrice += item.giasp * item.soluongmua;
     });
     return totalPrice;
@@ -153,9 +187,9 @@ React.useEffect(() => {
  
   const renderCart = () => (
     <View style={{ flex: 1 }}>
-      {dsPro.length > 0 ? (
+      {dspro.length > 0 ? (
         <FlatList
-          data={dsPro}
+          data={dspro}
           renderItem={renderCartItem}
           keyExtractor={(item) => item._id}
           ListEmptyComponent={renderEmptyCart}
@@ -174,7 +208,7 @@ React.useEffect(() => {
 
   return (
     <View style={styles.container}>
-      {dsPro.length > 0 ? (
+      {dspro.length > 0 ? (
         renderCart()
       ) : (
         <View style={styles.emptyCartContainer}>
@@ -182,7 +216,7 @@ React.useEffect(() => {
         </View>
       )}
 
-    
+     
      
     </View>
   );

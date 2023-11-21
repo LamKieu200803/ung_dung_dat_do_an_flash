@@ -1,17 +1,24 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RadioGroup, { RadioButtonProps } from 'react-native-radio-buttons-group';
 import { View, TextInput, StyleSheet, FlatList, VirtualizedList, Image, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ThanhToan = (props) => {
 
-    const [tennguoimua, settennguoimua] = useState();
-    const [sdt, setsdt] = useState();
-    const [diachi, setdiachi] = useState();
-    const [tongtien, settongtien] = useState(props.route.params);
+
+    const [address, setAddress] = useState();
+    const [email, setEmail] = useState('');
+    const [state, setState] = useState('');
+
+    const [tennguoimua, settennguoimua] = useState('');
+    const [sdt, setsdt] = useState('');
+    const [diachi, setdiachi] = useState('');
+    const [tongtien, settongtien] = useState(0);
+
 
     const [open, setOpen] = useState(false);  // sổ list xuống hay không
     const [value, setValue] = useState(null);  // giá trị người dùng chọn
@@ -20,18 +27,15 @@ const ThanhToan = (props) => {
         { label: 'Ví VNPay', value: 'Ví VNPay' },
 
     ]);
+    const [loginInfo, setloginInfo] = useState('');
 
-
-    const totalPrice = props.route.params;
-
+    const totalPrice = typeof props.route.params === 'number' ? props.route.params : 0;
 
     const Save_UserMua = () => {
-        let objUserMua = { tennguoimua: tennguoimua, sdt: sdt, diachi: diachi, pttt: value
-            , tongtien: tongtien }
-        let url_api_hoadon = 'http://172.16.10.103:9997/hoadon/them'
-
-
-
+        let objUserMua = {
+            tennguoimua: tennguoimua, sdt: sdt, diachi: diachi, pttt: value, tongtien: tongtien 
+        }
+        let url_api_hoadon ='http://192.168.1.228:9997/hoadon/them/' + loginInfo._id;
         fetch(url_api_hoadon, {
             method: 'POST',
             headers: {
@@ -41,9 +45,9 @@ const ThanhToan = (props) => {
             body: JSON.stringify(objUserMua)
         }).then((res) => {
             if (res.status == 201)
-
                 alert("đặt hàng thành công")
-            // DelPro();
+     
+             DelPro();
 
         })
             .catch((e) => {
@@ -52,7 +56,63 @@ const ThanhToan = (props) => {
 
 
     }
+    const DelPro = () =>{
+        let url_api_del = 'http://192.168.1.228:9997/giohang/xoa/' +loginInfo._id ;
+    
+        fetch(url_api_del,{
+    
+            method: 'DELETE',
+                       headers: {
+                           Accept: 'application/json',
+                           'Content-Type': 'application/json',
+                       }
+                   }).then((res)=>{
+                       if(res.status ==200){
+                          
+                      
+                       }
+                   })
+                   .catch((e)=>{
+                       console.log(e);
+                   })
+          }
 
+    const getLoginInfo = async () => {
+        try {
+            const valuee = await AsyncStorage.getItem('loginInfo')
+            if (valuee !== null) {
+                // láy được dữ liệu 
+                setloginInfo(JSON.parse(valuee))
+                
+            }
+        } catch (e) {
+      
+            console.log(e);
+        }
+       
+      };
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            // khi màn hình đc active thì lệnh hoạt động
+            getLoginInfo();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
+    useEffect(() => {
+        const loadTotalPrice = async () => {
+          try {
+            const totalPrice = await AsyncStorage.getItem('totalPrice');
+            console.log('Total price:', totalPrice);
+            // Sử dụng giá trị "total price" ở đây
+          } catch (error) {
+            console.log('Error retrieving total price:', error);
+          }
+        };
+    
+        loadTotalPrice();
+      }, []);
 
 
 
@@ -65,7 +125,6 @@ const ThanhToan = (props) => {
     };
 
 
-    const [selectedId, setSelectedId] = useState("");
 
 
     return (
@@ -75,7 +134,7 @@ const ThanhToan = (props) => {
             }
 
         >
-            <TouchableOpacity onPress={() => { navigation.navigate('AddAddress') }}>
+            <TouchableOpacity onPress={() => { props.navigation.navigate('AddAddress') }}>
                 <View
                     style={{
                         margin: 10,
@@ -122,12 +181,13 @@ const ThanhToan = (props) => {
                         <View style={{ flexDirection: 'column' }}>
                             <Text style={{}}>
                                 Deliver to Tradly Team, 75119
+                            
                             </Text>
                             <Text style={{ color: 'grey' }}>
                                 Kualalumpur, Malaysia
                             </Text>
                         </View>
-                        <TouchableOpacity onPress={() => { navigation.navigate('AddAddress') }}>
+                        <TouchableOpacity onPress={() => { navigation.navigate('AllDiachi') }}>
                             <Text style={{
                                 backgroundColor: 'red',
                                 borderRadius: 20,
@@ -150,43 +210,43 @@ const ThanhToan = (props) => {
                         <Text style={{ fontSize: 30, paddingLeft: 20 }}>
                             Price Details
                         </Text>
-                        <View style={{ flexDirection: 'row', paddingTop: 20, paddingLeft: 20 }}>
+                        <View style={{ flexDirection: 'row', paddingTop: 20,  }}>
 
                             <View>
                                 <TextInput style={styles.chu} placeholder='Tên người mua' onChangeText={(txt) => settennguoimua(txt)}>
                                 </TextInput>
                             </View>
                         </View>
-                        <View style={{ flexDirection: 'row', paddingTop: 20, paddingLeft: 20 }}>
+                        <View style={{ flexDirection: 'row', paddingTop: 20,}}>
                             <View>
                                 <TextInput style={styles.chu} placeholder='Số điện thoại' onChangeText={(txt) => setsdt(txt)}>
                                 </TextInput>
                             </View>
                         </View>
-                        <View style={{ flexDirection: 'row', paddingTop: 20, paddingLeft: 20 }}>
+                        <View style={{ flexDirection: 'row', paddingTop: 20,  }}>
                             <View>
                                 <TextInput style={styles.chu} placeholder='Địa chỉ' onChangeText={(txt) => setdiachi(txt)}>
                                 </TextInput>
                             </View>
                         </View>
-                        <View style={{ flexDirection: 'row', paddingTop: 20, paddingLeft: 20 }}>
+                        <View style={{ flexDirection: 'row', paddingTop: 20, }}>
 
 
-                                <DropDownPicker
-                                   
-                                    style={styles.chu1}
-                                    open={open}
-                                    value={value}
-                                    items={pttt}
-                                    setOpen={setOpen}
-                                    setValue={setValue}
-                                    setItems={setpttt}
-                                    defaultValue="1"
-                                    placeholder={"Chọn phương thức thanh toán"} // hoặc placeholder={null}
+                            <DropDownPicker
+
+                                style={styles.chu1}
+                                open={open}
+                                value={value}
+                                items={pttt}
+                                setOpen={setOpen}
+                                setValue={setValue}
+                                setItems={setpttt}
+                                defaultValue="1"
+                                placeholder={"Chọn phương thức thanh toán"} // hoặc placeholder={null}
 
 
-                                />
-                       
+                            />
+
                         </View>
                         <View style={{ flexDirection: 'row', borderTopWidth: 1 }}>
                             <Text style={{ fontSize: 20, fontWeight: '700', paddingTop: 30, paddingLeft: 20 }}>

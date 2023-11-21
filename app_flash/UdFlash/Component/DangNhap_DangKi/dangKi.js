@@ -28,7 +28,7 @@ const DangKi = (props) => {
     }
 
     let objUser  = {email:email, password:password }
-    let url_api = "http://172.16.10.103:9997/dangki"
+    let url_api = "http://192.168.1.228:9997/dangki"
 
     fetch(url_api,{
         method:'POST',
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginVertical: 5,
     borderRadius: 8,
+    color:'black',
     borderColor: 'white',
   },
   bottominput: {
