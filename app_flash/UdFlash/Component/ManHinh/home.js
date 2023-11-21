@@ -27,7 +27,7 @@ const data = [
 
 const getListPro = async () =>{
 
-    let api_url_pro = 'http://192.168.1.228:9997/sanpham';
+    let api_url_pro = 'http://172.16.10.110:9997/sanpham';
     try {
       const response = await fetch(api_url_pro);
       const json = await response.json();

@@ -35,7 +35,7 @@ const ThanhToan = (props) => {
         let objUserMua = {
             tennguoimua: tennguoimua, sdt: sdt, diachi: diachi, pttt: value, tongtien: tongtien 
         }
-        let url_api_hoadon ='http://192.168.1.228:9997/hoadon/them/' + loginInfo._id;
+        let url_api_hoadon ='http://172.16.10.110:9997/hoadon/them/' + loginInfo._id;
         fetch(url_api_hoadon, {
             method: 'POST',
             headers: {
@@ -57,7 +57,7 @@ const ThanhToan = (props) => {
 
     }
     const DelPro = () =>{
-        let url_api_del = 'http://192.168.1.228:9997/giohang/xoa/' +loginInfo._id ;
+        let url_api_del = 'http://172.16.10.110:9997/giohang/xoa/' +loginInfo._id ;
     
         fetch(url_api_del,{
     

@@ -6,6 +6,15 @@ const Doipass = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+
+
+
+
+
+
+
+
+    
     const handleChangePassword = () => {
         // Kiểm tra điều kiện hợp lệ của mật khẩu
         if (oldPassword === '' || newPassword === '' || confirmPassword === '') {

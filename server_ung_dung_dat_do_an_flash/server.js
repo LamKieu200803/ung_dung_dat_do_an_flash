@@ -249,7 +249,46 @@ app.delete("/User/xoa/:id", (req, res) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
     });
 });
+// thay đổi mật khẩu
+app.put("/user/sua/:id", (req, res) => {
+  const id = req.params.id;
+  const updatePass = {
+   
+    password: req.body.password
+  };
+  User.findByIdAndUpdate(id, updatePass, { new: true })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "thay đổi pass thành công",
+          data: data
+        });
+      } else {
+        res.status(404).json({ err: "không tìm thấy dữ liệu" })
+      }
 
+    }
+    ).catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    })
+});
+// chi tiết người dùng theo id
+app.get('/user/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.log("error", err);
+    res.status(500).send("Lỗi server");
+  }
+});
 // xem sản phẩm 
 app.get('/sanpham', async (req, res) => {
   try {

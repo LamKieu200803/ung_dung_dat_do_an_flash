@@ -17,7 +17,7 @@ const LoginScreen = (props) => {
       alert("Chưa nhập password");
       return;
     }
-      let url_api = "http://192.168.1.228:9997/user/email?email=" + emaildn;
+      let url_api = "http://172.16.10.110:9997/user/email?email=" + emaildn;
       fetch(url_api)
       .then ((res)=>{
        return res.json();
