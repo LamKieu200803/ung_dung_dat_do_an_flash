@@ -1,16 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
-
-const Doipass = () => {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const Doipass = (props) => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [loginInfo, setloginInfo] = useState('');
+
+
+    const getdulieu = async () => {
+        let api_url_pro = "http://172.16.10.110:9997/user/"+loginInfo._id ;
+        try {
+          const response = await fetch(api_url_pro);
+          const json = await response.json();
+          setdsPro(json);
+        } catch (e) {
+          console.log(e);
+        } finally {
+          setisLoading(false);
+        }
+      };
+
+
+const Doipass = () =>{
+
+    let url_api_doipass = "http://172.16.10.110:9997/user/sua/"+loginInfo._id ;
+    let user_pass = {password :newPassword}
+
+    fetch(url_api_doipass, {
+        method: 'PUT',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user_pass)
+    }).then((res) => {
+        if (res.status == 200)
+            alert("thay doi thanh cong")
+    })
+        .catch((e) => {
+            console.log(e);
+        })
+
+   
+}
+
+
+  
+
+const getLoginInfo = async () => {
+    try {
+        const value = await AsyncStorage.getItem('loginInfo')
+        if (value !== null) {
+            // láy được dữ liệu 
+            setloginInfo(JSON.parse(value))
+        }
+    } catch (e) {
+
+        console.log(e);
+    }
+}
 
 
 
-
-
-
+React.useEffect(() => {
+    const unsubcribe = props.navigation.addListener('focus', () => {
+        getdulieu();
+        getLoginInfo();
+    });
+    return unsubcribe
+}, [props.navigation]);
 
 
 
@@ -27,6 +86,7 @@ const Doipass = () => {
             return;
         }
 
+ 
         // Thực hiện việc đổi mật khẩu
         // Gọi API hoặc thực hiện xử lý ở đây
 
