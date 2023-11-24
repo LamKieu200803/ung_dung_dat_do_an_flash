@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Text, FlatList, StyleSheet } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from 'moment';
 const LichSu = (props) => {
   const [cartItems, setCartItems] = useState([]);
   const [loginInfo, setloginInfo] = useState('');
@@ -8,7 +9,7 @@ const LichSu = (props) => {
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const [dspro, setdspro] = useState([]);
   const getListPro = async () => {
-    let url_api_lichsu = 'http://172.16.10.110:9997/hoadon/' + loginInfo._id
+    let url_api_lichsu = 'http://172.16.10.110:9997/lichsu/' + loginInfo._id
     try {
       const response = await fetch(url_api_lichsu);
       const json = await response.json();
@@ -66,8 +67,12 @@ const LichSu = (props) => {
       <View style={styles.cartItemContainer}>
         <Image source={{ uri: item.img }} style={styles.productImage} />
         <View style={styles.productDetails}>
-          <Text style={styles.productName}>{item.diachi}</Text>
-          <Text style={styles.productPrice}>Price: ${item.giasp}</Text>
+          <Text style={styles.productName}>{item.tensp}</Text>
+          <Text style={styles.productPrice}>giá sản phẩm: ${item.giasp}</Text>
+          <Text style={styles.productPrice}>tên người mua: {item.tennguoimua}</Text>
+          <Text style={styles.productPrice}>tổng tiền thanh toán: ${item.tongtien}</Text>
+          <Text style={styles.productPrice}>số lượng mua: {item.soluongmua}</Text>
+          <Text style={styles.productPrice}>phương thức thanh toán :{item.pttt}</Text>
         </View>
       </View>
     );
@@ -96,10 +101,10 @@ const renderCart = () => (
 
 return (
   <View style={styles.container}>  
-      <View style={{flexDirection:'row'}}>
-      <Text style={styles.transactionsText}>Tổng các đơn thanh toán  </Text> 
-      <Text style={styles.dateText}>Januari 2023</Text>
-      </View>
+   <View style={{flexDirection:'row'}}>
+  <Text style={styles.transactionsText}>Tổng các đơn thanh toán  </Text> 
+  <Text style={styles.dateText}>{moment().format('HH:mm, DD/MM/YYYY')}</Text>
+</View>
 
     {dspro.length > 0 ? (
       renderCart()

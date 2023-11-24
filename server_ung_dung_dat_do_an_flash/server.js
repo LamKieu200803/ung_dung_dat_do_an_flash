@@ -79,7 +79,8 @@ const hoaDonSchema = new mongoose.Schema({
   sdt: String,
   tennguoimua: String,
   pttt: String,
-  tongtien: Number
+  tongtien: Number,
+  thoigian:String
 })
 app.delete("/giohang/xoa/:userId", async (req, res) => {
   const userId = req.params.userId;
@@ -125,7 +126,8 @@ const trangThaiSchema = new mongoose.Schema({
   soluongmua: String,
   trangthai: String,
   pttt: String,
-  tongtien: String
+  tongtien: String,
+  thoigian: String
 })
 
 const trangThai = mongoose.model("TrangThais", trangThaiSchema)
@@ -143,7 +145,8 @@ const lichSuSchema = new mongoose.Schema({
   pttt: String,
   tennguoimua: String,
   tongtien: String,
-  phanhoi: String
+ 
+  thoigian: String
 })
 
 const lichSu = mongoose.model("LichSus", lichSuSchema)
@@ -426,7 +429,7 @@ app.get("/hoadon/:userId", async (req, res) => {
 
   const userId = req.params.userId;
   try {
-    const hoadon = await hoaDon.find(userId)
+    const hoadon = await hoaDon.find({ userId: userId })
     res.json(hoadon)
   } catch (err) {
     console.log("error ", err);
@@ -438,9 +441,9 @@ app.get("/hoadon/:userId", async (req, res) => {
 // thêm hóa đơn theo id người dùng
 app.post("/hoadon/them/:userId", (req, res) => {
   const userId = req.params.userId;
-  const { diachi, sdt, tennguoimua, pttt, tongtien } = req.body;
+  const { diachi, sdt, tennguoimua, pttt, tongtien, thoigian } = req.body;
 
-  const newHoaDon = new hoaDon({ userId, diachi, sdt, tennguoimua, pttt, tongtien });
+  const newHoaDon = new hoaDon({ userId, diachi, sdt, tennguoimua, pttt, tongtien, thoigian });
   newHoaDon
     .save()
     .then(() => {
@@ -501,7 +504,7 @@ app.get("/trangthai/:userId", async (req, res) => {
 // thêm đơn trạng thái
 app.post("/trangthai/them/:userId", (req, res) => {
   const userId = req.params.userId;
-  const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai } = req.body;
+  const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, thoigian } = req.body;
 
   const newTrangThai = new trangThai({
     userId,
@@ -512,6 +515,7 @@ app.post("/trangthai/them/:userId", (req, res) => {
     pttt,
     tongtien,
     trangthai,
+    thoigian
   });
   newTrangThai
     .save()
@@ -539,7 +543,7 @@ app.get("/lichsu/:userId", async (req, res) => {
 // thêm lịch sử mua hàng
 app.post("/lichsu/them/:userId", (req, res) => {
   const userId = req.params.userId;
-  const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, tennguoimua, phanhoi } = req.body;
+  const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, tennguoimua, thoigian } = req.body;
 
   const newLichSu = new lichSu({
     userId,
@@ -551,7 +555,7 @@ app.post("/lichsu/them/:userId", (req, res) => {
     tongtien,
     trangthai,
     tennguoimua,
-    phanhoi,
+    thoigian
   });
   newLichSu
     .save()
