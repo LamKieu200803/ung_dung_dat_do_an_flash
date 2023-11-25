@@ -38,10 +38,10 @@ const AllDiachi = (props) => {
                 {item.address}, {item.state}
               </Text>
               <Text style={{ color: 'grey' }}>
-                {item.email}
+                {item.thanhpho}
               </Text>
             </View>
-            <TouchableOpacity onPress={() => props.navigation.navigate('ThanhToan',item.email, )}>
+            <TouchableOpacity onPress={() => props.navigation.navigate('ThanhToan',{item:item })}>
               <Text style={{
                 backgroundColor: 'red',
                 borderRadius: 20,
@@ -85,7 +85,7 @@ React.useEffect(()=>{
     ) : (
         <FlatList 
         data={dsPro}
-        keyExtractor={(itemdiachi)=> { itemdiachi.id}}
+        keyExtractor={(itemdiachi)=>  itemdiachi._id.toString}
         renderItem={renderdiachi}
         />
     )

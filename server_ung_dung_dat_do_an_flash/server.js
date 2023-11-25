@@ -37,7 +37,7 @@ const AddressSChema = new mongoose.Schema({
   name: String,
   phone:String,
   address: String,
-  email: String,
+  thanhpho: String,
   state: Number
 })
 const Address = mongoose.model("Diachis",AddressSChema);
@@ -46,6 +46,7 @@ const SanPham = mongoose.model("SanPhams", sanPhamSchema);
 
 // Schema và model chitietsanpham
 const chiTietSanPhamSchema = new mongoose.Schema({
+
   tensp: String,
   giasp: String,
   img: String,
@@ -75,7 +76,12 @@ const hoaDonSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  tensp: String,
+  giasp: String,
+  img: String,
   diachi: String,
+  soluongmua: String,
+  phone: String,
   sdt: String,
   tennguoimua: String,
   pttt: String,
@@ -165,10 +171,10 @@ app.post("/themdiachi", (req, res) => {
   const { name,
     phone,
     address,
-    email,
+    thanhpho,
     state } = req.body
 
-  const newUser = new Address({name,phone,address,email,state})
+  const newUser = new Address({name,phone,address,thanhpho,state})
   newUser.save()
     .then(() => {
       res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công" })
@@ -441,9 +447,9 @@ app.get("/hoadon/:userId", async (req, res) => {
 // thêm hóa đơn theo id người dùng
 app.post("/hoadon/them/:userId", (req, res) => {
   const userId = req.params.userId;
-  const { diachi, sdt, tennguoimua, pttt, tongtien, thoigian } = req.body;
+  const {tensp,giasp,img,soluongmua, diachi, sdt, tennguoimua, pttt, tongtien, thoigian } = req.body;
 
-  const newHoaDon = new hoaDon({ userId, diachi, sdt, tennguoimua, pttt, tongtien, thoigian });
+  const newHoaDon = new hoaDon({tensp,giasp,img,soluongmua, userId, diachi, sdt, tennguoimua, pttt, tongtien, thoigian });
   newHoaDon
     .save()
     .then(() => {

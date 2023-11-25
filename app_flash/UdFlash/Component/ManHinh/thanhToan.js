@@ -7,17 +7,17 @@ import { useNavigation } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ThanhToan = (props) => {
+const ThanhToan = ({  route }) => {
 
-
+   
     const [address, setAddress] = useState();
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState();
     const [state, setState] = useState('');
 
     const [tennguoimua, settennguoimua] = useState('');
     const [sdt, setsdt] = useState('');
     const [diachi, setdiachi] = useState('');
-    const [tongtien, settongtien] = useState(0);
+    const [tongtien, settongtien] = useState(route.params.totalPrice);
 
 
     const [open, setOpen] = useState(false);  // sổ list xuống hay không
@@ -28,8 +28,9 @@ const ThanhToan = (props) => {
 
     ]);
     const [loginInfo, setloginInfo] = useState('');
+  
+    const { item } = route.params;
 
-    const totalPrice = typeof props.route.params === 'number' ? props.route.params : 0;
 
     const Save_UserMua = () => {
         let objUserMua = {
@@ -134,7 +135,7 @@ const ThanhToan = (props) => {
             }
 
         >
-            <TouchableOpacity onPress={() => { props.navigation.navigate('AddAddress') }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('AddAddress') }}>
                 <View
                     style={{
                         margin: 10,
@@ -180,11 +181,11 @@ const ThanhToan = (props) => {
                         style={{ flexDirection: 'row', padding: 20, borderTopWidth: 0.5 }}>
                         <View style={{ flexDirection: 'column' }}>
                             <Text style={{}}>
-                                Deliver to Tradly Team, 75119
+                             {item.address},{item.state}
                             
                             </Text>
                             <Text style={{ color: 'grey' }}>
-                                Kualalumpur, Malaysia
+                         {item.thanhpho}
                             </Text>
                         </View>
                         <TouchableOpacity onPress={() => { navigation.navigate('AllDiachi') }}>
@@ -253,7 +254,7 @@ const ThanhToan = (props) => {
                                 Total Price
                             </Text>
                             <Text style={{ fontSize: 20, paddingLeft: 230, fontWeight: '700', paddingTop: 30, }}>
-                                ${totalPrice}
+                                ${tongtien}
                             </Text>
                         </View>
                     </View>

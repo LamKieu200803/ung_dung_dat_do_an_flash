@@ -85,11 +85,11 @@ const AddAddressScreen = (props) => {
       </View>
 
 
-      <Text style={styles.label}>Email</Text>
+      <Text style={styles.label}>city</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="city"
           value={email}
           onChangeText={(txt)=>setEmail(txt)}
         />

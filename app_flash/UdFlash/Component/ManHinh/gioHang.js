@@ -9,6 +9,7 @@ const GioHang = (props) => {
   const [isLoading, setisLoading] = useState(true);
   const [loginInfo, setloginInfo] = useState(''); 
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0); // Thêm state để lưu trữ totalPrice
   const getListPro = async () => {
     let url_api_giohang = 'http://172.16.10.110:9997/giohang/'+loginInfo._id   
     try {
@@ -16,6 +17,12 @@ const GioHang = (props) => {
         const json = await response.json();   
         setdspro(json);
         setCartItemsCount(json.length);
+        // Tính toán totalPrice
+      let totalPrice = 0;
+      json.forEach((item) => {
+        totalPrice += item.giasp * item.soluongmua;
+      });
+      setTotalPrice(totalPrice);
     } catch (e) { 
         console.log(e); 
  
@@ -177,13 +184,7 @@ React.useEffect(() => {
       <Text style={styles.emptyCartText}>Your cart is empty.</Text>
     </View>
   );
-  const calculateTotalPrice = () => {
-    let totalPrice = 0;
-    dspro.forEach((item) => {
-      totalPrice += item.giasp * item.soluongmua;
-    });
-    return totalPrice;
-  };
+ 
  
   const renderCart = () => (
     <View style={{ flex: 1 }}>
@@ -199,10 +200,10 @@ React.useEffect(() => {
           <Text style={styles.emptyCartText}>Your cart is empty.</Text>
         </View>
       )}
-      <Text style={styles.totalPriceText}>Total Price: ${calculateTotalPrice()}</Text>
-      <TouchableOpacity style={styles.buyButton} onPress={() => props.navigation.navigate('ThanhToan', calculateTotalPrice())}>
-        <Text style={styles.buyButtonText}>Buy</Text>
-      </TouchableOpacity>
+      <Text style={styles.totalPriceText}>Total Price: ${totalPrice}</Text>
+      <TouchableOpacity style={styles.buyButton} onPress={() => props.navigation.navigate('ThanhToan', { totalPrice: totalPrice })}>
+  <Text style={styles.buyButtonText}>Buy</Text>
+</TouchableOpacity>
     </View>
   );
 
