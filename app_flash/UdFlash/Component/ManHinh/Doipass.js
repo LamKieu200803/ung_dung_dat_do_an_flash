@@ -12,43 +12,25 @@ const Doipass = (props) => {
     
 
 
-    const getdulieu = async () => {
-        let api_url_pro = "http://192.168.1.228:9997/user/"+loginInfo._id ;
-        try {
-          const response = await fetch(api_url_pro);
-          const json = await response.json();
-          setdsPro(json); 
-          console.log(loginInfo.email);
-          console.log(json);
-        } catch (e) {
-          console.log(e);
+    // const getdulieu = async () => {
+    //     let api_url_pro = "http://192.168.1.228:9997/user/"+loginInfo._id ;
+    //     try {
+    //       const response = await fetch(api_url_pro);
+    //       const json = await response.json();
+    //       setdsPro(json); 
+    //       console.log(loginInfo.email);
+    //       console.log(json);
+    //     } catch (e) {
+    //       console.log(e);
          
-        }
-      };
+    //     }
+    //   };
 
 
-const luuthaydoi = () =>{
 
-    let url_api_doipass = "http://192.168.1.228:9997/user/sua/"+loginInfo._id ;
-    let user_pass = {password :newPassword}
 
-    fetch(url_api_doipass, {
-        method: 'PUT',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user_pass)
-    }).then((res) => {
-        if (res.status == 200)
-            alert("thay doi thanh cong")
-    })
-        .catch((e) => {
-            console.log(e);
-        })
 
    
-}
 
 
   
@@ -59,6 +41,7 @@ const getLoginInfo = async () => {
         if (value !== null) {
             // láy được dữ liệu 
             setloginInfo(JSON.parse(value))
+         console.log(value);
         }
     } catch (e) {
 
@@ -72,7 +55,7 @@ useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
         // khi màn hình đc active thì lệnh hoạt động
         getLoginInfo();
-        getdulieu();
+    //    getdulieu();
      
     });
 
@@ -89,17 +72,42 @@ useEffect(() => {
             return;
         }
 
-        if (newPassword !== confirmPassword) {
-            alert('Mật khẩu mới và mật khẩu nhập lại không khớp nhau');
+        if(oldPassword != loginInfo.password){
+            alert("mật khẩu của bạn sai")
             return;
+        }else{
+            if(newPassword != confirmPassword){
+                alert("mật khẩu không trùng khớp")
+            }else{
+                 let url_api_doipass = "http://192.168.1.228:9997/user/sua/"+loginInfo._id ;
+            let user_pass = {password :newPassword}
+        
+            fetch(url_api_doipass, {
+                method: 'PUT',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user_pass)
+            }).then((res) => {
+                if (res.status == 200)
+                    alert("thay doi thanh cong")
+            
+            })
+                .catch((e) => {
+                    console.log(e);
+                })
+        
+           
         }
+            }
 
  
         // Thực hiện việc đổi mật khẩu
         // Gọi API hoặc thực hiện xử lý ở đây
 
         // Hiển thị thông báo thành công
-        alert('Mật khẩu đã được thay đổi thành công');
+     
     };
 
     return (
