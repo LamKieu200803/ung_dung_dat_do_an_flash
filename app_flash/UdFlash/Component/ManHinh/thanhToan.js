@@ -13,9 +13,11 @@ const ThanhToan = ({  route }) => {
     const [address, setAddress] = useState('');
     const [thanhpho, setthanhpho] = useState('');
     const [state, setState] = useState('');
+    const [thoigian, setthoigian] = useState();
+    
 
-    const [tennguoimua, settennguoimua] = useState('');
-    const [sdt, setsdt] = useState('');
+    const [tennguoimua, settennguoimua] = useState(`${item?.name}`);
+    const [sdt, setsdt] = useState(`${item?.phone}`);
     const [diachi, setdiachi] = useState(`${item?.address}, ${item?.state}\n${item?.thanhpho}`);
     const [tongtien, settongtien] = useState(route.params.totalPrice);
 
@@ -31,52 +33,59 @@ const ThanhToan = ({  route }) => {
   
     const { item } = route.params || {};
 
+  
+
 
     const Save_UserMua = () => {
         let objUserMua = {
-            tennguoimua: tennguoimua, sdt: sdt, diachi: diachi, pttt: value, tongtien: tongtien 
-        }
-        let url_api_hoadon ='http://192.168.1.228:9997/hoadon/them/' + loginInfo._id;
+          tennguoimua: tennguoimua,
+          sdt: sdt,
+          diachi: diachi,
+          pttt: value,
+          tongtien: tongtien,
+          thoigian: thoigian
+        };
+      
+        let url_api_hoadon = 'http://192.168.1.228:9997/hoadon/them/' + loginInfo._id;
+        
         fetch(url_api_hoadon, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(objUserMua)
-        }).then((res) => {
-            if (res.status == 201)
-                alert("đặt hàng thành công")
-     
-             DelPro();
-
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(objUserMua)
         })
-            .catch((e) => {
-                console.log(e);
-            })
-
-
-    }
-    const DelPro = () =>{
-        let url_api_del = 'http://192.168.1.228:9997/giohang/xoa/' +loginInfo._id ;
-    
-        fetch(url_api_del,{
-    
-            method: 'DELETE',
-                       headers: {
-                           Accept: 'application/json',
-                           'Content-Type': 'application/json',
-                       }
-                   }).then((res)=>{
-                       if(res.status ==200){
-                          
-                      
-                       }
-                   })
-                   .catch((e)=>{
-                       console.log(e);
-                   })
+          .then((res) => {
+            if (res.status == 201)
+              alert("đặt hàng thành công");
+            
+            DelPro(); // Gọi hàm xóa sau khi gửi yêu cầu POST
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      };
+      
+      const DelPro = () => {
+        let url_api_del = 'http://192.168.1.228:9997/giohang/xoa/' + loginInfo._id;
+      
+        fetch(url_api_del, {
+          method: 'DELETE',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
           }
+        })
+          .then((res) => {
+            if (res.status == 200) {
+              // Xử lý khi xóa thành công
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      };
 
     const getLoginInfo = async () => {
         try {
@@ -104,7 +113,9 @@ const ThanhToan = ({  route }) => {
 
     useEffect(() => {
         if (route.params && route.params.item) {
-          const { address, state, thanhpho } = route.params.item;
+          const { address, state, thanhpho, name, phone } = route.params.item;
+          settennguoimua(name)
+          setsdt(phone)
           setAddress(address);
           setthanhpho(thanhpho);
           setState(state);
@@ -125,7 +136,10 @@ const ThanhToan = ({  route }) => {
     
         loadTotalPrice();
       }, []);
-
+      useEffect(() => {
+        const currentDate = moment().format('HH:mm, DD/MM/YYYY');
+        setthoigian(currentDate);
+      }, []);
 
 
     const navigation = useNavigation();
@@ -221,8 +235,8 @@ const ThanhToan = ({  route }) => {
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'column', paddingTop: 15 }}>
                         <Text style={{ fontSize: 30, paddingLeft: 20 }}>
-                            Price Details {"\n"}
-                            <Text style={styles.dateText}>{moment().format('HH:mm, DD/MM/YYYY')}</Text>
+                            Price Details 
+                          
                         </Text>
                         <View style={{ flexDirection: 'row', paddingTop: 20,  }}>
 

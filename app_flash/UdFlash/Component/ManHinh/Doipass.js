@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const Doipass = (props) => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loginInfo, setloginInfo] = useState('');
+
+    const [dsPro, setdsPro] = useState('');
+    
 
 
     const getdulieu = async () => {
@@ -13,16 +17,17 @@ const Doipass = (props) => {
         try {
           const response = await fetch(api_url_pro);
           const json = await response.json();
-          setdsPro(json);
+          setdsPro(json); 
+          console.log(loginInfo.email);
+          console.log(json);
         } catch (e) {
           console.log(e);
-        } finally {
-          setisLoading(false);
+         
         }
       };
 
 
-const Doipass = () =>{
+const luuthaydoi = () =>{
 
     let url_api_doipass = "http://192.168.1.228:9997/user/sua/"+loginInfo._id ;
     let user_pass = {password :newPassword}
@@ -63,12 +68,15 @@ const getLoginInfo = async () => {
 
 
 
-React.useEffect(() => {
-    const unsubcribe = props.navigation.addListener('focus', () => {
-        getdulieu();
+useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+        // khi màn hình đc active thì lệnh hoạt động
         getLoginInfo();
+        getdulieu();
+     
     });
-    return unsubcribe
+
+    return unsubscribe;
 }, [props.navigation]);
 
 

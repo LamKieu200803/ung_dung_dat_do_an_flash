@@ -11,25 +11,25 @@ const GioHang = (props) => {
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0); // Thêm state để lưu trữ totalPrice
   const getListPro = async () => {
-    let url_api_giohang = 'http://192.168.1.228:9997/giohang/'+loginInfo._id   
+    let url_api_giohang = 'http://192.168.1.228:9997/giohang/' + loginInfo._id;
     try {
-        const response = await fetch(url_api_giohang);
-        const json = await response.json();   
-        setdspro(json);
-        setCartItemsCount(json.length);
-        // Tính toán totalPrice
+      const response = await fetch(url_api_giohang);
+      const json = await response.json();
+      setdspro(json);
+      setCartItemsCount(json.length);
+  
+      // Calculate totalPrice
       let totalPrice = 0;
       json.forEach((item) => {
         totalPrice += item.giasp * item.soluongmua;
       });
       setTotalPrice(totalPrice);
-    } catch (e) { 
-        console.log(e); 
- 
-    } finally {  
-        setisLoading(false)
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setisLoading(false);
     }
-}
+  };
    
 
    
@@ -83,20 +83,36 @@ React.useEffect(() => {
   const increaseQuantity = (itemId) => {
     setdspro((prevItems) =>
       prevItems.map((item) =>
-        item._id === itemId ? { ...item, soluongmua: item.soluongmua + 1 } : item
+        item._id === itemId
+          ? { ...item, soluongmua: item.soluongmua + 1 }
+          : item
       )
     );
-    setCartItemsCount(prevCount => prevCount + 1); // Or use -1 for decreasing count 
+    setCartItemsCount((prevCount) => prevCount + 1);
+    updateTotalPrice(itemId, 1); // Increase totalPrice by the product's price
   };
   
   const decreaseQuantity = (itemId) => {
-    setdspro((prevItems) =>   
+    setdspro((prevItems) =>
       prevItems.map((item) =>
         item._id === itemId && item.soluongmua > 1
           ? { ...item, soluongmua: item.soluongmua - 1 }
-          : item  
+          : item
       )
     );
+    setCartItemsCount((prevCount) => prevCount - 1);
+    updateTotalPrice(itemId, -1); // Decrease totalPrice by the product's price
+  };
+  
+  const updateTotalPrice = (itemId, quantityChange) => {
+    setTotalPrice((prevTotalPrice) => {
+      const item = dspro.find((item) => item._id === itemId);
+      if (item) {
+        const priceChange = item.giasp * quantityChange;
+        return prevTotalPrice + priceChange;
+      }
+      return prevTotalPrice;
+    });
   };
 
   
@@ -108,7 +124,7 @@ React.useEffect(() => {
   const renderCartItem = ({ item }) =>{ 
     
     const DelPro = () =>{
-      let url_api_del = 'http://192.168.1.228:9997/giohang/xoa/'+loginInfo._id+"/" +item._id ;
+      let url_api_del = 'http://172.16.10.110:9997/giohang/xoa/'+loginInfo._id+"/" +item._id ;
   
       fetch(url_api_del,{
   
