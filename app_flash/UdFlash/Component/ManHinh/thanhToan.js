@@ -6,17 +6,17 @@ import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import moment from 'moment';
 const ThanhToan = ({  route }) => {
 
    
-    const [address, setAddress] = useState();
-    const [email, setEmail] = useState();
+    const [address, setAddress] = useState('');
+    const [thanhpho, setthanhpho] = useState('');
     const [state, setState] = useState('');
 
     const [tennguoimua, settennguoimua] = useState('');
     const [sdt, setsdt] = useState('');
-    const [diachi, setdiachi] = useState('');
+    const [diachi, setdiachi] = useState(`${item?.address}, ${item?.state}\n${item?.thanhpho}`);
     const [tongtien, settongtien] = useState(route.params.totalPrice);
 
 
@@ -29,14 +29,14 @@ const ThanhToan = ({  route }) => {
     ]);
     const [loginInfo, setloginInfo] = useState('');
   
-    const { item } = route.params;
+    const { item } = route.params || {};
 
 
     const Save_UserMua = () => {
         let objUserMua = {
             tennguoimua: tennguoimua, sdt: sdt, diachi: diachi, pttt: value, tongtien: tongtien 
         }
-        let url_api_hoadon ='http://172.16.10.110:9997/hoadon/them/' + loginInfo._id;
+        let url_api_hoadon ='http://192.168.1.228:9997/hoadon/them/' + loginInfo._id;
         fetch(url_api_hoadon, {
             method: 'POST',
             headers: {
@@ -58,7 +58,7 @@ const ThanhToan = ({  route }) => {
 
     }
     const DelPro = () =>{
-        let url_api_del = 'http://172.16.10.110:9997/giohang/xoa/' +loginInfo._id ;
+        let url_api_del = 'http://192.168.1.228:9997/giohang/xoa/' +loginInfo._id ;
     
         fetch(url_api_del,{
     
@@ -96,10 +96,21 @@ const ThanhToan = ({  route }) => {
         const unsubscribe = navigation.addListener('focus', () => {
             // khi màn hình đc active thì lệnh hoạt động
             getLoginInfo();
+         
         });
 
         return unsubscribe;
     }, [navigation]);
+
+    useEffect(() => {
+        if (route.params && route.params.item) {
+          const { address, state, thanhpho } = route.params.item;
+          setAddress(address);
+          setthanhpho(thanhpho);
+          setState(state);
+          setdiachi(`${address}, ${state}\n${thanhpho}`);
+        }
+      }, [route.params]);
 
     useEffect(() => {
         const loadTotalPrice = async () => {
@@ -180,13 +191,14 @@ const ThanhToan = ({  route }) => {
                     <View
                         style={{ flexDirection: 'row', padding: 20, borderTopWidth: 0.5 }}>
                         <View style={{ flexDirection: 'column' }}>
-                            <Text style={{}}>
-                             {item.address},{item.state}
-                            
+                           
+                            <Text >
+                             {item?.address},{item?.state}   {"\n"}                   
                             </Text>
                             <Text style={{ color: 'grey' }}>
-                         {item.thanhpho}
+                         {item?.thanhpho}
                             </Text>
+                       
                         </View>
                         <TouchableOpacity onPress={() => { navigation.navigate('AllDiachi') }}>
                             <Text style={{
@@ -209,7 +221,8 @@ const ThanhToan = ({  route }) => {
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'column', paddingTop: 15 }}>
                         <Text style={{ fontSize: 30, paddingLeft: 20 }}>
-                            Price Details
+                            Price Details {"\n"}
+                            <Text style={styles.dateText}>{moment().format('HH:mm, DD/MM/YYYY')}</Text>
                         </Text>
                         <View style={{ flexDirection: 'row', paddingTop: 20,  }}>
 
@@ -226,7 +239,7 @@ const ThanhToan = ({  route }) => {
                         </View>
                         <View style={{ flexDirection: 'row', paddingTop: 20,  }}>
                             <View>
-                                <TextInput style={styles.chu} placeholder='Địa chỉ' onChangeText={(txt) => setdiachi(txt)}>
+                                <TextInput style={styles.chu} placeholder='Địa chỉ'>
                                 </TextInput>
                             </View>
                         </View>

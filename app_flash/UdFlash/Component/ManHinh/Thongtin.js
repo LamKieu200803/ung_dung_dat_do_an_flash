@@ -13,7 +13,7 @@ const Thongtin= (props) => {
 
   const handleSaveAddress = () => {
     let objPro = { tennguoimua: tennguoimua, phone: phone, anh:anh }
-    let url_api_diachi = 'http://172.16.10.110:9997/thongtin/them/'+ loginInfo._id;
+    let url_api_diachi = 'http://192.168.1.228:9997/thongtin/them/'+ loginInfo._id;
 
     fetch(url_api_diachi, {
         method: 'POST',

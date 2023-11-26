@@ -16,7 +16,7 @@ const [dsPro, setdsPro] = useState('');
 
 const getListPro = async () =>{
 
-    let api_url_pro = 'http://172.16.10.110:9997/thongtin/'+loginInfo._id
+    let api_url_pro = 'http://192.168.1.228:9997/thongtin/'+loginInfo._id
     try {
       const response = await fetch(api_url_pro);
       const json = await response.json();

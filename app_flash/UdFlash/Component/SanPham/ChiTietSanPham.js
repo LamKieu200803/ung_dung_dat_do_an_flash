@@ -6,9 +6,9 @@ import {
     TouchableOpacity
 } from 'react-native'
 import React, { useState,useEffect } from "react";
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from '@react-navigation/native';
 const ChiTietSanPham = ({ route, navigation }) => {
     const [img, setimg] = useState(route.params.item_sp.img);
     const [tensp, settensp] = useState(route.params.item_sp.tensp);
@@ -20,7 +20,7 @@ const ChiTietSanPham = ({ route, navigation }) => {
 
     const Save_Pro = () => {
         let objPro = { img: img, tensp: tensp, giasp: giasp, soluongmua: "1" }
-        let url_api_giohang = 'http://172.16.10.110:9997/giohang/them/' + loginInfo._id;
+        let url_api_giohang = 'http://192.168.1.228:9997/giohang/them/' + loginInfo._id;
 
         fetch(url_api_giohang, {
             method: 'POST',
@@ -32,11 +32,14 @@ const ChiTietSanPham = ({ route, navigation }) => {
         }).then((res) => {
             if (res.status == 201)
                 alert("them sản phẩm vào giỏ hàng thanh cong")
+                //navigation.navigate('gioHang') 
+              //handleGioHang()
+               console.log(" TÌm thấy id"+loginInfo._id)
                 console.log("thanh cong")
-
+             
         })
-            .catch((e) => {
-                console.log(e);
+            .catch((e) => {  
+                console.log(e);  
             })
 
 
@@ -59,8 +62,6 @@ const ChiTietSanPham = ({ route, navigation }) => {
         const unsubscribe = navigation.addListener('focus', () => {
           // khi màn hình đc active thì lệnh hoạt động
           getLoginInfo();
-       
-          
         });
       
         return unsubscribe;
@@ -126,9 +127,7 @@ const ChiTietSanPham = ({ route, navigation }) => {
                     height: 150
                 }}
             >
-                <TouchableOpacity
-                    onPress={Save_Pro}
-                >
+                <TouchableOpacity onPress={Save_Pro}>
                     <Text style={styles.button}
 
                     >Add to card</Text>

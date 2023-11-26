@@ -11,7 +11,7 @@ const GioHang = (props) => {
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0); // Thêm state để lưu trữ totalPrice
   const getListPro = async () => {
-    let url_api_giohang = 'http://172.16.10.110:9997/giohang/'+loginInfo._id   
+    let url_api_giohang = 'http://192.168.1.228:9997/giohang/'+loginInfo._id   
     try {
         const response = await fetch(url_api_giohang);
         const json = await response.json();   
@@ -108,7 +108,7 @@ React.useEffect(() => {
   const renderCartItem = ({ item }) =>{ 
     
     const DelPro = () =>{
-      let url_api_del = 'http://172.16.10.110:9997/giohang/xoa/'+loginInfo._id+"/" +item._id ;
+      let url_api_del = 'http://192.168.1.228:9997/giohang/xoa/'+loginInfo._id+"/" +item._id ;
   
       fetch(url_api_del,{
   
