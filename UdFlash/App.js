@@ -2,6 +2,9 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Icon, Provider as PaperProvider } from 'react-native-paper';
+
 
 import LoginScreen from './Component/DangNhap_DangKi/dangNhap';
 import HomeScreen from './Component/home';
@@ -17,6 +20,9 @@ import HistoryScreen from './Component/historyScreen';
 
 const Stack = createStackNavigator();
 
+const Tab = createBottomTabNavigator();
+
+
 export default function App() {
   return (
     <View style={styles.container}>
@@ -29,8 +35,6 @@ export default function App() {
           <Stack.Screen name="SanPham" component={ChiTietSanPham} />
         </Stack.Navigator>
       </NavigationContainer> */}
-
-      <HistoryScreen/>
     </View>
   );
 }
