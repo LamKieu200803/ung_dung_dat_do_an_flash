@@ -46,7 +46,7 @@ const ThanhToan = ({  route }) => {
           thoigian: thoigian
         };
       
-        let url_api_hoadon = 'http://192.168.1.228:9997/hoadon/them/' + loginInfo._id;
+        let url_api_hoadon = 'http://172.16.10.109:9997/hoadon/them/' + loginInfo._id;
         
         fetch(url_api_hoadon, {
           method: 'POST',

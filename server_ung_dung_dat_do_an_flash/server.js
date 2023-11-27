@@ -86,7 +86,8 @@ const hoaDonSchema = new mongoose.Schema({
   tennguoimua: String,
   pttt: String,
   tongtien: Number,
-  thoigian:String
+  thoigian:String,
+  trangThai:String
 })
 app.delete("/giohang/xoa/:userId", async (req, res) => {
   const userId = req.params.userId;
@@ -447,9 +448,9 @@ app.get("/hoadon/:userId", async (req, res) => {
 // thêm hóa đơn theo id người dùng
 app.post("/hoadon/them/:userId", (req, res) => {
   const userId = req.params.userId;
-  const {tensp,giasp,img,soluongmua, diachi, sdt, tennguoimua, pttt, tongtien, thoigian } = req.body;
+  const {tensp,giasp,img,soluongmua, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai } = req.body;
 
-  const newHoaDon = new hoaDon({tensp,giasp,img,soluongmua, userId, diachi, sdt, tennguoimua, pttt, tongtien, thoigian });
+  const newHoaDon = new hoaDon({tensp,giasp,img,soluongmua, userId, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai });
   newHoaDon
     .save()
     .then(() => {
@@ -495,44 +496,44 @@ app.post("/thongtin/them/:userId", (req, res) => {
 });
 
 
-// xem đơn trạng thái
-app.get("/trangthai/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  try {
-    const trangthai = await trangThai.find({ userId: userId });
-    res.json(trangthai);
-  } catch (err) {
-    console.log("error ", err);
-    res.status(500).send("lỗi server");
-  }
-})
+// // xem đơn trạng thái
+// app.get("/trangthai/:userId", async (req, res) => {
+//   const userId = req.params.userId;
+//   try {
+//     const trangthai = await trangThai.find({ userId: userId });
+//     res.json(trangthai);
+//   } catch (err) {
+//     console.log("error ", err);
+//     res.status(500).send("lỗi server");
+//   }
+// })
 
-// thêm đơn trạng thái
-app.post("/trangthai/them/:userId", (req, res) => {
-  const userId = req.params.userId;
-  const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, thoigian } = req.body;
+// // thêm đơn trạng thái
+// app.post("/trangthai/them/:userId", (req, res) => {
+//   const userId = req.params.userId;
+//   const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, thoigian } = req.body;
 
-  const newTrangThai = new trangThai({
-    userId,
-    tensp,
-    giasp,
-    img,
-    soluongmua,
-    pttt,
-    tongtien,
-    trangthai,
-    thoigian
-  });
-  newTrangThai
-    .save()
-    .then(() => {
-      res.status(201).json({ message: "Thêm đơn trạng thái thành công" });
-    })
-    .catch((err) => {
-      console.log("error ", err);
-      res.status(500).send("lỗi server");
-    });
-});
+//   const newTrangThai = new trangThai({
+//     userId,
+//     tensp,
+//     giasp,
+//     img,
+//     soluongmua,
+//     pttt,
+//     tongtien,
+//     trangthai,
+//     thoigian
+//   });
+//   newTrangThai
+//     .save()
+//     .then(() => {
+//       res.status(201).json({ message: "Thêm đơn trạng thái thành công" });
+//     })
+//     .catch((err) => {
+//       console.log("error ", err);
+//       res.status(500).send("lỗi server");
+//     });
+// });
 
 // xem lịch sử mua hàng
 app.get("/lichsu/:userId", async (req, res) => {
