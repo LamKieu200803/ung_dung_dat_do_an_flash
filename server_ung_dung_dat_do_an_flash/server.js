@@ -87,24 +87,12 @@ const hoaDonSchema = new mongoose.Schema({
   pttt: String,
   tongtien: Number,
   thoigian:String,
-  trangThai:String
+  trangthai:String
 })
-app.delete("/giohang/xoa/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  const { tensp, giasp, img, soluongmua } = req.body;
-
-  try {
-     await gioHang.deleteMany({
-     userId:userId
-    });
-    console.log("Giỏ hàng đã được làm mới");
-  } catch (err) {
-    console.log("Lỗi ", err);
-    res.status(500).send("Lỗi máy chủ");
-  }
-});
-
 const hoaDon = mongoose.model("HoaDons", hoaDonSchema)
+
+
+
 
 // Schema và model thông tin 
 const thongTinSchema = new mongoose.Schema({
@@ -121,23 +109,7 @@ const thongTinSchema = new mongoose.Schema({
 
 const thongTin = mongoose.model("ThongTins", thongTinSchema);
 
-// Schema và model đơn trạng thái
-const trangThaiSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true
-  },
-  tensp: String,
-  giasp: String,
-  img: String,
-  soluongmua: String,
-  trangthai: String,
-  pttt: String,
-  tongtien: String,
-  thoigian: String
-})
 
-const trangThai = mongoose.model("TrangThais", trangThaiSchema)
 
 // Schema và model lịch sử mua hàng
 const lichSuSchema = new mongoose.Schema({
@@ -431,6 +403,23 @@ app.delete("/giohang/xoa/:userId/:productId", async (req, res) => {
     res.status(500).send("Lỗi máy chủ");
   }
 });
+
+// xóa giỏ hàng khi mua thành công
+app.delete("/giohang/xoa/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const { tensp, giasp, img, soluongmua } = req.body;
+
+  try {
+     await gioHang.deleteMany({
+     userId:userId
+    });
+    console.log("Giỏ hàng đã được làm mới");
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
+  }
+});
+
 // xem hóa đơn theo id người dùng
 app.get("/hoadon/:userId", async (req, res) => {
 

@@ -14,6 +14,9 @@ const ThanhToan = ({  route }) => {
     const [thanhpho, setthanhpho] = useState('');
     const [state, setState] = useState('');
     const [thoigian, setthoigian] = useState();
+   const [trangthai, settrangthai] = useState("đang chờ xác nhận");
+   
+    
     
 
     const [tennguoimua, settennguoimua] = useState(`${item?.name}`);
@@ -43,7 +46,8 @@ const ThanhToan = ({  route }) => {
           diachi: diachi,
           pttt: value,
           tongtien: tongtien,
-          thoigian: thoigian
+          thoigian: thoigian,
+          trangthai: trangthai
         };
       
         let url_api_hoadon = 'http://172.16.10.109:9997/hoadon/them/' + loginInfo._id;
@@ -68,7 +72,7 @@ const ThanhToan = ({  route }) => {
       };
       
       const DelPro = () => {
-        let url_api_del = 'http://192.168.1.228:9997/giohang/xoa/' + loginInfo._id;
+        let url_api_del = 'http://172.16.10.109:9997/giohang/xoa/' + loginInfo._id;
       
         fetch(url_api_del, {
           method: 'DELETE',

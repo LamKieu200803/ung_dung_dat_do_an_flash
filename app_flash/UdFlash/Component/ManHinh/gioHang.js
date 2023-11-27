@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const GioHang = (props) => {
   const [dspro, setdspro] = useState([]);  
+  const [idsp, setidsp] = useState("");
+  
   const [cartItemsCount, setCartItemsCount] = useState(0);
   const [isLoading, setisLoading] = useState(true);
   const [loginInfo, setloginInfo] = useState(''); 
@@ -16,6 +18,8 @@ const GioHang = (props) => {
       const response = await fetch(url_api_giohang);
       const json = await response.json();
       setdspro(json);
+  
+      setidsp(json[0]._id);
       setCartItemsCount(json.length);
   
       // Calculate totalPrice
@@ -24,12 +28,42 @@ const GioHang = (props) => {
         totalPrice += item.giasp * item.soluongmua;
       });
       setTotalPrice(totalPrice);
+      
     } catch (e) {
       console.log(e);
     } finally {
       setisLoading(false);
     }
   };
+
+const giamsoluong = () =>{
+
+console.log( "idsp:"+idsp);
+let objSp = {soluong : (soluong - soluongmua)}
+let url_api_giamsoluong = 'http://172.16.10.109:9997/sanpham/sua/'+idsp ;
+fetch(url_api_giamsoluong, {
+  method: 'PUT',
+  headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(objSp)
+}).then((res) => {
+  if (res.status == 200)
+
+      alert("sua thanh cong")
+})
+  .catch((e) => {
+      console.log(e);
+  })
+}
+
+
+
+  const BUY = () =>{
+    props.navigation.navigate('ThanhToan', { totalPrice: totalPrice })
+giamsoluong();
+  }
    
 
    
@@ -217,7 +251,7 @@ React.useEffect(() => {
         </View>
       )}
       <Text style={styles.totalPriceText}>Total Price: ${totalPrice}</Text>
-      <TouchableOpacity style={styles.buyButton} onPress={() => props.navigation.navigate('ThanhToan', { totalPrice: totalPrice })}>
+      <TouchableOpacity style={styles.buyButton} onPress={()=>BUY()}>
   <Text style={styles.buyButtonText}>Buy</Text>
 </TouchableOpacity>
     </View>
