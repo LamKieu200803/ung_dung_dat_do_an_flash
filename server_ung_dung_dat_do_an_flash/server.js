@@ -465,6 +465,36 @@ app.delete("/giohang/xoa/:userId", async (req, res) => {
   }
 });
 
+// sửa số lượng trong giỏ khi thay đổi số lượng 
+
+app.put("/giohang/sua/:userId/:productId", (req, res) => {
+  const userId = req.params.userId;
+  const productId = req.params.productId;
+
+  const updateSoluong = {
+    soluongmua: req.body.soluongmua
+  };
+
+  gioHang.findOneAndUpdate(
+    { userId: userId, productId: productId },
+    updateSoluong,
+    { new: true }
+  )
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Thay đổi số lượng thành công",
+          data: data
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
+});
+
 // xem hóa đơn theo id người dùng
 app.get("/hoadon/:userId", async (req, res) => {
 

@@ -3,13 +3,13 @@ import React, { useState ,useEffect} from 'react';
 import { View, Image, Text, TouchableOpacity, FlatList, StyleSheet, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-
 const GioHang = (props) => {
   const [dspro, setdspro] = useState([]);  
   const [idsp, setidsp] = useState("");
   const [soluong, setsoluong] = useState(0);
   const [soluongmua, setsoluongmua] = useState(0);
+  const [soluongconlai, setsoluongconlai] = useState(0);
+  
   
   
   
@@ -33,17 +33,27 @@ console.log("slm:"+soluongmua);
   
       // Calculate totalPrice
       let totalPrice = 0;
+     
       json.forEach((item) => {
-        totalPrice += item.giasp * item.soluongmua;
-      });
+      totalPrice += item.giasp * item.soluongmua;
+    
+      }); 
       setTotalPrice(totalPrice);
-      
+       
     } catch (e) {
       console.log(e);
     } finally {
       setisLoading(false);
     }
   };
+
+  // dspro.forEach(sanPham => {
+  //   if (sanPham.idsp === idsp) {
+  //     // Thay đổi số lượng
+  //     sanPham.soluongmua = soluongmua;
+  //   }
+  // });
+// lấy số lượng của sản phẩm về
   const fetchsoluong = async () => {
     let url_fe = 'http://172.16.10.109:9997/chitietsanpham/' + idsp ;
     try {
@@ -58,67 +68,42 @@ console.log("slm:"+soluongmua);
       console.log(e);
     } 
   };
-
-  // Khởi tạo danh sách sản phẩm trống
-let danhSachSanPham = [];
-
-// Hàm để tải dữ liệu từ máy chủ và thêm vào danh sách sản phẩm
-const loadDuLieuSanPham = () => {
-  const url_api_laydanhsachsp = 'http://172.16.10.109:9997/sanpham';
+  const giamsoluong = () => {
+    const soluongconlai = soluong - soluongmua;
+    let objSp = { soluong: soluongconlai };
+    let url_api_giamsoluong = 'http://172.16.10.109:9997/sanpham/sua/' + idsp;
   
-  fetch(url_api_laydanhsachsp)
-    .then((res) => res.json())
-    .then((data) => {
-      // Gán dữ liệu từ máy chủ vào danh sách sản phẩm
-      danhSachSanPham = data;
-      console.log(data);
-      
-      console.log('Dữ liệu sản phẩm đã được tải và thêm vào danh sách sản phẩm:', danhSachSanPham);
-
-      // Gọi hàm để trừ số lượng sản phẩm sau khi dữ liệu được tải
-      truSoLuongSanPham();
+    fetch(url_api_giamsoluong, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(objSp),
     })
-    .catch((e) => {
-      console.log(e);
-    });
-};
-
-// Hàm để trừ số lượng sản phẩm
-const truSoLuongSanPham = () => {
-  if (Array.isArray(danhSachSanPham)) {
-    danhSachSanPham.forEach((sanPham) => {
-      const { idsp, soluongmua } = sanPham;
-      const url_api_giamsoluong = 'http://172.16.10.109:9997/sanpham/sua/' + idsp;
-
-      fetch(url_api_giamsoluong, {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ soluong: sanPham.soluong - soluongmua }),
+      .then((res) => {
+        if (res.status === 200) {
+          console.log(soluongconlai);
+          // Gọi hàm xử lý số lượng còn lại ở đây
+          handleSoluongconlai(soluongconlai);
+        }
       })
-        .then((res) => {
-          if (res.status === 200) {
-            console.log(`Trừ số lượng thành công cho sản phẩm có idsp: ${idsp}`);
-          } else {
-            console.log(`Lỗi khi trừ số lượng cho sản phẩm có idsp: ${idsp}`);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    });
-  } else {
-    console.log('Không có dữ liệu sản phẩm để trừ số lượng.');
-  }
-};
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+  
+  const handleSoluongconlai = (soluongconlai) => {
+    // Thực hiện các xử lý với số lượng còn lại ở đây
+    console.log("Số lượng còn lại: " + soluongconlai);
+    // ...
+  };
+
 
 
   const BUY = () =>{
     props.navigation.navigate('ThanhToan', { totalPrice: totalPrice })
-
-
+giamsoluong();
   }
    
 
@@ -143,23 +128,22 @@ useEffect(() => {
 };  
 loadData(); 
 }, []);   
-
+  
 useEffect(() => {     
   if (isLoginInfoLoaded) {
     getListPro();
-    
-    fetchsoluong();
-    loadDuLieuSanPham()
+   
     setisLoading(true)
     console.log(loginInfo._id);
   }   
-      
+       
 },[isLoginInfoLoaded]); 
 useEffect(() => {
   const unsubscribe = props.navigation.addListener('focus', () => {
       // khi màn hình đc active thì lệnh hoạt động
       if (isLoginInfoLoaded) {
         getListPro();
+        fetchsoluong();
         setisLoading(true)
         console.log(loginInfo._id);
       }
