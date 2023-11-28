@@ -3,9 +3,15 @@ import React, { useState ,useEffect} from 'react';
 import { View, Image, Text, TouchableOpacity, FlatList, StyleSheet, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
 const GioHang = (props) => {
   const [dspro, setdspro] = useState([]);  
   const [idsp, setidsp] = useState("");
+  const [soluong, setsoluong] = useState(0);
+  const [soluongmua, setsoluongmua] = useState(0);
+  
+  
   
   const [cartItemsCount, setCartItemsCount] = useState(0);
   const [isLoading, setisLoading] = useState(true);
@@ -18,8 +24,11 @@ const GioHang = (props) => {
       const response = await fetch(url_api_giohang);
       const json = await response.json();
       setdspro(json);
-  
-      setidsp(json[0]._id);
+  setidsp(json[0].productId)
+  setsoluongmua(json[0].soluongmua)
+ 
+console.log(idsp);
+console.log("slm:"+soluongmua);
       setCartItemsCount(json.length);
   
       // Calculate totalPrice
@@ -35,34 +44,81 @@ const GioHang = (props) => {
       setisLoading(false);
     }
   };
-
-const giamsoluong = () =>{
-
-console.log( "idsp:"+idsp);
-let objSp = {soluong : (soluong - soluongmua)}
-let url_api_giamsoluong = 'http://172.16.10.109:9997/sanpham/sua/'+idsp ;
-fetch(url_api_giamsoluong, {
-  method: 'PUT',
-  headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(objSp)
-}).then((res) => {
-  if (res.status == 200)
-
-      alert("sua thanh cong")
-})
-  .catch((e) => {
+  const fetchsoluong = async () => {
+    let url_fe = 'http://172.16.10.109:9997/chitietsanpham/' + idsp ;
+    try {
+      const response1 = await fetch(url_fe);
+      const json1 = await response1.json();
+      setsoluong(json1.soluong)
+  
+  console.log("soluong:"+json1.soluong);
+  
+      
+    } catch (e) {
       console.log(e);
-  })
-}
+    } 
+  };
 
+  // Khởi tạo danh sách sản phẩm trống
+let danhSachSanPham = [];
+
+// Hàm để tải dữ liệu từ máy chủ và thêm vào danh sách sản phẩm
+const loadDuLieuSanPham = () => {
+  const url_api_laydanhsachsp = 'http://172.16.10.109:9997/sanpham';
+  
+  fetch(url_api_laydanhsachsp)
+    .then((res) => res.json())
+    .then((data) => {
+      // Gán dữ liệu từ máy chủ vào danh sách sản phẩm
+      danhSachSanPham = data;
+      console.log(data);
+      
+      console.log('Dữ liệu sản phẩm đã được tải và thêm vào danh sách sản phẩm:', danhSachSanPham);
+
+      // Gọi hàm để trừ số lượng sản phẩm sau khi dữ liệu được tải
+      truSoLuongSanPham();
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+};
+
+// Hàm để trừ số lượng sản phẩm
+const truSoLuongSanPham = () => {
+  if (Array.isArray(danhSachSanPham)) {
+    danhSachSanPham.forEach((sanPham) => {
+      const { idsp, soluongmua } = sanPham;
+      const url_api_giamsoluong = 'http://172.16.10.109:9997/sanpham/sua/' + idsp;
+
+      fetch(url_api_giamsoluong, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ soluong: sanPham.soluong - soluongmua }),
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            console.log(`Trừ số lượng thành công cho sản phẩm có idsp: ${idsp}`);
+          } else {
+            console.log(`Lỗi khi trừ số lượng cho sản phẩm có idsp: ${idsp}`);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    });
+  } else {
+    console.log('Không có dữ liệu sản phẩm để trừ số lượng.');
+  }
+};
 
 
   const BUY = () =>{
     props.navigation.navigate('ThanhToan', { totalPrice: totalPrice })
-giamsoluong();
+
+
   }
    
 
@@ -87,14 +143,17 @@ useEffect(() => {
 };  
 loadData(); 
 }, []);   
-  
+
 useEffect(() => {     
   if (isLoginInfoLoaded) {
     getListPro();
+    
+    fetchsoluong();
+    loadDuLieuSanPham()
     setisLoading(true)
     console.log(loginInfo._id);
   }   
-       
+      
 },[isLoginInfoLoaded]); 
 useEffect(() => {
   const unsubscribe = props.navigation.addListener('focus', () => {
@@ -158,7 +217,7 @@ React.useEffect(() => {
   const renderCartItem = ({ item }) =>{ 
     
     const DelPro = () =>{
-      let url_api_del = 'http://172.16.10.109:9997/giohang/xoa/'+loginInfo._id+"/" +item._id ;
+      let url_api_del = 'http://172.16.10.109:9997/giohang/xoa/'+loginInfo._id+"/" +item.productId ;
   
       fetch(url_api_del,{
   

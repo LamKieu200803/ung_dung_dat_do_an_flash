@@ -62,6 +62,11 @@ const gioHangSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SanPham',
+    required: true
+  },
   tensp: String,
   giasp: String,
   img: String,
@@ -359,9 +364,39 @@ app.get('/chitietsanpham/:id', async (req, res) => {
 
 app.get("/giohang/:userId", async (req, res) => {
   const userId = req.params.userId;
+
   try {
-    const giohang = await gioHang.find({ userId: userId });
-    res.json(giohang);
+    // Lấy thông tin giỏ hàng của người dùng
+    const giohangs = await gioHang.find({ userId: userId });
+
+    // Tạo một mảng rỗng để lưu trữ thông tin sản phẩm trong giỏ hàng
+    const giohangsWithDetails = [];
+
+    // Lặp qua từng mục giỏ hàng
+    for (const giohang of giohangs) {
+      // Lấy thông tin chi tiết của sản phẩm từ collection "SanPham"
+      const sanPham = await SanPham.findById(giohang.productId);
+
+      // Kiểm tra xem sản phẩm có tồn tại không
+      if (sanPham) {
+        // Tạo một đối tượng mới chứa thông tin sản phẩm và thông tin giỏ hàng
+        const giohangWithDetails = {
+          giohangId: giohang._id,
+          userId: giohang.userId,
+          productId: giohang.productId,
+          tensp: giohang.tensp,
+          giasp: giohang.giasp,
+          img: giohang.img,
+          soluongmua: giohang.soluongmua,
+          sanPham: sanPham  // Thêm thông tin chi tiết của sản phẩm
+        };
+
+        // Thêm vào mảng giohangsWithDetails
+        giohangsWithDetails.push(giohangWithDetails);
+      }
+    }
+
+    res.json(giohangsWithDetails);
   } catch (err) {
     console.log("Lỗi ", err);
     res.status(500).send("Lỗi máy chủ");
@@ -369,13 +404,22 @@ app.get("/giohang/:userId", async (req, res) => {
 });
 
 // Thêm vào giỏ hàng của người dùng
-app.post("/giohang/them/:userId", async (req, res) => {
+app.post("/giohang/them/:userId/:productId", async (req, res) => {
   const userId = req.params.userId;
+  const productId = req.params.productId;
   const { tensp, giasp, img, soluongmua } = req.body;
 
   try {
+    // Kiểm tra xem sản phẩm có tồn tại trong collection "SanPham" không
+    const sanPham = await SanPham.findById(productId);
+    if (!sanPham) {
+      return res.status(404).send("Sản phẩm không tồn tại");
+    }
+
+    // Tạo mục giỏ hàng mới và gán productId từ URL
     const giohang = await gioHang.create({
       userId: userId,
+      productId: productId,
       tensp: tensp,
       giasp: giasp,
       img: img,
@@ -396,13 +440,14 @@ app.delete("/giohang/xoa/:userId/:productId", async (req, res) => {
   const productId = req.params.productId;
 
   try {
-    await gioHang.deleteOne({ userId: userId, _id: productId });
+    await gioHang.deleteOne({ userId: userId, productId: productId });
     res.status(200).send("Sản phẩm đã được xóa khỏi giỏ hàng thành công");
   } catch (err) {
     console.log("Lỗi ", err);
     res.status(500).send("Lỗi máy chủ");
   }
 });
+
 
 // xóa giỏ hàng khi mua thành công
 app.delete("/giohang/xoa/:userId", async (req, res) => {

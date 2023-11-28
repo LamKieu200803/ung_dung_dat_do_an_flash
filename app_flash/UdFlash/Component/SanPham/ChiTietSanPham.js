@@ -15,12 +15,14 @@ const ChiTietSanPham = ({ route, navigation }) => {
     const [giasp, setgiasp] = useState(route.params.item_sp.giasp);
     const [motasp, setmotasp] = useState(route.params.item_sp.motasp);
     const [soluong, setsoluong] = useState(route.params.item_sp.soluong);
+    const [idsp, setidsp] = useState(route.params.item_sp._id);
+    
     const [loginInfo, setloginInfo] = useState('');
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
 
     const Save_Pro = () => {
         let objPro = { img: img, tensp: tensp, giasp: giasp, soluongmua: "1" }
-        let url_api_giohang = 'http://172.16.10.109:9997/giohang/them/' + loginInfo._id;
+        let url_api_giohang = 'http://172.16.10.109:9997/giohang/them/' + loginInfo._id +"/"+idsp;
 
         fetch(url_api_giohang, {
             method: 'POST',
