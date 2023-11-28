@@ -374,6 +374,11 @@ app.get("/giohang/:userId", async (req, res) => {
 
     // Lặp qua từng mục giỏ hàng
     for (const giohang of giohangs) {
+      // Kiểm tra giá trị soluongmua, nếu nhỏ hơn 1, đặt lại là 1
+      if (giohang.soluongmua < 1) {
+        giohang.soluongmua = 1;
+      }
+
       // Lấy thông tin chi tiết của sản phẩm từ collection "SanPham"
       const sanPham = await SanPham.findById(giohang.productId);
 

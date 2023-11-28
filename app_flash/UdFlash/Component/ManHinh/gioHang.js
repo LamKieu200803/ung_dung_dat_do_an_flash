@@ -158,35 +158,91 @@ React.useEffect(() => {
 
 
   const increaseQuantity = (itemId) => {
-    setdspro((prevItems) =>
-      prevItems.map((item) =>
-        item._id === itemId
-          ? { ...item, soluongmua: item.soluongmua + 1 }
-          : item
-      )
-    );
-    setCartItemsCount((prevCount) => prevCount + 1);
-    updateTotalPrice(itemId, 1); // Increase totalPrice by the product's price
+    
+    const itemToUpdate = dspro.find((item) => item._id === itemId);
+    console.log(itemToUpdate.productId);
+    console.log(loginInfo._id);
+    if (itemToUpdate) {
+      // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
+      fetch('http://172.16.10.109:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ soluongmua: itemToUpdate.soluongmua+1 }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Xử lý phản hồi từ server (nếu cần)
+          console.log('Dữ liệu đã được cập nhật trên server:', data);
+  
+          setdspro((prevItems) =>
+            prevItems.map((item) =>
+              item._id === itemId ? { ...item, soluongmua: item.soluongmua + 1 } : item
+            )
+          );
+  
+          setCartItemsCount((prevCount) => prevCount + 1);
+          updateTotalPrice(itemId, 1); // Increase totalPrice by the product's price
+        })
+        .catch((error) => {
+          // Xử lý lỗi (nếu có)
+          console.error('Lỗi khi cập nhật dữ liệu:', error);
+        });
+    }
   };
   
   const decreaseQuantity = (itemId) => {
-    setdspro((prevItems) =>
-      prevItems.map((item) =>
-        item._id === itemId && item.soluongmua > 1
-          ? { ...item, soluongmua: item.soluongmua - 1 }
-          : item
-      )
-    );
-    setCartItemsCount((prevCount) => prevCount - 1);
-    updateTotalPrice(itemId, -1); // Decrease totalPrice by the product's price
-  };
+    const itemToUpdate = dspro.find((item) => item._id === itemId);
+    console.log(itemToUpdate.productId);
+    console.log(loginInfo._id);
+    if (itemToUpdate && itemToUpdate.soluongmua > 1) {
+      // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
+      fetch('http://172.16.10.109:9997/giohang/sua/' +  loginInfo._id+ "/" + idsp, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ soluongmua: itemToUpdate.soluongmua-1 }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Xử lý phản hồi từ server (nếu cần)
+          console.log('Dữ liệu đã được cập nhật trên server:', data);
   
+          setdspro((prevItems) =>
+            prevItems.map((item) =>
+              item._id === itemId ? { ...item, soluongmua: item.soluongmua - 1 } : item
+            
+              )
+          );
+  
+          setCartItemsCount((prevCount) =>prevCount - 1);
+          updateTotalPrice(itemId, -1); // Giảm totalPrice đi giá của sản phẩm
+        })
+        .catch((error) => {
+          // Xử lý lỗi (nếu có)
+          console.error('Lỗi khi cập nhật dữ liệu:', error);
+        });
+    }
+  };
   const updateTotalPrice = (itemId, quantityChange) => {
     setTotalPrice((prevTotalPrice) => {
       const item = dspro.find((item) => item._id === itemId);
       if (item) {
-        const priceChange = item.giasp * quantityChange;
-        return prevTotalPrice + priceChange;
+        const productPrice = item.giasp;
+        const newQuantity = item.soluongmua + quantityChange;
+  
+        let updatedPrice = prevTotalPrice - productPrice * item.soluongmua + productPrice * newQuantity;
+  
+        if (newQuantity === 0) {
+          // Xóa sản phẩm khỏi giỏ hàng, giá trị totalPrice sẽ là 0
+          updatedPrice = 0;
+        }
+  
+        // Đảm bảo totalPrice không nhỏ hơn 0
+        const totalPrice = Math.max(0, updatedPrice);
+        return totalPrice;
       }
       return prevTotalPrice;
     });
