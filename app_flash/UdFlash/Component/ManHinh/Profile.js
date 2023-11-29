@@ -82,7 +82,7 @@ const getListPro = async () =>{
             <View >
             <Text style={styles.chu1} onPress={()=>{props.navigation.navigate('Thongtin')}}>Cập nhật thông tin</Text>
                 <Text style={styles.chu1} onPress={()=>{props.navigation.navigate('LichSu')}}>Lịch Sử</Text>
-                <Text style={styles.chu1}>Đơn Trạng Thái</Text>
+                <Text style={styles.chu1} onPress={()=>{props.navigation.navigate('TrangThai')}}>Đơn Trạng Thái</Text>
                 <Text style={styles.chu1} onPress={()=>{props.navigation.navigate('Login')}}>Log out</Text>
                 <TouchableOpacity onPress={() => {props.navigation.navigate('Doipass')}}>
                       <Text style={styles.chu1}>Đổi mật khẩu</Text>

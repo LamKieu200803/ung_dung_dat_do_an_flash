@@ -616,6 +616,35 @@ app.get("/lichsu/:userId", async (req, res) => {
   }
 });
 
+app.put("/hoadon/sua/:userId/:id", (req, res) => {
+  const userId = req.params.userId;
+  const id = req.params.id; // Thay đổi từ req.params._id thành req.params.id
+
+  const updateTrangThai = {
+    trangthai: req.body.trangthai
+  };
+
+  hoaDon.findOneAndUpdate(
+    { userId: userId, _id: id }, // Sửa thành _id thay vì id
+    updateTrangThai, // Sửa thành updateTrangThai thay vì updatetrangthai
+    { new: true }
+  )
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Thay đổi trạng thái thành công",
+          data: data
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
+});
+
+
 // thêm lịch sử mua hàng
 app.post("/lichsu/them/:userId", (req, res) => {
   const userId = req.params.userId;

@@ -16,6 +16,8 @@ import Doipass from './Component/ManHinh/Doipass';
 import LichSu from './Component/ManHinh/LichSu';
 import AllDiachi  from './Component/ManHinh/AllDiachi';
 import Thongtin from './Component/ManHinh/Thongtin';
+import Webview from './Component/ManHinh/Webview';
+import TrangThai from './Component/ManHinh/TrangThai';
 //import PaymentButton from './Component/ManHinh/PaymentButton';
 //import PaymentResultPage from './Component/ManHinh/PaymentResultPage
 const Stack = createStackNavigator();
@@ -33,7 +35,9 @@ export default function App() {
           <Stack.Screen name="gioHang" component={GioHang} />
           <Stack.Screen name="AllDiachi" component={AllDiachi} />
           <Stack.Screen name="LichSu" component={LichSu} />
+          <Stack.Screen name="TrangThai" component={TrangThai} />
           <Stack.Screen name="ThanhToan" component={ThanhToan} />
+          <Stack.Screen name="Webview" component={Webview} />
           <Stack.Screen name="Thongtin" component={Thongtin} />
           {/* <Stack.Screen name="PaymentButton" component={PaymentButton} />
           <Stack.Screen name="PaymentResultPage" component={PaymentResultPage} /> */}

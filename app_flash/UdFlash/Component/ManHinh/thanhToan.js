@@ -255,12 +255,11 @@ const ThanhToan = ({  route }) => {
                                 </TextInput>
                             </View>
                         </View>
-                        <View style={{ flexDirection: 'row', paddingTop: 20,  }}>
-                            <View>
-                                <TextInput style={styles.chu} placeholder='Địa chỉ'>
-                                </TextInput>
-                            </View>
-                        </View>
+                        <View >
+                        <TouchableOpacity onPress={() => navigation.navigate('Webview')}>
+                            <Text style={styles.button} >VnPay</Text>
+                        </TouchableOpacity>
+                    </View>
                         <View style={{ flexDirection: 'row', paddingTop: 20, }}>
 
 

@@ -5,6 +5,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const GioHang = (props) => {
   const [dspro, setdspro] = useState([]);  
+ 
+ 
+  
   const [idsp, setidsp] = useState("");
   const [soluong, setsoluong] = useState(0);
   const [soluongmua, setsoluongmua] = useState(0);
@@ -24,11 +27,8 @@ const GioHang = (props) => {
       const response = await fetch(url_api_giohang);
       const json = await response.json();
       setdspro(json);
-  setidsp(json[0].productId)
-  setsoluongmua(json[0].soluongmua)
- 
-console.log(idsp);
-console.log("slm:"+soluongmua);
+      setidsp(json[0].productId)
+
       setCartItemsCount(json.length);
   
       // Calculate totalPrice
@@ -47,63 +47,77 @@ console.log("slm:"+soluongmua);
     }
   };
 
-  // dspro.forEach(sanPham => {
-  //   if (sanPham.idsp === idsp) {
-  //     // Thay đổi số lượng
-  //     sanPham.soluongmua = soluongmua;
-  //   }
-  // });
-// lấy số lượng của sản phẩm về
-  const fetchsoluong = async () => {
-    let url_fe = 'http://172.16.10.109:9997/chitietsanpham/' + idsp ;
-    try {
-      const response1 = await fetch(url_fe);
-      const json1 = await response1.json();
-      setsoluong(json1.soluong)
-  
-  console.log("soluong:"+json1.soluong);
-  
-      
-    } catch (e) {
-      console.log(e);
-    } 
-  };
-  const giamsoluong = () => {
-    const soluongconlai = soluong - soluongmua;
-    let objSp = { soluong: soluongconlai };
-    let url_api_giamsoluong = 'http://172.16.10.109:9997/sanpham/sua/' + idsp;
-  
-    fetch(url_api_giamsoluong, {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(objSp),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          console.log(soluongconlai);
-          // Gọi hàm xử lý số lượng còn lại ở đây
-          handleSoluongconlai(soluongconlai);
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-  
-  const handleSoluongconlai = (soluongconlai) => {
-    // Thực hiện các xử lý với số lượng còn lại ở đây
-    console.log("Số lượng còn lại: " + soluongconlai);
-    // ...
-  };
 
+  
+  // tạo biến lưu trữ id và số lượng sp có trong giỏ
+  const soLuongMuaTheoId = dspro.reduce((result, item) => {
+    result[item.productId] = item.soluongmua;
+   
+    return result;
+  }, {});
+  
+  console.log(soLuongMuaTheoId);
+
+  //lặp qua đối tượng có trong giỏ 
+  dspro.forEach((sanPham) => {
+    console.log(sanPham.tensp);
+
+  });
+
+// lấy số lượng của sản phẩm về
+const fetchsoluong = async () => { 
+  let url_fe = 'http://172.16.10.109:9997/chitietsanpham/' + idsp ;
+  try {
+    const response1 = await fetch(url_fe);
+    const json1 = await response1.json();
+    const soluong = json1.soluong;
+    const product = dspro.find((item) => item.productId === json1._id);
+    
+    if (product) {
+      const soluongmua = product.soluongmua;
+      const soluongConLai = soluong - soluongmua;
+      setsoluongconlai(soluongConLai);
+      console.log("Số lượng còn lại của sản phẩm: " + soluongConLai);
+      // Thực hiện các xử lý khác liên quan đến số lượng còn lại của sản phẩm
+    }else {
+      console.log("Không tìm thấy sản phẩm với productId tương ứng trong dspro.");
+    }
+
+    
+  } catch (e) {
+    console.log(e);
+  } 
+};
+
+// const giamsoluong = () => {
+  
+//   let objSp = { soluong: soluongconlai };
+//   let url_api_giamsoluong = 'http://172.16.10.109:9997/sanpham/sua/' + idsp;
+
+//   fetch(url_api_giamsoluong, {
+//     method: 'PUT',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(objSp),
+//   })
+//     .then((res) => {
+//       if (res.status === 200) {
+//         console.log(soluongconlai);
+//         // Gọi hàm xử lý số lượng còn lại ở đây
+       
+//       }
+//     })
+//     .catch((e) => {
+//       console.log(e);
+//     });
+// };
 
 
   const BUY = () =>{
     props.navigation.navigate('ThanhToan', { totalPrice: totalPrice })
-giamsoluong();
+ //giamsoluong();
   }
    
 
@@ -132,9 +146,10 @@ loadData();
 useEffect(() => {     
   if (isLoginInfoLoaded) {
     getListPro();
-   
+    fetchsoluong()
     setisLoading(true)
-    console.log(loginInfo._id);
+  
+  
   }   
        
 },[isLoginInfoLoaded]); 
@@ -143,9 +158,9 @@ useEffect(() => {
       // khi màn hình đc active thì lệnh hoạt động
       if (isLoginInfoLoaded) {
         getListPro();
-        fetchsoluong();
+      //  fetchsoluong();
         setisLoading(true)
-        console.log(loginInfo._id);
+        
       }
   });
 
@@ -158,10 +173,20 @@ React.useEffect(() => {
 
 
   const increaseQuantity = (itemId) => {
-    
-    const itemToUpdate = dspro.find((item) => item._id === itemId);
-    console.log(itemToUpdate.productId);
-    console.log(loginInfo._id);
+    setdspro((prevItems) =>
+      prevItems.map((item) =>
+        item.giohangId === itemId
+          ? { ...item, soluongmua: item.soluongmua + 1 }
+          : item
+        
+      )
+    );
+  
+    const itemToUpdate = dspro.find((item) => item.giohangId === itemId);
+
+
+    // console.log(itemToUpdate.productId);
+    // console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
       fetch('http://172.16.10.109:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
@@ -175,13 +200,6 @@ React.useEffect(() => {
         .then((data) => {
           // Xử lý phản hồi từ server (nếu cần)
           console.log('Dữ liệu đã được cập nhật trên server:', data);
-  
-          setdspro((prevItems) =>
-            prevItems.map((item) =>
-              item._id === itemId ? { ...item, soluongmua: item.soluongmua + 1 } : item
-            )
-          );
-  
           setCartItemsCount((prevCount) => prevCount + 1);
           updateTotalPrice(itemId, 1); // Increase totalPrice by the product's price
         })
@@ -193,12 +211,20 @@ React.useEffect(() => {
   };
   
   const decreaseQuantity = (itemId) => {
-    const itemToUpdate = dspro.find((item) => item._id === itemId);
+    setdspro((prevItems) =>
+      prevItems.map((item) =>
+        item.giohangId === itemId && item.soluongmua > 1
+          ? { ...item, soluongmua: item.soluongmua - 1 }
+          : item
+      )
+    );
+  
+    const itemToUpdate = dspro.find((item) => item.giohangId === itemId);
     console.log(itemToUpdate.productId);
     console.log(loginInfo._id);
-    if (itemToUpdate && itemToUpdate.soluongmua > 1) {
+    if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.16.10.109:9997/giohang/sua/' +  loginInfo._id+ "/" + idsp, {
+      fetch('http://172.16.10.109:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -209,15 +235,7 @@ React.useEffect(() => {
         .then((data) => {
           // Xử lý phản hồi từ server (nếu cần)
           console.log('Dữ liệu đã được cập nhật trên server:', data);
-  
-          setdspro((prevItems) =>
-            prevItems.map((item) =>
-              item._id === itemId ? { ...item, soluongmua: item.soluongmua - 1 } : item
-            
-              )
-          );
-  
-          setCartItemsCount((prevCount) =>prevCount - 1);
+          setCartItemsCount((prevCount) => prevCount - 1);
           updateTotalPrice(itemId, -1); // Giảm totalPrice đi giá của sản phẩm
         })
         .catch((error) => {
@@ -228,7 +246,7 @@ React.useEffect(() => {
   };
   const updateTotalPrice = (itemId, quantityChange) => {
     setTotalPrice((prevTotalPrice) => {
-      const item = dspro.find((item) => item._id === itemId);
+      const item = dspro.find((item) => item.giohangId === itemId);
       if (item) {
         const productPrice = item.giasp;
         const newQuantity = item.soluongmua + quantityChange;
@@ -307,14 +325,14 @@ React.useEffect(() => {
         <Text style={styles.productPrice}>Price: ${item.giasp}</Text>
         <View style={styles.quantityContainer}>
           <TouchableOpacity
-            onPress={() => decreaseQuantity(item._id)}
+            onPress={() => decreaseQuantity(item.giohangId)}
             style={styles.quantityButton}
           >
             <Icon name="minus" size={16} color="#000" />
           </TouchableOpacity>
           <Text style={styles.quantityText}>{item.soluongmua}</Text>
           <TouchableOpacity
-            onPress={() => increaseQuantity(item._id)}
+            onPress={() => increaseQuantity(item.giohangId)}
             style={styles.quantityButton}
           >
             <Icon name="plus" size={16} color="#000" />
@@ -341,7 +359,7 @@ React.useEffect(() => {
         <FlatList
           data={dspro}
           renderItem={renderCartItem}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item.giohangId}
           ListEmptyComponent={renderEmptyCart}
         />
       ) : (
