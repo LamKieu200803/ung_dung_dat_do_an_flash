@@ -17,6 +17,9 @@ const Products = () => {
   const [productDescription, setProductDescription] = useState("");
   const [productQuantity, setProductQuantity] = useState("");
 
+  const [detailShow, setDetailShow] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   const fetchData = async () => {
     try {
       const res = await axios.get("http://localhost:9997/sanpham");
@@ -29,6 +32,10 @@ const Products = () => {
   useEffect(() => {
     fetchData();
   }, []);
+  const handleDetailShow = (rowData) => {
+    setSelectedProduct(rowData);
+    setDetailShow(true);
+  };
 
   const columns = [
     { name: "ID", selector: (row, index) => `#${index + 1}` },
@@ -73,6 +80,14 @@ const Products = () => {
       cell: (row) => (
         <Button variant="outline-success" onClick={() => handleEdit(row)}>
           Sửa sản phẩm
+        </Button>
+      ),
+    },
+    {
+      name: "Xem chi tiết",
+      cell: (row) => (
+        <Button variant="outline-primary" onClick={() => handleDetailShow(row)}>
+          Xem chi tiết
         </Button>
       ),
     },
@@ -160,6 +175,36 @@ const Products = () => {
 
   return (
     <div style={{ padding: "20px 50px" }}>
+      <Modal show={detailShow} onHide={() => setDetailShow(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Chi tiết sản phẩm</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedProduct && (
+            <div>
+              <img
+                style={{
+                  width: "200px",
+                  height: "150px",
+                  objectFit: "cover",
+                  padding: "10px 10px 10px 0px",
+                }}
+                src={selectedProduct.img}
+              />
+              <p>Tên sản phẩm: {selectedProduct.tensp}</p>
+              <p>Giá sản phẩm: {selectedProduct.giasp}</p>
+              <p>Số lượng phẩm: {selectedProduct.soluong}</p>
+              <p>Chi tiết sản phẩm: {selectedProduct.motasp}</p>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setDetailShow(false)}>
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>
           <Modal.Title>
