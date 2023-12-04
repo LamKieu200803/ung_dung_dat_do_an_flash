@@ -12,7 +12,7 @@ const AllDiachi = (props) => {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [addressselect, setAddressselcect] = useState();
-    const [email, setEmail] = useState('');
+    const [thanhpho, setthanhpho] = useState('');
     const [stateselect, setStateselect] = useState('');
     const getListPro = async () => {
         let url_api_diachi = 'http://172.16.10.109:9997/diachi'
@@ -32,7 +32,7 @@ const AllDiachi = (props) => {
 
     const renderdiachi = ({ item }) => {
         return (
-          <View style={{ flexDirection: 'row', padding: 20, paddingLeft: 60 }}>
+          <View style={{ flexDirection: 'row', padding: 20, paddingLeft: 30, }}>
             <View style={{ flexDirection: 'column' }}>
               <Text>
                 {item.address}, {item.state}

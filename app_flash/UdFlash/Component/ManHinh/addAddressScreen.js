@@ -5,7 +5,7 @@ const AddAddressScreen = (props) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
-  const [email, setEmail] = useState('');
+  const [thanhpho, setthanhpho] = useState('');
   const [state, setState] = useState('');
 
   // const handleAutoFillAddress = () => {
@@ -27,7 +27,7 @@ const AddAddressScreen = (props) => {
   // };
 
   const handleSaveAddress = () => {
-    let objPro = { name: name, phone: phone, address: address, email:email,state:state }
+    let objPro = { name: name, phone: phone, address: address, thanhpho:thanhpho,state:state }
     let url_api_diachi = 'http://172.16.10.109:9997/themdiachi';
 
     fetch(url_api_diachi, {
@@ -90,8 +90,8 @@ const AddAddressScreen = (props) => {
         <TextInput
           style={styles.input}
           placeholder="city"
-          value={email}
-          onChangeText={(txt)=>setEmail(txt)}
+          value={thanhpho}
+          onChangeText={(txt)=>setthanhpho(txt)}
         />
       </View>
 

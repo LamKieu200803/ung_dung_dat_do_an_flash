@@ -116,24 +116,47 @@ const thongTin = mongoose.model("ThongTins", thongTinSchema);
 
 
 
-// Schema và model lịch sử mua hàng
-const lichSuSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true
-  },
-  tensp: String,
-  giasp: String,
-  img: String,
-  soluongmua: String,
-  pttt: String,
-  tennguoimua: String,
-  tongtien: String,
+// // Schema và model lịch sử mua hàng
+// const lichSuSchema = new mongoose.Schema({
+//   userId: {
+//     type: String,
+//     required: true
+//   },
+//   tensp: String,
+//   giasp: String,
+//   img: String,
+//   soluongmua: String,
+//   pttt: String,
+//   tennguoimua: String,
+//   tongtien: String,
  
-  thoigian: String
+//   thoigian: String
+// })
+
+// const lichSu = mongoose.model("LichSus", lichSuSchema)
+
+
+//Schema và model chi tiết hóa đơn
+
+const hoaDonChitietSchema = new mongoose.Schema({
+  userId: {
+        type: String,
+        required: true
+      },
+      tensp: String,
+      giasp: String,
+      img: String,
+      soluongmua: Number,
+      hoaDonId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'HoaDons',
+        required: true
+      },
+    
+  
 })
 
-const lichSu = mongoose.model("LichSus", lichSuSchema)
+const hoaDonChiTiet = mongoose.model("ChiTietHoaDons", hoaDonChitietSchema);
 
 // dki tài khoản 
 app.post("/dangki", (req, res) => {
@@ -605,16 +628,16 @@ app.post("/thongtin/them/:userId", (req, res) => {
 // });
 
 // xem lịch sử mua hàng
-app.get("/lichsu/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  try {
-    const lichsu = await lichSu.find({ userId: userId });
-    res.json(lichsu);
-  } catch (err) {
-    console.log("error ", err);
-    res.status(500).send("lỗi server");
-  }
-});
+// app.get("/lichsu/:userId", async (req, res) => {
+//   const userId = req.params.userId;
+//   try {
+//     const lichsu = await lichSu.find({ userId: userId });
+//     res.json(lichsu);
+//   } catch (err) {
+//     console.log("error ", err);
+//     res.status(500).send("lỗi server");
+//   }
+// });
 
 app.put("/hoadon/sua/:userId/:id", (req, res) => {
   const userId = req.params.userId;
@@ -645,27 +668,42 @@ app.put("/hoadon/sua/:userId/:id", (req, res) => {
 });
 
 
-// thêm lịch sử mua hàng
-app.post("/lichsu/them/:userId", (req, res) => {
-  const userId = req.params.userId;
-  const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, tennguoimua, thoigian } = req.body;
+// // thêm lịch sử mua hàng
+// app.post("/lichsu/them/:userId", (req, res) => {
+//   const userId = req.params.userId;
+//   const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, tennguoimua, thoigian } = req.body;
 
-  const newLichSu = new lichSu({
-    userId,
-    tensp,
-    giasp,
-    img,
-    soluongmua,
-    pttt,
-    tongtien,
-    trangthai,
-    tennguoimua,
-    thoigian
-  });
-  newLichSu
-    .save()
-    .then(() => {
-      res.status(201).json({ message: "Thêm lịch sử mua hàng thành công" });
+//   const newLichSu = new lichSu({
+//     userId,
+//     tensp,
+//     giasp,
+//     img,
+//     soluongmua,
+//     pttt,
+//     tongtien,
+//     trangthai,
+//     tennguoimua,
+//     thoigian
+//   });
+//   newLichSu
+//     .save()
+//     .then(() => {
+//       res.status(201).json({ message: "Thêm lịch sử mua hàng thành công" });
+//     })
+//     .catch((err) => {
+//       console.log("error ", err);
+//       res.status(500).send("lỗi server");
+//     });
+// });
+
+// xem hóa đơn chi tiết schema
+app.get("/hoadonchitiet/:userId/:hoaDonId", (req, res) => {
+  const userId = req.params.userId;
+  const hoaDonId = req.params.hoaDonId;
+
+  hoaDonChiTiet.find({ userId, hoaDonId })
+    .then((chiTietList) => {
+      res.status(200).json(chiTietList);
     })
     .catch((err) => {
       console.log("error ", err);
@@ -673,8 +711,32 @@ app.post("/lichsu/them/:userId", (req, res) => {
     });
 });
 
+app.post("/hoadonchitiet/:userId/:hoaDonId/add", (req, res) => {
+  const userId = req.params.userId;
+  const hoaDonId = req.params.hoaDonId;
+  const chiTietList = req.body;
 
+  const newChiTietList = chiTietList.map((chiTiet) => {
+    const { tensp, giasp, img, soluongmua } = chiTiet;
+    return new hoaDonChiTiet({
+      userId,
+      hoaDonId,
+      tensp,
+      giasp,
+      img,
+      soluongmua,
+    });
+  });
 
+  hoaDonChiTiet.insertMany(newChiTietList)
+    .then(() => {
+      res.status(201).json({ message: "Thêm danh sách chi tiết hóa đơn thành công" });
+    })
+    .catch((err) => {
+      console.log("error ", err);
+      res.status(500).send("lỗi server");
+    });
+});
 
 
 

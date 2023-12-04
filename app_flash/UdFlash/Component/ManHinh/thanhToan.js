@@ -9,16 +9,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from 'moment';
 const ThanhToan = ({  route }) => {
 
-   
+    const [dspro, setdspro] = useState([]);  
     const [address, setAddress] = useState('');
     const [thanhpho, setthanhpho] = useState('');
     const [state, setState] = useState('');
     const [thoigian, setthoigian] = useState();
    const [trangthai, settrangthai] = useState("đang chờ xác nhận");
+   const [idHoadon, setidHoadon] = useState('');
    
-    
-    
-
+   
     const [tennguoimua, settennguoimua] = useState(`${item?.name}`);
     const [sdt, setsdt] = useState(`${item?.phone}`);
     const [diachi, setdiachi] = useState(`${item?.address}, ${item?.state}\n${item?.thanhpho}`);
@@ -37,7 +36,44 @@ const ThanhToan = ({  route }) => {
     const { item } = route.params || {};
 
   
+    const getlistgiohang = async () => {
+        let url_api_giohang = 'http://172.16.10.109:9997/giohang/' + loginInfo._id;
+        try {
+          const response = await fetch(url_api_giohang);
+          const json = await response.json();
+          setdspro(json);
+           
+        } catch (e) {
+          console.log(e);
+        }
+      };
 
+    //   const Save_Pro = () => {
+    //     let objPro = dspro ;
+    //     let url_api_cthd = 'http://172.16.10.109:9997/' + loginInfo._id +"/"+;
+
+    //     fetch(url_api_cthd, {
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(objPro)
+    //     }).then((res) => {
+    //         if (res.status == 201)
+    //             alert("them sản phẩm vào giỏ hàng thanh cong")
+    //             //navigation.navigate('gioHang') 
+    //           //handleGioHang()
+    //            console.log(" TÌm thấy id"+loginInfo._id)
+    //             console.log("thanh cong")
+             
+    //     })
+    //         .catch((e) => {  
+    //             console.log(e);  
+    //         })
+
+
+    // }
 
     const Save_UserMua = () => {
         let objUserMua = {
@@ -60,14 +96,25 @@ const ThanhToan = ({  route }) => {
           },
           body: JSON.stringify(objUserMua)
         })
-          .then((res) => {
-            if (res.status == 201)
-              alert("đặt hàng thành công");
-            
-            DelPro(); // Gọi hàm xóa sau khi gửi yêu cầu POST
+        .then((res) => {
+            if (res.status == 201) {
+              alert("Đặt hàng thành công");
+              return res.json(); // Chuyển đổi phản hồi thành đối tượng JSON
+            }
+            throw new Error('Đặt hàng không thành công');
           })
-          .catch((e) => {
-            console.log(e);
+          .then((data) => {
+            if (data && data._id) {
+              const hoadonId = data._id;
+              setidHoadon(hoadonId)
+              
+              // Lấy ID của hóa đơn từ phản hồi
+              // Tiếp tục xử lý với ID của hóa đơn
+            }
+            DelPro(); // Gọi hàm xóa sau khi nhận phản hồi thành công
+          })
+          .catch((error) => {
+            console.log(error);
           });
       };
       
@@ -109,6 +156,7 @@ const ThanhToan = ({  route }) => {
         const unsubscribe = navigation.addListener('focus', () => {
             // khi màn hình đc active thì lệnh hoạt động
             getLoginInfo();
+            getlistgiohang();
          
         });
 
