@@ -35,45 +35,26 @@ const ThanhToan = ({  route }) => {
   
     const { item } = route.params || {};
 
-  
-    const getlistgiohang = async () => {
-        let url_api_giohang = 'http://172.16.10.109:9997/giohang/' + loginInfo._id;
-        try {
-          const response = await fetch(url_api_giohang);
-          const json = await response.json();
-          setdspro(json);
-           
-        } catch (e) {
+
+
+      const Save_Pro = () => {
+        let objPro = dspro;
+        let url_api_cthd = 'http://172.16.10.109:9997/' + loginInfo._id + "/" + idHoadon + "/add";
+      
+        fetch(url_api_cthd, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(objPro)
+        }).then((res) => {
+          if (res.status == 201)
+            console.log("Thêm vào chi tiết hóa đơn thành công");
+        }).catch((e) => {
           console.log(e);
-        }
+        });
       };
-
-    //   const Save_Pro = () => {
-    //     let objPro = dspro ;
-    //     let url_api_cthd = 'http://172.16.10.109:9997/' + loginInfo._id +"/"+;
-
-    //     fetch(url_api_cthd, {
-    //         method: 'POST',
-    //         headers: {
-    //             Accept: 'application/json',
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(objPro)
-    //     }).then((res) => {
-    //         if (res.status == 201)
-    //             alert("them sản phẩm vào giỏ hàng thanh cong")
-    //             //navigation.navigate('gioHang') 
-    //           //handleGioHang()
-    //            console.log(" TÌm thấy id"+loginInfo._id)
-    //             console.log("thanh cong")
-             
-    //     })
-    //         .catch((e) => {  
-    //             console.log(e);  
-    //         })
-
-
-    // }
 
     const Save_UserMua = () => {
         let objUserMua = {
@@ -99,7 +80,9 @@ const ThanhToan = ({  route }) => {
         .then((res) => {
             if (res.status == 201) {
               alert("Đặt hàng thành công");
+                navigation.navigate('Main')
               return res.json(); // Chuyển đổi phản hồi thành đối tượng JSON
+            
             }
             throw new Error('Đặt hàng không thành công');
           })
@@ -111,6 +94,7 @@ const ThanhToan = ({  route }) => {
               // Lấy ID của hóa đơn từ phản hồi
               // Tiếp tục xử lý với ID của hóa đơn
             }
+            Save_Pro();
             DelPro(); // Gọi hàm xóa sau khi nhận phản hồi thành công
           })
           .catch((error) => {
@@ -137,7 +121,8 @@ const ThanhToan = ({  route }) => {
             console.log(e);
           });
       };
-
+  
+   
     const getLoginInfo = async () => {
         try {
             const valuee = await AsyncStorage.getItem('loginInfo')
@@ -152,18 +137,39 @@ const ThanhToan = ({  route }) => {
         }
        
       };
-    useEffect(() => {
+      const getlistgiohang = async (userId) => { // Thêm tham số userId vào hàm
+        let url_api_giohang = `http://172.16.10.109:9997/giohang/${userId}`;
+        try {
+          const response = await fetch(url_api_giohang);
+          const json = await response.json();
+          setdspro(json);
+          console.log("list:" + json + "-" + response);
+          console.log(userId);
+        } catch (e) {
+          console.log(e);
+        }
+      };
+
+      useEffect(() => {
+        const fetchData = async () => {
+          await getLoginInfo();
+        };
+      
         const unsubscribe = navigation.addListener('focus', () => {
-            // khi màn hình đc active thì lệnh hoạt động
-            getLoginInfo();
-            getlistgiohang();
-         
+          fetchData();
         });
-
+      
         return unsubscribe;
-    }, [navigation]);
+      }, [navigation]);
+      
+      useEffect(() => {
+        if (loginInfo && loginInfo._id) {
+          getlistgiohang(loginInfo._id);
+        }
+      }, [loginInfo]);
 
     useEffect(() => {
+    
         if (route.params && route.params.item) {
           const { address, state, thanhpho, name, phone } = route.params.item;
           settennguoimua(name)
@@ -192,6 +198,8 @@ const ThanhToan = ({  route }) => {
         const currentDate = moment().format('HH:mm, DD/MM/YYYY');
         setthoigian(currentDate);
       }, []);
+     
+      
 
 
     const navigation = useNavigation();
