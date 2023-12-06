@@ -1,23 +1,55 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import SanPham from "./pages/sanPham";
-import Home from "./pages/home";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./Header";
+import Home from "./pages/home";
+import SanPham from "./pages/sanPham";
 import KhachHang from "./pages/khachHang";
 import Orders from "./pages/hoaDon";
+import DangNhap from "./pages/dangNhap";
+
+const ContentLayout = ({ children }) => (
+  <div>
+    <Header />
+    <div>{children}</div>
+  </div>
+);
+
 function App() {
   return (
     <Router>
-      <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/sanPham" element={<SanPham />} />
-        <Route path="/khachHang" element={<KhachHang />} />
-        <Route path="/order" element={<Orders />} />
+        <Route path="/" element={<DangNhap />} />
+        <Route
+          path="/home"
+          element={
+            <ContentLayout>
+              <Home />
+            </ContentLayout>
+          }
+        />
+        <Route
+          path="/sanPham"
+          element={
+            <ContentLayout>
+              <SanPham />
+            </ContentLayout>
+          }
+        />
+        <Route
+          path="/khachHang"
+          element={
+            <ContentLayout>
+              <KhachHang />
+            </ContentLayout>
+          }
+        />
+        <Route
+          path="/order"
+          element={
+            <ContentLayout>
+              <Orders />
+            </ContentLayout>
+          }
+        />
       </Routes>
     </Router>
   );

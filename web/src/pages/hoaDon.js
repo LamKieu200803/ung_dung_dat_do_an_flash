@@ -52,7 +52,7 @@ const Orders = () => {
     {
       name: "Trạng thái",
       selector: (row) => row.trangthai,
-      sortable: true,  
+      sortable: true,
     },
   ];
 

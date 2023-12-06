@@ -20,6 +20,12 @@ const Products = () => {
   const [detailShow, setDetailShow] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearch = (event) => {
+    setSearchText(event.target.value);
+  };
+
   const fetchData = async () => {
     try {
       const res = await axios.get("http://localhost:9997/sanpham");
@@ -293,15 +299,36 @@ const Products = () => {
       </Modal>
       <DataTable
         columns={columns}
-        data={products}
+        data={products.filter(
+          (product) =>
+            product.tensp.toLowerCase().includes(searchText.toLowerCase()) ||
+            product.giasp.toString().includes(searchText) ||
+            product.soluong.toString().includes(searchText) ||
+            product.motasp.toLowerCase().includes(searchText.toLowerCase())
+        )}
         pagination
         paginationPerPage={5}
         striped
         subHeader
         subHeaderComponent={
-          <Button variant="primary" onClick={handleShow}>
-            Thêm sản phẩm
-          </Button>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button variant="primary" onClick={handleShow}>
+              Thêm sản phẩm
+            </Button>
+            <Form.Control
+              type="text"
+              placeholder="Tìm kiếm"
+              value={searchText}
+              onChange={handleSearch}
+              style={{ marginLeft: "10px", width: "300px" }}
+            />
+          </div>
         }
         subHeaderAlign="left"
       />

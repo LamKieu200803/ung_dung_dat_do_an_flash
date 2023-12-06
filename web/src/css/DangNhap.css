@@ -1,0 +1,18 @@
+.background-container {
+  background-image: url("https://statics.vincom.com.vn/xu-huong/chi_tiet_xu_huong/1/14-4/3/do-an-nhanh-cho-nguoi-ban-ron.jpg");
+  background-size: contain;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
