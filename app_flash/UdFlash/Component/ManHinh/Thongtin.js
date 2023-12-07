@@ -46,7 +46,7 @@ const Thongtin= (props) => {
         console.log(e);
     }
    
-};
+}
 
 useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {

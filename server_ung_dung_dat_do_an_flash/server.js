@@ -81,20 +81,22 @@ const hoaDonSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  tensp: String,
-  giasp: String,
-  img: String,
+  danhSachSanPham: [{
+    tensp: String,
+    giasp: String,
+    img: String,
+    soluongmua: String
+  }],
   diachi: String,
-  soluongmua: String,
-  phone: String,
   sdt: String,
   tennguoimua: String,
   pttt: String,
   tongtien: Number,
-  thoigian:String,
-  trangthai:String
-})
-const hoaDon = mongoose.model("HoaDons", hoaDonSchema)
+  thoigian: String,
+  trangthai: String
+});
+
+const hoaDon = mongoose.model("HoaDons", hoaDonSchema);
 
 
 
@@ -138,25 +140,25 @@ const thongTin = mongoose.model("ThongTins", thongTinSchema);
 
 //Schema và model chi tiết hóa đơn
 
-const hoaDonChitietSchema = new mongoose.Schema({
-  userId: {
-        type: String,
-        required: true
-      },
-      tensp: String,
-      giasp: String,
-      img: String,
-      soluongmua: Number,
-      hoaDonId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'HoaDons',
-        required: true
-      },
+// const hoaDonChitietSchema = new mongoose.Schema({
+//   userId: {
+//         type: String,
+//         required: true
+//       },
+//       tensp: String,
+//       giasp: String,
+//       img: String,
+//       soluongmua: Number,
+//       hoaDonId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: 'HoaDons',
+//         required: true
+//       },
     
   
-})
+// })
 
-const hoaDonChiTiet = mongoose.model("ChiTietHoaDons", hoaDonChitietSchema);
+//const hoaDonChiTiet = mongoose.model("ChiTietHoaDons", hoaDonChitietSchema);
 
 // dki tài khoản 
 app.post("/dangki", (req, res) => {
@@ -540,9 +542,9 @@ app.get("/hoadon/:userId", async (req, res) => {
 // thêm hóa đơn theo id người dùng
 app.post("/hoadon/them/:userId", (req, res) => {
   const userId = req.params.userId;
-  const {tensp,giasp,img,soluongmua, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai } = req.body;
+  const { danhSachSanPham, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai } = req.body;
 
-  const newHoaDon = new hoaDon({tensp,giasp,img,soluongmua, userId, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai });
+  const newHoaDon = new hoaDon({ danhSachSanPham, userId, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai });
   newHoaDon
     .save()
     .then(() => {
@@ -550,7 +552,7 @@ app.post("/hoadon/them/:userId", (req, res) => {
     })
     .catch((err) => {
       console.log("error ", err);
-      res.status(500).send("lỗi server");
+      res.status(500).send("Lỗi server");
     });
 });
 // thông tin người dùng theo idUser
@@ -697,46 +699,46 @@ app.put("/hoadon/sua/:userId/:id", (req, res) => {
 // });
 
 // xem hóa đơn chi tiết schema
-app.get("/hoadonchitiet/:userId/:hoaDonId", (req, res) => {
-  const userId = req.params.userId;
-  const hoaDonId = req.params.hoaDonId;
+// app.get("/hoadonchitiet/:userId/:hoaDonId", (req, res) => {
+//   const userId = req.params.userId;
+//   const hoaDonId = req.params.hoaDonId;
 
-  hoaDonChiTiet.find({ userId, hoaDonId })
-    .then((chiTietList) => {
-      res.status(200).json(chiTietList);
-    })
-    .catch((err) => {
-      console.log("error ", err);
-      res.status(500).send("lỗi server");
-    });
-});
+//   hoaDonChiTiet.find({ userId, hoaDonId })
+//     .then((chiTietList) => {
+//       res.status(200).json(chiTietList);
+//     })
+//     .catch((err) => {
+//       console.log("error ", err);
+//       res.status(500).send("lỗi server");
+//     });
+// });
 
-app.post("/hoadonchitiet/:userId/:hoaDonId/add", (req, res) => {
-  const userId = req.params.userId;
-  const hoaDonId = req.params.hoaDonId;
-  const chiTietList = req.body;
+// app.post("/hoadonchitiet/:userId/:hoaDonId/add", (req, res) => {
+//   const userId = req.params.userId;
+//   const hoaDonId = req.params.hoaDonId;
+//   const chiTietList = req.body;
 
-  const newChiTietList = chiTietList.map((chiTiet) => {
-    const { tensp, giasp, img, soluongmua } = chiTiet;
-    return new hoaDonChiTiet({
-      userId,
-      hoaDonId,
-      tensp,
-      giasp,
-      img,
-      soluongmua,
-    });
-  });
+//   const newChiTietList = chiTietList.map((chiTiet) => {
+//     const { tensp, giasp, img, soluongmua } = chiTiet;
+//     return new hoaDonChiTiet({
+//       userId,
+//       hoaDonId,
+//       tensp,
+//       giasp,
+//       img,
+//       soluongmua,
+//     });
+//   });
 
-  hoaDonChiTiet.insertMany(newChiTietList)
-    .then(() => {
-      res.status(201).json({ message: "Thêm danh sách chi tiết hóa đơn thành công" });
-    })
-    .catch((err) => {
-      console.log("error ", err);
-      res.status(500).send("lỗi server");
-    });
-});
+//   hoaDonChiTiet.insertMany(newChiTietList)
+//     .then(() => {
+//       res.status(201).json({ message: "Thêm danh sách chi tiết hóa đơn thành công" });
+//     })
+//     .catch((err) => {
+//       console.log("error ", err);
+//       res.status(500).send("lỗi server");
+//     });
+// });
 
 
 
