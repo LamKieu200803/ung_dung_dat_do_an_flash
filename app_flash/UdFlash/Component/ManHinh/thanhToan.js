@@ -35,11 +35,24 @@ const ThanhToan = ({  route }) => {
   
     const { item } = route.params || {};
 
-
+  
+    const getlistgiohang = async () => {
+        let url_api_giohang = 'http://172.16.10.109:9997/giohang/' + loginInfo._id;
+        try {
+          const response = await fetch(url_api_giohang);
+          const json = await response.json();
+          setdspro(json);
+          console.log("list:"+json);
+           
+        } catch (e) {
+          console.log(e);
+        }
+      };
 
       const Save_Pro = () => {
         let objPro = dspro;
-        let url_api_cthd = 'http://172.16.10.109:9997/' + loginInfo._id + "/" + idHoadon + "/add";
+        console.log("aaaaaaa"+objPro);
+        let url_api_cthd = "http://172.16.10.109:9997/hoadonchitiet/" + loginInfo._id + "/65703377d10ba6383ebbf5ed/add";
       
         fetch(url_api_cthd, {
           method: 'POST',
@@ -56,7 +69,7 @@ const ThanhToan = ({  route }) => {
         });
       };
 
-    const Save_UserMua = () => {
+      const Save_UserMua = () => {
         let objUserMua = {
           tennguoimua: tennguoimua,
           sdt: sdt,
@@ -68,7 +81,7 @@ const ThanhToan = ({  route }) => {
         };
       
         let url_api_hoadon = 'http://172.16.10.109:9997/hoadon/them/' + loginInfo._id;
-        
+      
         fetch(url_api_hoadon, {
           method: 'POST',
           headers: {
@@ -78,30 +91,34 @@ const ThanhToan = ({  route }) => {
           body: JSON.stringify(objUserMua)
         })
         .then((res) => {
-            if (res.status == 201) {
-              alert("Đặt hàng thành công");
-                navigation.navigate('Main')
-              return res.json(); // Chuyển đổi phản hồi thành đối tượng JSON
-            
-            }
-            throw new Error('Đặt hàng không thành công');
-          })
-          .then((data) => {
-            if (data && data._id) {
-              const hoadonId = data._id;
-              setidHoadon(hoadonId)
-              
-              // Lấy ID của hóa đơn từ phản hồi
-              // Tiếp tục xử lý với ID của hóa đơn
-            }
-            Save_Pro();
-            DelPro(); // Gọi hàm xóa sau khi nhận phản hồi thành công
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+          if (res.status == 201) {
+            alert("Đặt hàng thành công");
+            return res.json(); // Chuyển đổi phản hồi thành đối tượng JSON
+          }
+          throw new Error('Đặt hàng không thành công');
+        })
+        .then((response) => {
+
+          console.log("respone"+response);
+ let idhoadonct = response._id ;
+          // if (data && data._id) {
+          //   const hoadonId = data._id;
+          //   setidHoadon(hoadonId);
+          //   console.log("id hoa don: " + data._id);
+          //   console.log("aaaaaaa");
+          //   // Lấy ID của hóa đơn từ phản hồi
+          //   // Tiếp tục xử lý với ID của hóa đơn
+          //   return Save_Pro(); // Trả về một promise từ Save_Pro()
+          // }
+        })
+        .then(() => {
+          // Save_Pro();
+          DelPro(); // Gọi hàm xóa sau khi nhận phản hồi thành công và Save_Pro() đã hoàn thành
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       };
-      
       const DelPro = () => {
         let url_api_del = 'http://172.16.10.109:9997/giohang/xoa/' + loginInfo._id;
       
@@ -121,8 +138,7 @@ const ThanhToan = ({  route }) => {
             console.log(e);
           });
       };
-  
-   
+
     const getLoginInfo = async () => {
         try {
             const valuee = await AsyncStorage.getItem('loginInfo')
@@ -137,20 +153,7 @@ const ThanhToan = ({  route }) => {
         }
        
       };
-      const getlistgiohang = async (userId) => { // Thêm tham số userId vào hàm
-        let url_api_giohang = `http://172.16.10.109:9997/giohang/${userId}`;
-        try {
-          const response = await fetch(url_api_giohang);
-          const json = await response.json();
-          setdspro(json);
-          console.log("list:" + json + "-" + response);
-          console.log(userId);
-        } catch (e) {
-          console.log(e);
-        }
-      };
-
-      useEffect(() => {
+ useEffect(() => {
         const fetchData = async () => {
           await getLoginInfo();
         };
@@ -169,7 +172,6 @@ const ThanhToan = ({  route }) => {
       }, [loginInfo]);
 
     useEffect(() => {
-    
         if (route.params && route.params.item) {
           const { address, state, thanhpho, name, phone } = route.params.item;
           settennguoimua(name)
@@ -198,8 +200,6 @@ const ThanhToan = ({  route }) => {
         const currentDate = moment().format('HH:mm, DD/MM/YYYY');
         setthoigian(currentDate);
       }, []);
-     
-      
 
 
     const navigation = useNavigation();
