@@ -38,7 +38,7 @@ const Profile = (props) => {
 
             console.log(e);
         }
-    };
+    };  
 
     const renderNguoidung = ({ item }) => {
         return (

@@ -12,7 +12,7 @@ const AllDiachi = (props) => {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [addressselect, setAddressselcect] = useState();
-    const [thanhpho, setthanhpho] = useState('');
+    const [email, setEmail] = useState('');
     const [stateselect, setStateselect] = useState('');
     const getListPro = async () => {
         let url_api_diachi = 'http://172.16.10.109:9997/diachi'
@@ -32,68 +32,76 @@ const AllDiachi = (props) => {
 
     const renderdiachi = ({ item }) => {
         return (
-          <View style={{ flexDirection: 'row', padding: 20, paddingLeft: 30, }}>
-            <View style={{ flexDirection: 'column' }}>
-              <Text>
-                {item.address}, {item.state}
-              </Text>
-              <Text style={{ color: 'grey' }}>
-                {item.thanhpho}
-              </Text>
+         <View>
+
+     
+            <View style={{ flexDirection: 'row', padding: 20, paddingLeft: 30,marginTop:20}}>
+                <View style={{ flexDirection: 'column', width: 200, height: 50, marginLeft: 15 }}>
+                    <Text>
+                        {item.address}, {item.state}
+                    </Text>
+                    <Text style={{ color: 'grey' }}>
+                        {item.thanhpho}
+                    </Text>
+                </View>
+                <TouchableOpacity onPress={() => props.navigation.navigate('ThanhToan', { item: item })}>
+                    <Text style={{
+                        backgroundColor: 'red',
+                        borderRadius: 20,
+                        padding: 10,
+                        left: 120,
+                        width: 100,
+                        textAlign: 'center',
+                        color: 'white',
+                    }}
+                    >Chọn</Text>
+                </TouchableOpacity>
+                
+               
             </View>
-            <TouchableOpacity onPress={() => props.navigation.navigate('ThanhToan',{item:item })}>
-              <Text style={{
-                backgroundColor: 'red',
-                borderRadius: 20,
-                padding: 10,
-                left: 100,
-                width: 100,
-                textAlign: 'center',
-                color: 'white'
-              }}
-              >Chọn</Text>
-            </TouchableOpacity>
-          </View>
+             <View>
+                    <Text style={{ borderBottomColor: '#F38E8E', borderBottomWidth: 1 }}></Text>
+                </View>
+                </View>
+           
         );
-      };
+    };
 
 
 
-React.useEffect(()=>{
-    const unsubcribe = props.navigation.addListener('focus', () => {
-        getListPro();
-       
-    });
-    return unsubcribe
-}, [props.navigation]);
+    React.useEffect(() => {
+        const unsubcribe = props.navigation.addListener('focus', () => {
+            getListPro();
+
+        });
+        return unsubcribe
+    }, [props.navigation]);
 
 
     return (
         <View style={styles.container}>
-           
-                <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginBottom: 16,
-                    backgroundColor: '#E0FFFF',
-                    borderRadius: 10,
-                    marginTop:30
-                }}>
-{
-    (isLoading) ? (
-        <ActivityIndicator/>
-    ) : (
-        <FlatList 
-        data={dsPro}
-        keyExtractor={(itemdiachi)=>  itemdiachi._id.toString}
-        renderItem={renderdiachi}
-        />
-    )
-}
-                   
+            <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: 16,
+                backgroundColor: '#FFFFFF',
+                fontWeight:'bold',
+                marginTop:5
+            }}>
+                {
+                    (isLoading) ? (
+                        <ActivityIndicator />
+                    ) : (
+                        <FlatList
+                            data={dsPro}
+                            keyExtractor={(itemdiachi) => itemdiachi._id.toString}
+                            renderItem={renderdiachi}
+                        />
+                    )
+                }
 
-                </View>
-           
+            </View>
+
         </View>
 
 

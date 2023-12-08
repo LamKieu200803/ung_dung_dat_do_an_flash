@@ -77,8 +77,10 @@ const ThanhToan = ({  route }) => {
           pttt: value,
           tongtien: tongtien,
           thoigian: thoigian,
-          trangthai: trangthai
+          trangthai: trangthai,
+          danhSachSanPham : dspro
         };
+        ;
       
         let url_api_hoadon = 'http://172.16.10.109:9997/hoadon/them/' + loginInfo._id;
       
@@ -209,151 +211,154 @@ const ThanhToan = ({  route }) => {
     const handleAddCard = () => {
         navigation.navigate('SanPham');
     };
-
-
-
+    const renderCartItem = ({ item }) => {
+      return (
+          <View style={styles.cartItemContainer}>
+              <Image source={{ uri: item.img }} style={styles.productImage} />
+              <View style={styles.productDetails}>
+              <View style={{ padding: 10 }}>
+                    <Image
+                        style={{ width: 80, height: 85 }}
+                        source={{ uri: item.img }} /></View>
+                  <Text style={styles.productName}>{item.tensp}</Text>
+                  <Text style={styles.productPrice}>giá sản phẩm: ${item.giasp}</Text>
+                  <Text style={styles.productPrice}>số lượng mua: {item.soluongmua}</Text>
+              </View>
+          </View>
+      );
+  }
+    const renderCart = () => (
+      <View style={{ flex: 1 }}>
+          {dspro.length > 0 ? (
+              <FlatList
+                  data={dspro}
+                  renderItem={renderCartItem}
+                  keyExtractor={(item) => item._id}
+                  ListEmptyComponent={renderEmptyCart}
+              />
+          ) : (
+              <View style={styles.emptyCartContainer}>
+                  <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+              </View>
+          )}
+      </View>
+  );
+  const renderEmptyCart = () => (
+    <View style={styles.emptyCartContainer}>
+        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+    </View>
+);
 
     return (
-        <View
-            style={
-                styles.container
-            }
+      <View style={styles.container}>
+      <View style={{
+          flexDirection: 'row',
+          paddingBottom: 10,
 
-        >
-            <TouchableOpacity onPress={() => { navigation.navigate('AddAddress') }}>
-                <View
-                    style={{
-                        margin: 10,
-                        borderRadius: 10,
-                        borderWidth: 2,
-                        borderColor: 'grey'
-                    }}
+      }}>
 
-                >
-                    <Ionicons
-                        style={{
-                            paddingTop: 50,
-                            textAlign: "center",
-                        }}
-                        name="add" size={50} color="grey"
-                    />
-                    <Text
-                        style={{
-                            textAlign: 'center',
-                            fontSize: 25,
-                            paddingBottom: 50,
-                            color: "grey"
-                        }}
-                    >
-                        Add New Adress
-                    </Text>
-                </View>
-            </TouchableOpacity>
+      </View>
+      <TouchableOpacity onPress={() => { navigation.navigate('AddAddress') }}>
+          <View
+              style={{
+                  margin: 10,
+                  borderRadius: 10,
+                  borderWidth: 2,
+                  borderColor: 'grey'
+              }}
 
-            <ScrollView>
-                <View
-                    ScrollView
-                >
-                    <View style={{
-                        flexDirection: 'row',
-                        paddingBottom: 10,
+          >
+              <Ionicons
+                  style={{
+                      paddingTop: 50,
+                      textAlign: "center",
+                  }}
+                  name="add" size={50} color="grey"
+              />
+              <Text
+                  style={{
+                      textAlign: 'center',
+                      fontSize: 25,
+                      paddingBottom: 50,
+                      color: "grey"
+                  }}
+              >
+                  Add New Adress
+              </Text>
+          </View>
+      </TouchableOpacity>
 
-                    }}>
+      <View>
+          <View style={{ flexDirection: 'row', padding: 20, borderTopWidth: 0.5 }}>
+              <View style={{ flexDirection: 'column', width: 200, height: 50, marginLeft: 15 }}>
 
-                    </View>
+                  <Text >
+                      {item?.address},{item?.state}   {"\n"}
+                  </Text>
+                  <Text style={{ color: 'grey' }}>
+                      {item?.thanhpho}
+                  </Text>
 
-                    <View
-                        style={{ flexDirection: 'row', padding: 20, borderTopWidth: 0.5 }}>
-                        <View style={{ flexDirection: 'column' }}>
-                           
-                            <Text >
-                             {item?.address},{item?.state}   {"\n"}                   
-                            </Text>
-                            <Text style={{ color: 'grey' }}>
-                         {item?.thanhpho}
-                            </Text>
-                       
-                        </View>
-                        <TouchableOpacity onPress={() => { navigation.navigate('AllDiachi') }}>
-                            <Text style={{
-                                backgroundColor: 'red',
-                                borderRadius: 20,
-                                padding: 10,
-                                left: 100,
-                                width: 100,
-                                textAlign: 'center',
-                                color: 'white'
-                            }}
-                            >Change</Text>
-                        </TouchableOpacity>
+              </View>
+              <TouchableOpacity onPress={() => { navigation.navigate('AllDiachi') }}>
+                  <Text style={{
+                      backgroundColor: 'red',
+                      borderRadius: 20,
+                      padding: 10,
+                      marginLeft: 100,
+                      width: 100,
+                      textAlign: 'center',
+                      color: 'white'
+                  }}
+                  >Change</Text>
+              </TouchableOpacity>
 
-                    </View>
-                    <TouchableOpacity>
+          </View>
+      </View>
 
 
-
-                    </TouchableOpacity>
-                    <View style={{ flexDirection: 'column', paddingTop: 15 }}>
-                        <Text style={{ fontSize: 30, paddingLeft: 20 }}>
-                            Price Details 
-                          
-                        </Text>
-                        <View style={{ flexDirection: 'row', paddingTop: 20,  }}>
-
-                            <View>
-                                <TextInput style={styles.chu} placeholder='Tên người mua' onChangeText={(txt) => settennguoimua(txt)}>
-                                </TextInput>
-                            </View>
-                        </View>
-                        <View style={{ flexDirection: 'row', paddingTop: 20,}}>
-                            <View>
-                                <TextInput style={styles.chu} placeholder='Số điện thoại' onChangeText={(txt) => setsdt(txt)}>
-                                </TextInput>
-                            </View>
-                        </View>
-                        <View >
-                        <TouchableOpacity onPress={() => navigation.navigate('Webview')}>
-                            <Text style={styles.button} >VnPay</Text>
-                        </TouchableOpacity>
-                    </View>
-                        <View style={{ flexDirection: 'row', paddingTop: 20, }}>
+      {dspro.length > 0 ? (
+renderCart()
+) : (
+<View style={styles.emptyCartContainer}>
+  <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+</View>
+)}
+      <View style={{ flexDirection: 'column', paddingTop: 15 }}>
+          <View style={{ flexDirection: 'row', paddingTop: 20, }}>
 
 
-                            <DropDownPicker
+              <DropDownPicker
 
-                                style={styles.chu1}
-                                open={open}
-                                value={value}
-                                items={pttt}
-                                setOpen={setOpen}
-                                setValue={setValue}
-                                setItems={setpttt}
-                                defaultValue="1"
-                                placeholder={"Chọn phương thức thanh toán"} // hoặc placeholder={null}
-
-
-                            />
-
-                        </View>
-                        <View style={{ flexDirection: 'row', borderTopWidth: 1 }}>
-                            <Text style={{ fontSize: 20, fontWeight: '700', paddingTop: 30, paddingLeft: 20 }}>
-                                Total Price
-                            </Text>
-                            <Text style={{ fontSize: 20, paddingLeft: 230, fontWeight: '700', paddingTop: 30, }}>
-                                ${tongtien}
-                            </Text>
-                        </View>
-                    </View>
-                    <View >
-                        <TouchableOpacity onPress={Save_UserMua}>
-                            <Text style={styles.button} >Checkout</Text>
-                        </TouchableOpacity>
-                    </View>
+                  style={styles.chu1}
+                  open={open}
+                  value={value}
+                  items={pttt}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setpttt}
+                  defaultValue="1"
+                  placeholder={"Chọn phương thức thanh toán"} // hoặc placeholder={null}
 
 
-                </View>
-            </ScrollView>
-        </View>
+              />
+
+          </View>
+          <View style={{ flexDirection: 'row', borderTopWidth: 1 }}>
+              <Text style={{ fontSize: 20, fontWeight: '700', paddingTop: 30, paddingLeft: 20 }}>
+                  Total Price
+              </Text>
+              <Text style={{ fontSize: 20, paddingLeft: 230, fontWeight: '700', paddingTop: 30, }}>
+                  ${tongtien}
+              </Text>
+          </View>
+      </View>
+      <View >
+          <TouchableOpacity onPress={Save_UserMua}>
+              <Text style={styles.button} >Checkout</Text>
+          </TouchableOpacity>
+      </View>
+  </View>
 
 
     );
@@ -362,37 +367,50 @@ const ThanhToan = ({  route }) => {
 export default ThanhToan
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
+  container: {
+      flex: 1,
+      backgroundColor: 'white',
+  },
+  button: {
+      left: 90,
+      margin: 30,
+      width: 200,
+      paddingVertical: 10,
+      borderRadius: 20,
+      color: "white",
+      fontSize: 25,
+      fontWeight: "700",
+      textAlign: "center",
+      backgroundColor: "red",
+  },
+  chu: {
+      fontSize: 15,
+      width: 450,
+      marginTop: 20,
+      height: 50,
+      borderWidth: 1,
+      marginLeft: 20
+  },
+  chu1: {
+      fontSize: 15,
+      width: 450,
+      height: 50,
+      borderWidth: 1,
+      marginLeft: 20,
+      marginBottom: 30,
+      marginTop: 20,
+  },
+  emptyCartContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
-    button: {
-        left: 90,
-        margin: 30,
-        width: 200,
-        paddingVertical: 10,
-        borderRadius: 20,
-        color: "white",
-        fontSize: 25,
-        fontWeight: "700",
-        textAlign: "center",
-        backgroundColor: "red",
+    emptyCartText: {
+      fontSize: 18,
+      fontWeight: 'bold',
     },
-    chu: {
-        fontSize: 15,
-        width: 450,
-        marginTop: 20,
-        height: 50,
-        borderWidth: 1,
-        marginLeft: 20
-    },
-    chu1: {
-        fontSize: 15,
-        width: 450,
-        height: 50,
-        borderWidth: 1,
-        marginLeft: 20,
-        marginBottom: 30,
-        marginTop: 20,
+    productDetails :{
+      backgroundColor:'red',
+
     }
 });
