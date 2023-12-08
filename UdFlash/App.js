@@ -26,7 +26,7 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <View style={styles.container}>
-      {/* <NavigationContainer>
+      <NavigationContainer>
         <Stack.Navigator initialRouteName='MhChao'>
           <Stack.Screen name="MhChao" component={MhChao} />
           <Stack.Screen name="SignUp" component={DangKi} />
@@ -34,7 +34,7 @@ export default function App() {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="SanPham" component={ChiTietSanPham} />
         </Stack.Navigator>
-      </NavigationContainer> */}
+      </NavigationContainer>
     </View>
   );
 }
