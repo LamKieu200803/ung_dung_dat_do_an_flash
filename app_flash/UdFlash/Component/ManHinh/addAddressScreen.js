@@ -5,8 +5,7 @@ const AddAddressScreen = (props) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
-  const [thanhpho, setthanhpho] = useState('');
-  const [state, setState] = useState('');
+ 
 
   // const handleAutoFillAddress = () => {
   //   // Thực hiện tự động điền địa chỉ
@@ -27,7 +26,7 @@ const AddAddressScreen = (props) => {
   // };
 
   const handleSaveAddress = () => {
-    let objPro = { name: name, phone: phone, address: address, thanhpho:thanhpho,state:state }
+    let objPro = { name: name, phone: phone, address: address }
     let url_api_diachi = 'http://172.16.10.109:9997/themdiachi';
 
     fetch(url_api_diachi, {
@@ -78,38 +77,18 @@ const AddAddressScreen = (props) => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Street address"
+          placeholder=" address"
           value={address}
           onChangeText={(txt)=>setAddress(txt)}
         />
       </View>
 
 
-      <Text style={styles.label}>city</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="city"
-          value={thanhpho}
-          onChangeText={(txt)=>setthanhpho(txt)}
-        />
-      </View>
-
-
-      <Text style={styles.label}>State</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="State"
-          value={state}
-          onChangeText={setState}
-        />
-      </View>
-
+    
      
 
       <TouchableOpacity style={styles.button} onPress={handleSaveAddress}>
-        <Text style={styles.buttonText}>Save</Text>
+        <Text style={styles.buttonText}>Hoàn thành</Text>
       </TouchableOpacity>
     </View>
   );

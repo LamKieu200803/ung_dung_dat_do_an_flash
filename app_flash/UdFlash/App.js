@@ -33,7 +33,7 @@ export default function App() {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="SanPham" component={ChiTietSanPham} />
           <Stack.Screen name="gioHang" component={GioHang} />
-          <Stack.Screen name="AllDiachi" component={AllDiachi} />
+          <Stack.Screen name="AllDiachi" component={AllDiachi} options={{title:'Chọn địa chỉ nhận hàng'}} />
           <Stack.Screen name="LichSu" component={LichSu} />
           <Stack.Screen name="TrangThai" component={TrangThai} />
           <Stack.Screen name="ThanhToan" component={ThanhToan} />
@@ -43,7 +43,7 @@ export default function App() {
           <Stack.Screen name="PaymentResultPage" component={PaymentResultPage} /> */}
           <Stack.Screen name="Doipass" component={Doipass} />
           <Stack.Screen name='Main' component={Main} options={{headerShown:false}}/>
-          <Stack.Screen name='AddAddress' component={AddAddressScreen} options={{headerShown:false}}/>
+          <Stack.Screen name='AddAddress' component={AddAddressScreen} options={{title:'Địa chỉ mới'}}/>
         </Stack.Navigator>
       </NavigationContainer>
     </View>

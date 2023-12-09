@@ -37,8 +37,7 @@ const AddressSChema = new mongoose.Schema({
   name: String,
   phone:String,
   address: String,
-  thanhpho: String,
-  state: Number
+ 
 })
 const Address = mongoose.model("Diachis",AddressSChema);
 
@@ -174,10 +173,9 @@ app.post("/themdiachi", (req, res) => {
   const { name,
     phone,
     address,
-    thanhpho,
-    state } = req.body
+    } = req.body
 
-  const newUser = new Address({name,phone,address,thanhpho,state})
+  const newUser = new Address({name,phone,address})
   newUser.save()
     .then(() => {
       res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công" })
@@ -523,6 +521,29 @@ app.put("/giohang/sua/:userId/:productId", (req, res) => {
     .catch((err) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
     });
+});
+
+// tính số lượng mới khi đã mua 
+app.post("/giohang/cap-nhat-sanpham", async (req, res) => {
+  const gioHang = req.body.gioHang;
+
+  try {
+    for (const item of gioHang) {
+      const sanPhamId = item.sanPhamId;
+      const soLuongMoi = item.soLuongMoi;
+
+      const sanPham = await SanPham.findById(sanPhamId);
+      if (sanPham) {
+        sanPham.soluong = soLuongMoi;
+        await sanPham.save();
+      }
+    }
+
+    res.send("Cập nhật số lượng sản phẩm thành công");
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
+  }
 });
 
 // xem hóa đơn theo id người dùng

@@ -32,38 +32,39 @@ const AllDiachi = (props) => {
 
     const renderdiachi = ({ item }) => {
         return (
-         <View>
-
-     
-            <View style={{ flexDirection: 'row', padding: 20, paddingLeft: 30,marginTop:20}}>
-                <View style={{ flexDirection: 'column', width: 200, height: 50, marginLeft: 15 }}>
-                    <Text>
-                        {item.address}, {item.state}
-                    </Text>
-                    <Text style={{ color: 'grey' }}>
-                        {item.thanhpho}
-                    </Text>
-                </View>
+            <View>
                 <TouchableOpacity onPress={() => props.navigation.navigate('ThanhToan', { item: item })}>
-                    <Text style={{
-                        backgroundColor: 'red',
-                        borderRadius: 20,
-                        padding: 10,
-                        left: 120,
-                        width: 100,
-                        textAlign: 'center',
-                        color: 'white',
-                    }}
-                    >Chọn</Text>
-                </TouchableOpacity>
-                
-               
+
+                    <View style={{ flexDirection: 'row', paddingLeft: 10, marginTop: 20 }}>
+                        <View style={{ flexDirection: 'column', width: 300, height: 50, marginLeft: 15 }}>
+                            <Text style={{ fontSize: 15 }}>
+                                {item.name}   |   {item.phone}
+                            </Text>
+                            <Text style={{ color: 'grey' }}>
+                                {item.address}
+                            </Text>
+                        </View>
+
+                        <Text style={{
+
+
+                            padding: 10,
+                            marginLeft: 80,
+                            fontSize: 15,
+                            textAlign: 'center',
+                            color: 'red',
+                        }}
+                        onPress={()=>{alert("sua")}}
+                        >sửa</Text>
+
+
+
+                    </View>
+                    <View>
+                        <Text style={{ borderBottomColor: '#F38E8E', borderBottomWidth: 1 }}></Text>
+                    </View></TouchableOpacity>
             </View>
-             <View>
-                    <Text style={{ borderBottomColor: '#F38E8E', borderBottomWidth: 1 }}></Text>
-                </View>
-                </View>
-           
+
         );
     };
 
@@ -80,13 +81,14 @@ const AllDiachi = (props) => {
 
     return (
         <View style={styles.container}>
+            <Text style={{ padding: 8, fontSize: 15, }}>Địa chỉ</Text>
             <View style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginBottom: 16,
                 backgroundColor: '#FFFFFF',
-                fontWeight:'bold',
-                marginTop:5
+                fontWeight: 'bold',
+                marginTop: 5
             }}>
                 {
                     (isLoading) ? (
@@ -102,6 +104,11 @@ const AllDiachi = (props) => {
 
             </View>
 
+            <TouchableOpacity  onPress={() => { props.navigation.navigate('AddAddress') }}>
+                <View style={{ alignItems: 'center', backgroundColor: 'white', paddingTop: 10, paddingBottom: 10 }}>
+                    <Text style={{ color: 'red' }}>  Thêm địa chỉ</Text>
+                </View>
+            </TouchableOpacity>
         </View>
 
 
