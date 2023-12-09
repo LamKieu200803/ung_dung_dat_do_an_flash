@@ -55,9 +55,11 @@ const ThanhToan = ({  route }) => {
           // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
           if (giohang.soluongmua <= giohang.sanPham.soluong) {
             console.log("Đủ hàng để mua");
+            let soluongmoi = giohang.sanPham.soluong - giohang.soluongmua;
+            console.log("soluongmoi = " + soluongmoi);
     
             // Thực hiện việc cập nhật số lượng sản phẩm
-            const capNhatSanPhamResponse = await capNhatSanPham(giohang.sanPham._id, giohang.soluongmua);
+            const capNhatSanPhamResponse = await capNhatSanPham(giohang.sanPham._id, soluongmoi);
             if (capNhatSanPhamResponse.ok) {
               console.log("Cập nhật số lượng sản phẩm thành công");
             } else {
@@ -71,27 +73,32 @@ const ThanhToan = ({  route }) => {
         console.log(error);
       }
     };
-    // const muaSanPham = async (danhSachSanPham) => {
-    //   const url_api_mua_sanpham = 'http://172.16.10.109:9997/giohang/mua-sanpham';
     
-    //   try {
-    //     const response = await fetch(url_api_mua_sanpham, {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify({ danhSachSanPham }),
-    //     });
+    const capNhatSanPham = async (sanPhamId, soLuongMoi) => {
+      const url_api_capnhat = 'http://172.16.10.109:9997/giohang/cap-nhat-sanpham';
+      const data = {
+        gioHang: [
+          {
+            sanPhamId: sanPhamId,
+            soLuongMoi: soLuongMoi
+          }
+        ]
+      };
     
-    //     if (response.ok) {
-    //       console.log('Mua sản phẩm thành công');
-    //     } else {
-    //       console.log('Mua sản phẩm thất bại');
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
+      try {
+        const response = await fetch(url_api_capnhat, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        return response;
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
 
 
       const Save_UserMua = () => {
