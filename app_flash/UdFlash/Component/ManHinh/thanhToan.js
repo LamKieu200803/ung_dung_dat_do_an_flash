@@ -39,7 +39,7 @@ const ThanhToan = ({  route }) => {
 
   
     const getlistgiohang = async () => {
-      const url_api_giohang = 'http://172.16.10.109:9997/giohang/' + loginInfo._id;
+      const url_api_giohang = 'http://172.16.10.100:9997/giohang/' + loginInfo._id;
     
       try {
         const response = await fetch(url_api_giohang);
@@ -51,15 +51,17 @@ const ThanhToan = ({  route }) => {
         for (const giohang of json) {
           console.log("Số lượng mua:", giohang.soluongmua);
           console.log("Số lượng sản phẩm:", giohang.sanPham.soluong);
-    
+          console.log("Số lượng đã bán:", giohang.sanPham.soluongban);
           // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
           if (giohang.soluongmua <= giohang.sanPham.soluong) {
             console.log("Đủ hàng để mua");
             let soluongmoi = giohang.sanPham.soluong - giohang.soluongmua;
+            let soluongban = giohang.sanPham.soluongban + giohang.soluongmua
             console.log("soluongmoi = " + soluongmoi);
+            console.log("soluongban = "+soluongban);
     
             // Thực hiện việc cập nhật số lượng sản phẩm
-            const capNhatSanPhamResponse = await capNhatSanPham(giohang.sanPham._id, soluongmoi);
+            const capNhatSanPhamResponse = await capNhatSanPham(giohang.sanPham._id, soluongmoi , soluongban);
             if (capNhatSanPhamResponse.ok) {
               console.log("Cập nhật số lượng sản phẩm thành công");
             } else {
@@ -74,13 +76,14 @@ const ThanhToan = ({  route }) => {
       }
     };
     
-    const capNhatSanPham = async (sanPhamId, soLuongMoi) => {
-      const url_api_capnhat = 'http://172.16.10.109:9997/giohang/cap-nhat-sanpham';
+    const capNhatSanPham = async (sanPhamId, soLuongMoi , soLuongBan) => {
+      const url_api_capnhat = 'http://172.16.10.100:9997/giohang/cap-nhat-sanpham';
       const data = {
         gioHang: [
           {
             sanPhamId: sanPhamId,
-            soLuongMoi: soLuongMoi
+            soLuongMoi: soLuongMoi,
+            soLuongBan : soLuongBan
           }
         ]
       };
@@ -114,7 +117,7 @@ const ThanhToan = ({  route }) => {
         };
         ;
       
-        let url_api_hoadon = 'http://172.16.10.109:9997/hoadon/them/' + loginInfo._id;
+        let url_api_hoadon = 'http://172.16.10.100:9997/hoadon/them/' + loginInfo._id;
       
         fetch(url_api_hoadon, {
           method: 'POST',

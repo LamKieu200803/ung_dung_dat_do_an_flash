@@ -30,9 +30,14 @@ const sanPhamSchema = new mongoose.Schema({
   giasp: String,
   img: String,
   motasp: String,
-  soluong: Number
-})
+  soluong: Number,
+  soluongban: {
+    type: Number,
+    default: 0
+  }
+});
 
+const SanPham = mongoose.model("SanPhams", sanPhamSchema);
 const AddressSChema = new mongoose.Schema({
   name: String,
   phone:String,
@@ -41,7 +46,7 @@ const AddressSChema = new mongoose.Schema({
 })
 const Address = mongoose.model("Diachis",AddressSChema);
 
-const SanPham = mongoose.model("SanPhams", sanPhamSchema);
+
 
 // Schema và model chitietsanpham
 const chiTietSanPhamSchema = new mongoose.Schema({
@@ -312,9 +317,9 @@ app.get('/sanpham', async (req, res) => {
 
 // thêm sản phẩm
 app.post("/sanpham/them", (req, res) => {
-  const { tensp, giasp, img, motasp, soluong } = req.body;
+  const { tensp, giasp, img, motasp, soluong, soluongban } = req.body;
 
-  const newSanPham = new SanPham({ tensp, giasp, img, motasp, soluong })
+  const newSanPham = new SanPham({ tensp, giasp, img, motasp, soluong, soluongban })
   newSanPham.save()
     .then(() => {
       res.status(201).json({ message: "thêm sản phẩm thành công" })
@@ -531,15 +536,17 @@ app.post("/giohang/cap-nhat-sanpham", async (req, res) => {
     for (const item of gioHang) {
       const sanPhamId = item.sanPhamId;
       const soLuongMoi = item.soLuongMoi;
+      const soLuongBan = item.soLuongBan;
 
       const sanPham = await SanPham.findById(sanPhamId);
       if (sanPham) {
         sanPham.soluong = soLuongMoi;
+        sanPham.soluongban = soLuongBan; // Cập nhật số lượng đã bán
         await sanPham.save();
       }
     }
 
-    res.send("Cập nhật số lượng sản phẩm thành công");
+    res.send("Cập nhật số lượng sản phẩm và số lượng đã bán thành công");
   } catch (err) {
     console.log("Lỗi ", err);
     res.status(500).send("Lỗi máy chủ");
@@ -690,6 +697,43 @@ app.put("/hoadon/sua/:userId/:id", (req, res) => {
     });
 });
 
+// top3 sản phẩm bán chạy
+app.get("/thongke/top3sanpham", async (req, res) => {
+  try {
+    const result = await hoaDon.aggregate([
+      { $unwind: "$danhSachSanPham" },
+      {
+        $group: {
+          _id: "$danhSachSanPham.tensp",
+          soluongban: { $sum: { $toInt: "$danhSachSanPham.soluongmua" } },
+        },
+      },
+      { $sort: { soluongban: -1 } },
+      { $limit: 3 },
+      {
+        $lookup: {
+          from: "SanPhams",
+          localField: "_id",
+          foreignField: "tensp",
+          as: "sanpham",
+        },
+      },
+      { $unwind: "$sanpham" },
+      {
+        $project: {
+          _id: 0,
+          tensp: "$sanpham.tensp",
+          soluongban: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("Lỗi server");
+  }
+});
 
 // // thêm lịch sử mua hàng
 // app.post("/lichsu/them/:userId", (req, res) => {

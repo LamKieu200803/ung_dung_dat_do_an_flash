@@ -22,7 +22,7 @@ const GioHang = (props) => {
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0); // Thêm state để lưu trữ totalPrice
   const getListPro = async () => {
-    let url_api_giohang = 'http://172.16.10.109:9997/giohang/' + loginInfo._id;
+    let url_api_giohang = 'http://172.16.10.100:9997/giohang/' + loginInfo._id;
     try {
       const response = await fetch(url_api_giohang);
       const json = await response.json();
@@ -66,7 +66,7 @@ const GioHang = (props) => {
 
 // lấy số lượng của sản phẩm về
 const fetchsoluong = async () => { 
-  let url_fe = 'http://172.16.10.109:9997/chitietsanpham/' + idsp ;
+  let url_fe = 'http://172.16.10.100:9997/chitietsanpham/' + idsp ;
   try {
     const response1 = await fetch(url_fe);
     const json1 = await response1.json();
@@ -189,7 +189,7 @@ React.useEffect(() => {
     // console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.16.10.109:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
+      fetch('http://172.16.10.100:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -224,7 +224,7 @@ React.useEffect(() => {
     console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.16.10.109:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
+      fetch('http://172.16.10.100:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -275,7 +275,7 @@ React.useEffect(() => {
   const renderCartItem = ({ item }) =>{ 
     
     const DelPro = () =>{
-      let url_api_del = 'http://172.16.10.109:9997/giohang/xoa/'+loginInfo._id+"/" +item.productId ;
+      let url_api_del = 'http://172.16.10.100:9997/giohang/xoa/'+loginInfo._id+"/" +item.productId ;
   
       fetch(url_api_del,{
   
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
-    backgroundColor: '#E0FFFF',
+    backgroundColor: '#DF5A5A',
     borderRadius: 10
   },
   productImage: {
@@ -413,13 +413,13 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    
     marginBottom: 8,
-    color: 'red'
+    color: 'white'
   },
   productPrice: {
     fontSize: 14,
-    color: 'red',
+    color: 'white',
     marginBottom: 8,
   },
   quantityContainer: {

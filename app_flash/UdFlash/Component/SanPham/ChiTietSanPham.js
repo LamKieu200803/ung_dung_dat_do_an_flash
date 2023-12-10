@@ -22,7 +22,7 @@ const ChiTietSanPham = ({ route, navigation }) => {
 
     const Save_Pro = () => {
         let objPro = { img: img, tensp: tensp, giasp: giasp, soluongmua: "1" }
-        let url_api_giohang = 'http://172.16.10.109:9997/giohang/them/' + loginInfo._id +"/"+idsp;
+        let url_api_giohang = 'http://172.16.10.100:9997/giohang/them/' + loginInfo._id +"/"+idsp;
 
         fetch(url_api_giohang, {
             method: 'POST',

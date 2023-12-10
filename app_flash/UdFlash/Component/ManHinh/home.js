@@ -27,7 +27,7 @@ const data = [
 
 const getListPro = async () =>{
 
-    let api_url_pro = 'http://172.16.10.109:9997/sanpham';
+    let api_url_pro = 'http://172.16.10.100:9997/sanpham';
     try {
       const response = await fetch(api_url_pro);
       const json = await response.json();
@@ -70,10 +70,12 @@ const getListPro = async () =>{
                     <Image source={{uri: item.img}} style={styles.image} />
                     <View style={styles.overlay}>
                         <Text style={styles.name}>{item.tensp}</Text>
-                        <Text style={styles.discountedPrice}>
-                            <Text> ${item.giasp}</Text>
+                        <View style={{flexDirection:'row'}}>
+                           
+                            <Text style={styles.discountedPrice }> ${item.giasp}      </Text>
+                            <Text>số lượng bán : {item.soluongban}</Text>
                             {/* <Text> ${discountedPrice.toFixed(2)}</Text> */}
-                        </Text>
+                        </View>
                     </View>
                 </View>
             </View>
