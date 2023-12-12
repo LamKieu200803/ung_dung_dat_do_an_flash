@@ -22,7 +22,7 @@ const GioHang = (props) => {
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0); // Thêm state để lưu trữ totalPrice
   const getListPro = async () => {
-    let url_api_giohang = 'http://172.16.10.100:9997/giohang/' + loginInfo._id;
+    let url_api_giohang = 'http://172.16.10.106:9997/giohang/' + loginInfo._id;
     try {
       const response = await fetch(url_api_giohang);
       const json = await response.json();
@@ -39,85 +39,54 @@ const GioHang = (props) => {
     
       }); 
       setTotalPrice(totalPrice);
-       
-    } catch (e) {
+      // for (const giohang of json) {
+      //   console.log("Số lượng mua:", giohang.soluongmua);
+      //   console.log("Số lượng sản phẩm:", giohang.sanPham.soluong);
+      
+      //   // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
+      //   if (giohang.soluongmua <= giohang.sanPham.soluong) {
+      //     console.log("Đủ hàng để mua");
+    
+      //   } else {
+      //     console.log("Không đủ hàng để mua");
+      //   }
+      // }
+    }
+     catch (e) {
       console.log(e);
-    } finally {
-      setisLoading(false);
     }
   };
 
-
+const check = () =>{
+  for (const giohang of dspro) {
+    console.log("Số lượng mua:", giohang.soluongmua);
+    console.log("Số lượng sản phẩm:", giohang.sanPham.soluong);
   
-  // tạo biến lưu trữ id và số lượng sp có trong giỏ
-  const soLuongMuaTheoId = dspro.reduce((result, item) => {
-    result[item.productId] = item.soluongmua;
-   
-    return result;
-  }, {});
-  
-  console.log(soLuongMuaTheoId);
+    // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
+    if (giohang.soluongmua <= giohang.sanPham.soluong) {
+      console.log("Đủ hàng để mua");
 
-  //lặp qua đối tượng có trong giỏ 
-  dspro.forEach((sanPham) => {
-    console.log(sanPham.tensp);
-
-  });
-
-// lấy số lượng của sản phẩm về
-const fetchsoluong = async () => { 
-  let url_fe = 'http://172.16.10.100:9997/chitietsanpham/' + idsp ;
-  try {
-    const response1 = await fetch(url_fe);
-    const json1 = await response1.json();
-    const soluong = json1.soluong;
-    const product = dspro.find((item) => item.productId === json1._id);
-    
-    if (product) {
-      const soluongmua = product.soluongmua;
-      const soluongConLai = soluong - soluongmua;
-      setsoluongconlai(soluongConLai);
-      console.log("Số lượng còn lại của sản phẩm: " + soluongConLai);
-      // Thực hiện các xử lý khác liên quan đến số lượng còn lại của sản phẩm
-    }else {
-      console.log("Không tìm thấy sản phẩm với productId tương ứng trong dspro.");
+    } else {
+      console.log("Không đủ hàng để mua , mặt hàng "+giohang.tensp+" đã hết");
+      alert("Không đủ hàng để mua , mặt hàng "+giohang.tensp+" đã hết")
+      return giohang ;
     }
-
-    
-  } catch (e) {
-    console.log(e);
-  } 
-};
-
-// const giamsoluong = () => {
-  
-//   let objSp = { soluong: soluongconlai };
-//   let url_api_giamsoluong = 'http://172.16.10.109:9997/sanpham/sua/' + idsp;
-
-//   fetch(url_api_giamsoluong, {
-//     method: 'PUT',
-//     headers: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(objSp),
-//   })
-//     .then((res) => {
-//       if (res.status === 200) {
-//         console.log(soluongconlai);
-//         // Gọi hàm xử lý số lượng còn lại ở đây
-       
-//       }
-//     })
-//     .catch((e) => {
-//       console.log(e);
-//     });
-// };
-
+}
+}
 
   const BUY = () =>{
-    props.navigation.navigate('ThanhToan', { totalPrice: totalPrice })
- //giamsoluong();
+   
+      const insufficientStockItem = check();
+      
+      if (insufficientStockItem) {
+    
+       
+        // Thực hiện các xử lý khác khi không đủ hàng, ví dụ: thông báo cho người dùng.
+      } else {
+        props.navigation.navigate('ThanhToan', { totalPrice: totalPrice });
+      }
+    
+
   }
    
 
@@ -146,7 +115,7 @@ loadData();
 useEffect(() => {     
   if (isLoginInfoLoaded) {
     getListPro();
-    fetchsoluong()
+   
     setisLoading(true)
   
   
@@ -189,7 +158,7 @@ React.useEffect(() => {
     // console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.16.10.100:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
+      fetch('http://172.16.10.106:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -224,7 +193,7 @@ React.useEffect(() => {
     console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.16.10.100:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
+      fetch('http://172.16.10.106:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -275,7 +244,7 @@ React.useEffect(() => {
   const renderCartItem = ({ item }) =>{ 
     
     const DelPro = () =>{
-      let url_api_del = 'http://172.16.10.100:9997/giohang/xoa/'+loginInfo._id+"/" +item.productId ;
+      let url_api_del = 'http://172.16.10.106:9997/giohang/xoa/'+loginInfo._id+"/" +item.productId ;
   
       fetch(url_api_del,{
   
@@ -348,7 +317,7 @@ React.useEffect(() => {
 
   const renderEmptyCart = () => (
     <View style={styles.emptyCartContainer}>
-      <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+      <Text style={styles.emptyCartText}>Giỏ hàng của bạn hiện đang trống</Text>
     </View>
   );
  
@@ -364,7 +333,7 @@ React.useEffect(() => {
         />
       ) : (
         <View style={styles.emptyCartContainer}>
-          <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+          <Text style={styles.emptyCartText}>Giỏ hàng của bạn hiện đang trống</Text>
         </View>
       )}
       <Text style={styles.totalPriceText}>Total Price: ${totalPrice}</Text>
@@ -380,7 +349,7 @@ React.useEffect(() => {
         renderCart()
       ) : (
         <View style={styles.emptyCartContainer}>
-          <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+          <Text style={styles.emptyCartText}>Giỏ hàng của bạn hiện đang trống</Text>
         </View>
       )}
 

@@ -27,7 +27,7 @@ const AddAddressScreen = (props) => {
 
   const handleSaveAddress = () => {
     let objPro = { name: name, phone: phone, address: address }
-    let url_api_diachi = 'http://172.16.10.100:9997/themdiachi';
+    let url_api_diachi = 'http://172.16.10.106:9997/themdiachi';
 
     fetch(url_api_diachi, {
         method: 'POST',

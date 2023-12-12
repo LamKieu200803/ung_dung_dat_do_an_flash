@@ -16,13 +16,15 @@ const ChiTietSanPham = ({ route, navigation }) => {
     const [motasp, setmotasp] = useState(route.params.item_sp.motasp);
     const [soluong, setsoluong] = useState(route.params.item_sp.soluong);
     const [idsp, setidsp] = useState(route.params.item_sp._id);
+    const [dspro, setdspro] = useState([]);
+    
     
     const [loginInfo, setloginInfo] = useState('');
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
 
     const Save_Pro = () => {
         let objPro = { img: img, tensp: tensp, giasp: giasp, soluongmua: "1" }
-        let url_api_giohang = 'http://172.16.10.100:9997/giohang/them/' + loginInfo._id +"/"+idsp;
+        let url_api_giohang = 'http://172.16.10.106:9997/giohang/them/' + loginInfo._id +"/"+idsp;
 
         fetch(url_api_giohang, {
             method: 'POST',
@@ -46,6 +48,21 @@ const ChiTietSanPham = ({ route, navigation }) => {
 
 
     }
+
+    const getlistgiohang = async () => {
+        const url_api_giohang = 'http://172.16.10.106:9997/giohang/' + loginInfo._id;
+      
+        try {
+          const response = await fetch(url_api_giohang);
+          const json = await response.json();
+          setdspro(json);
+          console.log("list:", json);
+      
+         
+        } catch (error) {
+          console.log(error);
+        }
+      };
     const getLoginInfo = async () => {
         try {
             const value = await AsyncStorage.getItem('loginInfo')

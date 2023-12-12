@@ -9,7 +9,7 @@ const LichSu = (props) => {
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const [dspro, setdspro] = useState([]);
   const getListPro = async () => {
-    let url_api_lichsu = 'http://172.16.10.100:9997/lichsu/' + loginInfo._id
+    let url_api_lichsu = 'http://172.16.10.106:9997/lichsu/' + loginInfo._id
     try {
       const response = await fetch(url_api_lichsu);
       const json = await response.json();

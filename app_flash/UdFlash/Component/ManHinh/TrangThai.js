@@ -11,7 +11,7 @@ const TrangThai = (props) => {
     const [isLoading, setisLoading] = useState(true);
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getListPro = async () => {
-        let url_api_lichsu = 'http://172.16.10.100:9997/hoadon/' + loginInfo._id
+        let url_api_lichsu = 'http://172.16.10.106:9997/hoadon/' + loginInfo._id
         try {
             const response = await fetch(url_api_lichsu);
             const json = await response.json();
@@ -69,18 +69,21 @@ const TrangThai = (props) => {
     const renderCartItem = ({ item }) => {
         return (
             <View style={styles.cartItemContainer}>
-                <Image source={{ uri: item.img }} style={styles.productImage} />
-                <View style={styles.productDetails}>
-                    <Text style={styles.productName}>Tên sp:{item.tensp}</Text>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View>
-                            <Text style={styles.productPrice}>Price: ${item.giasp}</Text>
-                            <Text style={styles.productPrice}>Số lượng: {item.soluong}</Text>
-                        </View>
-                       <Text style={{fontWeight:'bold',marginLeft:200}}>Chờ xác nhận</Text>
-                    </View>
-
+                 <View style={{ flexDirection: 'row' }}> 
+             
+                  <View style={{width:270,marginLeft:20}}>
+                        <Text style={styles.productName}>Tên người mua:{item.tennguoimua}</Text>
+                            <Text style={styles.productPrice}>Phone:{item.giasp}</Text>
+                            <Text style={styles.productPrice}>Phương thức thanh toán: {item.pttt}</Text>
+                            <Text style={styles.productPrice}>Địa chỉ: {item.diachi}</Text>
+                            <Text style={styles.productPrice}>Tổng tiền: {item.tongtien}</Text>
+                            <Text style={styles.productPrice}>Trạng Thai: {item.trangthai}</Text>
+                            <Text style={styles.productPrice}>Ngàu mua {item.thoigian}</Text>
+                  </View>
+                      <Text style={{ fontWeight: 'bold', marginLeft:80,  color: 'white',textAlignVertical:'center' }}>Chờ xác nhận</Text>
+             
                 </View>
+
             </View>
         );
     }
@@ -90,7 +93,7 @@ const TrangThai = (props) => {
         </View>
     );
     const renderCart = () => (
-        <View style={{ flex: 1 ,marginTop:10}}>
+        <View style={{ flex: 1, marginTop: 10 }}>
             {dspro.length > 0 ? (
                 <FlatList
                     data={dspro}
@@ -113,9 +116,8 @@ const TrangThai = (props) => {
             <Text style={styles.dontrangthai}>Đơn trạng thái</Text>
             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                 <Text style={styles.left}>Chờ xác nhận</Text>
-                <Text style={styles.chu}>Đang giao</Text>
-                <Text style={styles.chu}>Đã giao</Text>
-                <Text style={styles.chu}>Đã huỷ</Text>
+                <Text style={styles.chu}>Xác nhận</Text>
+
             </View>
             {dspro.length > 0 ? (
                 renderCart()
@@ -131,26 +133,28 @@ export default TrangThai
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#DF5A5A',
     },
     dontrangthai: {
         fontSize: 25,
         textAlign: 'center',
         marginTop: 25,
         fontWeight: 'bold',
-        marginBottom: 10
+        marginBottom: 10,
+        color: 'white'
     },
     chu: {
-        marginLeft: 60,
+        marginLeft: 290,
         fontSize: 15,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: 'white'
     }, cartItemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 16,
-        backgroundColor: 'white',
+        backgroundColor: '#DF5A5A',
         borderRadius: 10,
-        borderWidth:1,
+        borderWidth: 1
     },
     productImage: {
         width: 80,
@@ -160,21 +164,26 @@ const styles = StyleSheet.create({
     },
     productDetails: {
         flex: 1,
+        backgroundColor: '#DF5A5A',
+        marginLeft: 10,
     },
     productName: {
         fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 8,
+        color: 'white'
     },
     productPrice: {
         fontSize: 14,
-        fontWeight:'bold',
+        fontWeight: 'bold',
         marginBottom: 8,
-
+        color: 'white'
     },
     left: {
         marginLeft: 20,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: 15,
+        color: 'white'
     },
     emptyCartContainer: {
         flex: 1,

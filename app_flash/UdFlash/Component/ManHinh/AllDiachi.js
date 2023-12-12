@@ -15,7 +15,7 @@ const AllDiachi = (props) => {
     const [email, setEmail] = useState('');
     const [stateselect, setStateselect] = useState('');
     const getListPro = async () => {
-        let url_api_diachi = 'http://172.16.10.100:9997/diachi'
+        let url_api_diachi = 'http://172.16.10.106:9997/diachi'
 
         try {
             const response = await fetch(url_api_diachi);

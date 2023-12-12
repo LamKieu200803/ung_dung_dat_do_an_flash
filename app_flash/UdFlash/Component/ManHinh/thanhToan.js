@@ -39,7 +39,7 @@ const ThanhToan = ({  route }) => {
 
   
     const getlistgiohang = async () => {
-      const url_api_giohang = 'http://172.16.10.100:9997/giohang/' + loginInfo._id;
+      const url_api_giohang = 'http://172.16.10.106:9997/giohang/' + loginInfo._id;
     
       try {
         const response = await fetch(url_api_giohang);
@@ -47,37 +47,44 @@ const ThanhToan = ({  route }) => {
         setdspro(json);
         console.log("list:", json);
     
-        // Lặp qua danh sách sản phẩm trong giỏ hàng
-        for (const giohang of json) {
-          console.log("Số lượng mua:", giohang.soluongmua);
-          console.log("Số lượng sản phẩm:", giohang.sanPham.soluong);
-          console.log("Số lượng đã bán:", giohang.sanPham.soluongban);
-          // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
-          if (giohang.soluongmua <= giohang.sanPham.soluong) {
-            console.log("Đủ hàng để mua");
-            let soluongmoi = giohang.sanPham.soluong - giohang.soluongmua;
-            let soluongban = giohang.sanPham.soluongban + giohang.soluongmua
-            console.log("soluongmoi = " + soluongmoi);
-            console.log("soluongban = "+soluongban);
-    
-            // Thực hiện việc cập nhật số lượng sản phẩm
-            const capNhatSanPhamResponse = await capNhatSanPham(giohang.sanPham._id, soluongmoi , soluongban);
-            if (capNhatSanPhamResponse.ok) {
-              console.log("Cập nhật số lượng sản phẩm thành công");
-            } else {
-              console.log("Cập nhật số lượng sản phẩm thất bại");
-            }
-          } else {
-            console.log("Không đủ hàng để mua");
-          }
-        }
+       
       } catch (error) {
         console.log(error);
       }
     };
     
+    const tinhSoLuongMoi = async (gioHang) => {
+      for (const giohang of gioHang) {
+        console.log("Số lượng mua:", giohang.soluongmua);
+        console.log("Số lượng sản phẩm:", giohang.sanPham.soluong);
+        console.log("Số lượng đã bán:", giohang.sanPham.soluongban);
+        // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
+        if (giohang.soluongmua <= giohang.sanPham.soluong) {
+          console.log("Đủ hàng để mua");
+          let soluongmoi = giohang.sanPham.soluong - giohang.soluongmua;
+          let soluongban = giohang.sanPham.soluongban + giohang.soluongmua;
+          console.log("soluongmoi = " + soluongmoi);
+          console.log("soluongban = " + soluongban);
+    
+          // Thực hiện việc cập nhật số lượng sản phẩm
+          const capNhatSanPhamResponse = await capNhatSanPham(
+            giohang.sanPham._id,
+            soluongmoi,
+            soluongban
+          );
+          if (capNhatSanPhamResponse.ok) {
+            console.log("Cập nhật số lượng sản phẩm thành công");
+          } else {
+            console.log("Cập nhật số lượng sản phẩm thất bại");
+          }
+        } else {
+          console.log("Không đủ hàng để mua");
+        }
+      }
+    };
+    
     const capNhatSanPham = async (sanPhamId, soLuongMoi , soLuongBan) => {
-      const url_api_capnhat = 'http://172.16.10.100:9997/giohang/cap-nhat-sanpham';
+      const url_api_capnhat = 'http://172.16.10.106:9997/giohang/cap-nhat-sanpham';
       const data = {
         gioHang: [
           {
@@ -102,7 +109,10 @@ const ThanhToan = ({  route }) => {
       }
     };
 
-
+const ThanhToan = () =>{
+   tinhSoLuongMoi(dspro);
+  Save_UserMua();
+}
 
       const Save_UserMua = () => {
         let objUserMua = {
@@ -117,7 +127,7 @@ const ThanhToan = ({  route }) => {
         };
         ;
       
-        let url_api_hoadon = 'http://172.16.10.100:9997/hoadon/them/' + loginInfo._id;
+        let url_api_hoadon = 'http://172.16.10.106:9997/hoadon/them/' + loginInfo._id;
       
         fetch(url_api_hoadon, {
           method: 'POST',
@@ -143,7 +153,7 @@ const ThanhToan = ({  route }) => {
         });
       };
       const DelPro = () => {
-        let url_api_del = 'http://172.16.10.109:9997/giohang/xoa/' + loginInfo._id;
+        let url_api_del = 'http://172.16.10.106:9997/giohang/xoa/' + loginInfo._id;
       
         fetch(url_api_del, {
           method: 'DELETE',
@@ -347,7 +357,7 @@ Tổng tiền
           </View>
       </View>
       <View >
-          <TouchableOpacity onPress={Save_UserMua}>
+          <TouchableOpacity onPress={ThanhToan}>
               <Text style={styles.button} >Thanh toán</Text>
           </TouchableOpacity>
       </View>
