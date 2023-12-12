@@ -16,53 +16,76 @@ const ChiTietSanPham = ({ route, navigation }) => {
     const [motasp, setmotasp] = useState(route.params.item_sp.motasp);
     const [soluong, setsoluong] = useState(route.params.item_sp.soluong);
     const [idsp, setidsp] = useState(route.params.item_sp._id);
-    const [dspro, setdspro] = useState([]);
-    
     
     const [loginInfo, setloginInfo] = useState('');
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
 
-    const Save_Pro = () => {
-        let objPro = { img: img, tensp: tensp, giasp: giasp, soluongmua: "1" }
-        let url_api_giohang = 'http://172.16.10.106:9997/giohang/them/' + loginInfo._id +"/"+idsp;
-
-        fetch(url_api_giohang, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(objPro)
-        }).then((res) => {
-            if (res.status == 201)
-                alert("them sản phẩm vào giỏ hàng thanh cong")
-                //navigation.navigate('gioHang') 
-              //handleGioHang()
-               console.log(" TÌm thấy id"+loginInfo._id)
-                console.log("thanh cong")
-             
-        })
-            .catch((e) => {  
-                console.log(e);  
-            })
-
-
-    }
-
-    const getlistgiohang = async () => {
-        const url_api_giohang = 'http://172.16.10.106:9997/giohang/' + loginInfo._id;
-      
-        try {
-          const response = await fetch(url_api_giohang);
-          const json = await response.json();
-          setdspro(json);
-          console.log("list:", json);
-      
-         
-        } catch (error) {
-          console.log(error);
+  const Save_Pro = () => {
+    let objPro = { img: img, tensp: tensp, giasp: giasp, soluongmua: 1 };
+  
+    let url_api_giohang = "http://172.16.10.106:9997/giohang/them/" + loginInfo._id + "/" + idsp;
+    let url_api_gio = "http://172.16.10.106:9997/giohang/" + loginInfo._id;
+  
+    fetch(url_api_gio)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Lỗi khi gọi API");
         }
-      };
+        return response.json();
+      })
+      .then((json) => {
+        let existingProduct = json.find((product) => product.productId === idsp);
+  
+        if (existingProduct) {
+          existingProduct.soluongmua += 1;
+  
+          return fetch(
+            "http://172.16.10.106:9997/giohang/sua/" + loginInfo._id + "/" + idsp,
+            {
+              method: "PUT",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(existingProduct),
+            }
+          )
+          .then((res) => {
+            if (res.status === 200) {
+              console.log("Cập nhật sản phẩm trong giỏ hàng thành công");
+              return res.json();
+            } else {
+              throw new Error("Cập nhật sản phẩm trong giỏ hàng thất bại");
+            }
+          });
+        } else {
+          return fetch(url_api_giohang, {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(objPro),
+          })
+          .then((res) => {
+            if (res.status === 201) {
+              console.log("Thêm sản phẩm vào giỏ hàng thành công");
+              return res.json();
+            } else {
+              throw new Error("Thêm sản phẩm vào giỏ hàng thất bại");
+            }
+          });
+        }
+      })
+      .then((data) => {
+        console.log("Tìm thấy id: " + loginInfo._id);
+        console.log("Thông tin sản phẩm:", data);
+        alert("Thao tác thành công");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
     const getLoginInfo = async () => {
         try {
             const value = await AsyncStorage.getItem('loginInfo')
