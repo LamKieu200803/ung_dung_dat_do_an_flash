@@ -20,7 +20,7 @@ const Header = () => {
         <Modal.Header closeButton>
           <Modal.Title>Đăng xuất</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Woohoo, bạn có chắc muốn đăng xuất không!</Modal.Body>
+        <Modal.Body>Bạn có chắc muốn đăng xuất không!</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close

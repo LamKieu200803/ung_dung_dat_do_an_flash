@@ -115,6 +115,7 @@ const Orders = () => {
           <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
           <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
           <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
+          <Dropdown.Item eventKey="Hủy đơn hàng">Hủy đơn hàng</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
       <DataTable
@@ -142,6 +143,7 @@ const Orders = () => {
                 <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
                 <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
                 <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
+                <Dropdown.Item eventKey="Hủy đơn hàng">Hủy đơn hàng</Dropdown.Item>
                 {/* Add other status options as needed */}
               </Dropdown.Menu>
             </Dropdown>
