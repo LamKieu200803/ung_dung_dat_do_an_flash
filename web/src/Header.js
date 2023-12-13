@@ -1,10 +1,35 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "./assets/logo.png";
+import { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 const Header = () => {
+  const navigation = useNavigate();
+  const handleLogout = () => {
+    navigation("/");
+  };
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   return (
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Đăng xuất</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Woohoo, bạn có chắc muốn đăng xuất không!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleLogout}>
+            Đăng xuất
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
           <div
@@ -55,6 +80,13 @@ const Header = () => {
             </li>
           </ul>
         </div>
+      </div>
+      <div>
+        <img
+          src={require("./assets/abc.png")}
+          style={{ width: "30px", marginRight: "100px" }}
+          onClick={() => handleShow()}
+        />
       </div>
     </nav>
   );

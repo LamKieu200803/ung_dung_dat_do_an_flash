@@ -17,7 +17,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route path="/" element={<DangNhap />} /> */}
+        <Route path="/" element={<DangNhap />} />
         <Route
           path="/home"
           element={
