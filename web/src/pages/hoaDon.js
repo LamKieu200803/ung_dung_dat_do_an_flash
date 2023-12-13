@@ -110,8 +110,10 @@ const Orders = () => {
           {filterStatus}
         </Dropdown.Toggle>
         <Dropdown.Menu>
-<Dropdown.Item eventKey="Tất cả">Tất cả</Dropdown.Item>
-          <Dropdown.Item eventKey="Đang xử lý">Đang xử lý</Dropdown.Item>
+          <Dropdown.Item eventKey="Tất cả">Tất cả</Dropdown.Item>
+          <Dropdown.Item eventKey="Chờ xác nhận">Chờ xác nhận</Dropdown.Item>
+          <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
+          <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
           <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
@@ -136,7 +138,9 @@ const Orders = () => {
                 {newStatus || "Chọn trạng thái"}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item eventKey="Đang xử lý">Đang xử lý</Dropdown.Item>
+                <Dropdown.Item eventKey="Chờ xác nhận">Chờ xác nhận</Dropdown.Item>
+                <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
+                <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
                 <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
                 {/* Add other status options as needed */}
               </Dropdown.Menu>
