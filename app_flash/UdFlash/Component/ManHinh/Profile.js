@@ -112,7 +112,6 @@ const Profile = (props) => {
             </View>
         </View>
     )
-
 };
 
 export default Profile

@@ -24,7 +24,13 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("Users", userSchema);
 
-// Schema và model sanpham
+// Schema và model danh mục 
+const danhMucSchema = new mongoose.Schema({
+  tendanhmuc :String 
+
+})
+const DanhMuc = mongoose.model("DanhMucs",danhMucSchema)
+
 const sanPhamSchema = new mongoose.Schema({
   tensp: String,
   giasp: String,
@@ -34,10 +40,15 @@ const sanPhamSchema = new mongoose.Schema({
   soluongban: {
     type: Number,
     default: 0
+  },
+  danhMucId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'DanhMucs',
+    required: true
   }
 });
 
-const SanPham = mongoose.model("SanPhams", sanPhamSchema);
+const SanPham = mongoose.model('SanPhams', sanPhamSchema);
 const AddressSChema = new mongoose.Schema({
   name: String,
   phone:String,
@@ -122,47 +133,6 @@ const thongTin = mongoose.model("ThongTins", thongTinSchema);
 
 
 
-// // Schema và model lịch sử mua hàng
-// const lichSuSchema = new mongoose.Schema({
-//   userId: {
-//     type: String,
-//     required: true
-//   },
-//   tensp: String,
-//   giasp: String,
-//   img: String,
-//   soluongmua: String,
-//   pttt: String,
-//   tennguoimua: String,
-//   tongtien: String,
- 
-//   thoigian: String
-// })
-
-// const lichSu = mongoose.model("LichSus", lichSuSchema)
-
-
-//Schema và model chi tiết hóa đơn
-
-// const hoaDonChitietSchema = new mongoose.Schema({
-//   userId: {
-//         type: String,
-//         required: true
-//       },
-//       tensp: String,
-//       giasp: String,
-//       img: String,
-//       soluongmua: Number,
-//       hoaDonId: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'HoaDons',
-//         required: true
-//       },
-    
-  
-// })
-
-//const hoaDonChiTiet = mongoose.model("ChiTietHoaDons", hoaDonChitietSchema);
 
 // dki tài khoản 
 app.post("/dangki", (req, res) => {
@@ -304,6 +274,29 @@ app.get('/user/:id', async (req, res) => {
     res.status(500).send("Lỗi server");
   }
 });
+
+// xem danh mục
+app.get('/danhmuc',async (req,res)=>{
+  try {
+    const danhmuc = await DanhMuc.find({})
+    res.json(danhmuc)
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server")
+  }
+})
+
+// thêm danh mục
+app.post("/danhmuc/them", (req, res) => {
+  const { tendanhmuc } = req.body;
+
+  const newdanhmuc = new DanhMuc({ tendanhmuc })
+  newdanhmuc.save()
+    .then(() => {
+      res.status(201).json({ message: "thêm sản phẩm thành công" })
+    })
+})
+
 // xem sản phẩm 
 app.get('/sanpham', async (req, res) => {
   try {
@@ -317,14 +310,17 @@ app.get('/sanpham', async (req, res) => {
 
 // thêm sản phẩm
 app.post("/sanpham/them", (req, res) => {
-  const { tensp, giasp, img, motasp, soluong, soluongban } = req.body;
+  const { tensp, giasp, img, motasp, soluong, soluongban, danhMucId } = req.body;
 
-  const newSanPham = new SanPham({ tensp, giasp, img, motasp, soluong, soluongban })
+  const newSanPham = new SanPham({ tensp, giasp, img, motasp, soluong, soluongban, danhMucId });
   newSanPham.save()
     .then(() => {
-      res.status(201).json({ message: "thêm sản phẩm thành công" })
+      res.status(201).json({ message: "Thêm sản phẩm thành công" });
     })
-})
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi thêm sản phẩm" });
+    });
+});
 
 // sửa sản phẩm 
 app.put("/sanpham/sua/:id", (req, res) => {
@@ -334,23 +330,23 @@ app.put("/sanpham/sua/:id", (req, res) => {
     giasp: req.body.giasp,
     img: req.body.img,
     motasp: req.body.motasp,
-    soluong: req.body.soluong
+    soluong: req.body.soluong,
+    danhMucId: req.body.danhMucId // Cập nhật giá trị danhMucId
   };
   SanPham.findByIdAndUpdate(id, updateSanPham, { new: true })
     .then((data) => {
       if (data) {
         res.status(200).json({
-          message: "cập nhật dữ liệu thành công",
+          message: "Cập nhật dữ liệu thành công",
           data: data
         });
       } else {
-        res.status(404).json({ err: "không tìm thấy dữ liệu" })
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" })
       }
-
-    }
-    ).catch((err) => {
-      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
     })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
 });
 
 // xóa sản phẩm
@@ -387,6 +383,24 @@ app.get('/chitietsanpham/:id', async (req, res) => {
     res.status(500).send("lỗi server")
   }
 })
+
+// xem sản phẩm theo danh mục
+app.get("/sanpham/danhsach/:danhMucId", (req, res) => {
+  const danhMucId = req.params.danhMucId;
+  SanPham.find({ danhMucId })
+    .then((sanPhams) => {
+      res.status(200).json({
+        message: "Lấy danh sách sản phẩm thành công",
+        data: sanPhams
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi lấy danh sách sản phẩm" });
+    });
+});
+
+
+
 
 // Xem giỏ hàng của người dùng
 
