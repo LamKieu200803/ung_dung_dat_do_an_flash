@@ -632,56 +632,7 @@ app.post("/thongtin/them/:userId", (req, res) => {
 });
 
 
-// // xem đơn trạng thái
-// app.get("/trangthai/:userId", async (req, res) => {
-//   const userId = req.params.userId;
-//   try {
-//     const trangthai = await trangThai.find({ userId: userId });
-//     res.json(trangthai);
-//   } catch (err) {
-//     console.log("error ", err);
-//     res.status(500).send("lỗi server");
-//   }
-// })
 
-// // thêm đơn trạng thái
-// app.post("/trangthai/them/:userId", (req, res) => {
-//   const userId = req.params.userId;
-//   const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, thoigian } = req.body;
-
-//   const newTrangThai = new trangThai({
-//     userId,
-//     tensp,
-//     giasp,
-//     img,
-//     soluongmua,
-//     pttt,
-//     tongtien,
-//     trangthai,
-//     thoigian
-//   });
-//   newTrangThai
-//     .save()
-//     .then(() => {
-//       res.status(201).json({ message: "Thêm đơn trạng thái thành công" });
-//     })
-//     .catch((err) => {
-//       console.log("error ", err);
-//       res.status(500).send("lỗi server");
-//     });
-// });
-
-// xem lịch sử mua hàng
-// app.get("/lichsu/:userId", async (req, res) => {
-//   const userId = req.params.userId;
-//   try {
-//     const lichsu = await lichSu.find({ userId: userId });
-//     res.json(lichsu);
-//   } catch (err) {
-//     console.log("error ", err);
-//     res.status(500).send("lỗi server");
-//   }
-// });
 
 app.put("/hoadon/sua/:userId/:id", (req, res) => {
   const userId = req.params.userId;
@@ -748,6 +699,38 @@ app.get("/thongke/top3sanpham", async (req, res) => {
     res.status(500).send("Lỗi server");
   }
 });
+
+// // thống kê
+// app.get("/thongke", async (req, res) => {
+//   try {
+//     const invoices = await hoaDon.find();
+//     const monthlyCountsArray = Array.from({ length: 12 }, (_, i) => ({
+//       month: i + 1,
+//       count: 0,
+//     }));
+//     invoices.forEach((invoice) => {
+//       const monthString = invoice.thoigian.split(",")[1];
+
+//       if (monthString) {
+//         const month = parseInt(monthString.trim().split("/")[1], 10);
+//         if (!isNaN(month)) {
+//           const monthIndex = month - 1;
+//           monthlyCountsArray[monthIndex].count++;
+//         }
+//       }
+//     });
+//     const formattedData = monthlyCountsArray.map(({ month, count }) => [
+//       Tháng ${month},
+//       count,
+//     ]);
+//     const data = [["Month", "Orders"], ...formattedData];
+
+//     res.json(data);
+//   } catch (err) {
+//     console.error("Error:", err);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
 // // thêm lịch sử mua hàng
 // app.post("/lichsu/them/:userId", (req, res) => {
