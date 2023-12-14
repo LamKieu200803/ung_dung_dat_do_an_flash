@@ -700,37 +700,37 @@ app.get("/thongke/top3sanpham", async (req, res) => {
   }
 });
 
-// // thống kê
-// app.get("/thongke", async (req, res) => {
-//   try {
-//     const invoices = await hoaDon.find();
-//     const monthlyCountsArray = Array.from({ length: 12 }, (_, i) => ({
-//       month: i + 1,
-//       count: 0,
-//     }));
-//     invoices.forEach((invoice) => {
-//       const monthString = invoice.thoigian.split(",")[1];
+// thống kê
+app.get("/thongke", async (req, res) => {
+  try {
+    const invoices = await hoaDon.find();
+    const monthlyCountsArray = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      count: 0,
+    }));
+    invoices.forEach((invoice) => {
+      const monthString = invoice.thoigian.split(",")[1];
 
-//       if (monthString) {
-//         const month = parseInt(monthString.trim().split("/")[1], 10);
-//         if (!isNaN(month)) {
-//           const monthIndex = month - 1;
-//           monthlyCountsArray[monthIndex].count++;
-//         }
-//       }
-//     });
-//     const formattedData = monthlyCountsArray.map(({ month, count }) => [
-//       Tháng ${month},
-//       count,
-//     ]);
-//     const data = [["Month", "Orders"], ...formattedData];
+      if (monthString) {
+        const month = parseInt(monthString.trim().split("/")[1], 10);
+        if (!isNaN(month)) {
+          const monthIndex = month - 1;
+          monthlyCountsArray[monthIndex].count++;
+        }
+      }
+    });
+    const formattedData = monthlyCountsArray.map(({ month, count }) => [
+     ` Tháng ${month}`,
+      count,
+    ]);
+    const data = [["Month", "Orders"], ...formattedData];
 
-//     res.json(data);
-//   } catch (err) {
-//     console.error("Error:", err);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
+    res.json(data);
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 // // thêm lịch sử mua hàng
 // app.post("/lichsu/them/:userId", (req, res) => {
