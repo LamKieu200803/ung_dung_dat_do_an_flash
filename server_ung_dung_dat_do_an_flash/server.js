@@ -82,15 +82,15 @@ const gioHang = mongoose.model("GioHangs", gioHangSchema);
 const hoaDonSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: true,
+    required: true
   },
   danhSachSanPham: [
     {
       tensp: String,
       giasp: String,
       img: String,
-      soluongmua: String,
-    },
+      soluongmua: String
+    }
   ],
   diachi: String,
   sdt: String,
@@ -98,10 +98,11 @@ const hoaDonSchema = new mongoose.Schema({
   pttt: String,
   tongtien: Number,
   thoigian: String,
-  trangthai: String,
+  trangthai: String
 });
 
 const hoaDon = mongoose.model("HoaDons", hoaDonSchema);
+
 
 // Schema và model thông tin
 const thongTinSchema = new mongoose.Schema({

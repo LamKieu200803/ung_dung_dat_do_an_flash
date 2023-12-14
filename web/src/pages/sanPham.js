@@ -4,6 +4,7 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Col from "react-bootstrap/Col";
+import unorm from "unorm";
 import Form from "react-bootstrap/Form";
 
 const Products = () => {
@@ -111,6 +112,18 @@ const Products = () => {
 
     if (form.checkValidity() === false) {
       setValidated(true);
+      return;
+    }
+
+    const normalizedProductName = unorm.nfd(productName).toLowerCase();
+
+    const isProductNameExist = products.some(
+      (product) =>
+        unorm.nfd(product.tensp).toLowerCase() === normalizedProductName
+    );
+
+    if (isProductNameExist) {
+      alert("Tên sản phẩm đã tồn tại. Vui lòng chọn tên khác.");
       return;
     }
 
