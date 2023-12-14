@@ -31,10 +31,11 @@ const renderCart = ({ item }) => {
         <View style={{width:80, height:80,}}>
                 <Image source={{uri: item.img}} style={{width:80, height:80 }} />
             </View>
-        <View style={{marginLeft:10, marginTop:5}}>
+        <View style={{marginLeft:10}}>
         <Text style={{fontSize:15, fontWeight:'bold'}}> {item.tensp}</Text>
         <Text style={{fontSize:13, color:'green'}}> loại đồ ăn : {tendanhmuc}</Text>
         <Text style={{fontSize:15, }}> ${item.giasp}</Text>
+        <Text style={{fontSize:12, }}> đã bán: {item.soluongban}</Text>
 </View>
         </View>
       </View>

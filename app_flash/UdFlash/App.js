@@ -19,7 +19,7 @@ import Thongtin from './Component/ManHinh/Thongtin';
 import Webview from './Component/ManHinh/Webview';
 import TrangThai from './Component/ManHinh/TrangThai';
 import chiTietDanhMuc from './Component/ManHinh/chiTietDanhMuc';
-//import PaymentButton from './Component/ManHinh/PaymentButton';
+import PaymentButton from './Component/ManHinh/PaymentButton';
 //import PaymentResultPage from './Component/ManHinh/PaymentResultPage
 const Stack = createStackNavigator();
 
@@ -37,12 +37,12 @@ export default function App() {
           <Stack.Screen name="AllDiachi" component={AllDiachi} options={{title:'Chọn địa chỉ nhận hàng'}} />
           <Stack.Screen name="LichSu" component={LichSu} />
           <Stack.Screen name="TrangThai" component={TrangThai} />
+          <Stack.Screen name="PaymentButton " component={PaymentButton} />
           <Stack.Screen name="ThanhToan" component={ThanhToan} />
           <Stack.Screen name="Webview" component={Webview} />
           <Stack.Screen name="chiTietDanhMuc" component={chiTietDanhMuc} options={{title:'Chi tiết danh mục'}} />
           <Stack.Screen name="Thongtin" component={Thongtin} />
-          {/* <Stack.Screen name="PaymentButton" component={PaymentButton} />
-          <Stack.Screen name="PaymentResultPage" component={PaymentResultPage} /> */}
+       
           <Stack.Screen name="Doipass" component={Doipass} />
           <Stack.Screen name='Main' component={Main} options={{headerShown:false}}/>
           <Stack.Screen name='AddAddress' component={AddAddressScreen} options={{title:'Địa chỉ mới'}}/>

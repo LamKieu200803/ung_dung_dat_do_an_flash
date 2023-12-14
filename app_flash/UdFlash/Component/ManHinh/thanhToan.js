@@ -8,6 +8,8 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
+import WebView from 'react-native-webview';
+
 
 const ThanhToan = ({  route }) => {
 
@@ -138,15 +140,18 @@ const ThanhToan = () =>{
           body: JSON.stringify(objUserMua)
         })
         .then((res) => {
-          if (res.status == 201) {
-            alert("Đặt hàng thành công");
-         //   muaSanPham();
-            return res.json(); // Chuyển đổi phản hồi thành đối tượng JSON
-          }
-          throw new Error('Đặt hàng không thành công');
-        })       .then(() => {
-        
-          DelPro();
+           if (value === 'Ví VNPay') {
+                    navigation.navigate('Webview')
+                } else if (res.status == 201) {
+                    alert("đặt hàng thành công")
+                   DelPro();
+                }
+
+         
+       
+     
+      
+       
         })
         .catch((error) => {
           console.log(error);
