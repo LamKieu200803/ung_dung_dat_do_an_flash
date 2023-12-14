@@ -39,7 +39,7 @@ export default function App() {
           <Stack.Screen name="TrangThai" component={TrangThai} />
           <Stack.Screen name="ThanhToan" component={ThanhToan} />
           <Stack.Screen name="Webview" component={Webview} />
-          <Stack.Screen name="chiTietDanhMuc" component={chiTietDanhMuc} />
+          <Stack.Screen name="chiTietDanhMuc" component={chiTietDanhMuc} options={{title:'Chi tiết danh mục'}} />
           <Stack.Screen name="Thongtin" component={Thongtin} />
           {/* <Stack.Screen name="PaymentButton" component={PaymentButton} />
           <Stack.Screen name="PaymentResultPage" component={PaymentResultPage} /> */}

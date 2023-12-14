@@ -432,10 +432,7 @@ app.get("/sanpham/danhsach/:danhMucId", (req, res) => {
   const danhMucId = req.params.danhMucId;
   SanPham.find({ danhMucId })
     .then((sanPhams) => {
-      res.status(200).json({
-        message: "Lấy danh sách sản phẩm thành công",
-        data: sanPhams
-      });
+      res.status(200).json(sanPhams);
     })
     .catch((err) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi lấy danh sách sản phẩm" });
