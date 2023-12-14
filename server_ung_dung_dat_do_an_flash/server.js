@@ -1,97 +1,108 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
 
 const app = express();
-app.use(cors());
 app.use(express.json());
-mongoose
-  .connect(
-    "mongodb+srv://lamkqph28183:20082003a@cluster0.t4gqvdc.mongodb.net/du_an_tot_nghiep?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
-  .then(() => {
-    console.log("đã kết nối tới MongoDB");
-  })
+mongoose.connect(
+  "mongodb+srv://lamkqph28183:20082003a@cluster0.t4gqvdc.mongodb.net/du_an_tot_nghiep?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+).then(() => {
+  console.log("đã kết nối tới MongoDB");
+})
   .catch((error) => {
     console.error("lỗi kết nối", error);
   });
 
-// Schema và model user
+// Schema và model user 
 const userSchema = new mongoose.Schema({
   email: String,
-  password: String,
-});
+  password: String
+})
 
 const User = mongoose.model("Users", userSchema);
 
-// Schema và model sanpham
+// Schema và model danh mục 
+const danhMucSchema = new mongoose.Schema({
+  tendanhmuc :String ,
+  anhdanhmuc : String
+
+})
+const DanhMuc = mongoose.model("DanhMucs",danhMucSchema)
+
 const sanPhamSchema = new mongoose.Schema({
   tensp: String,
   giasp: String,
   img: String,
   motasp: String,
   soluong: Number,
+  soluongban: {
+    type: Number,
+    default: 0
+  },
+  danhMucId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'DanhMucs',
+    required: true
+  }
 });
 
+const SanPham = mongoose.model('SanPhams', sanPhamSchema);
 const AddressSChema = new mongoose.Schema({
   name: String,
-  phone: String,
+  phone:String,
   address: String,
-  thanhpho: String,
-  state: Number,
-});
-const Address = mongoose.model("Diachis", AddressSChema);
+ 
+})
+const Address = mongoose.model("Diachis",AddressSChema);
 
-const SanPham = mongoose.model("SanPhams", sanPhamSchema);
+
 
 // Schema và model chitietsanpham
 const chiTietSanPhamSchema = new mongoose.Schema({
+
   tensp: String,
   giasp: String,
   img: String,
   motasp: String,
-  soluong: Number,
-});
+  soluong: Number
+})
 
-const chiTietSanPham = mongoose.model("ChiTietSanPhams", chiTietSanPhamSchema);
+const chiTietSanPham = mongoose.model("ChiTietSanPhams", chiTietSanPhamSchema)
 
 // Schema và model giohang
 const gioHangSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: true,
+    required: true
   },
   productId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "SanPham",
-    required: true,
+    ref: 'SanPham',
+    required: true
   },
   tensp: String,
   giasp: String,
   img: String,
-  soluongmua: Number,
+  soluongmua: Number
 });
 
 const gioHang = mongoose.model("GioHangs", gioHangSchema);
 
-// Schema và model hóa đơn
+// Schema và model hóa đơn 
 const hoaDonSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true
   },
-  danhSachSanPham: [
-    {
-      tensp: String,
-      giasp: String,
-      img: String,
-      soluongmua: String
-    }
-  ],
+  danhSachSanPham: [{
+    tensp: String,
+    giasp: String,
+    img: String,
+    soluongmua: String
+  }],
   diachi: String,
   sdt: String,
   tennguoimua: String,
@@ -104,123 +115,93 @@ const hoaDonSchema = new mongoose.Schema({
 const hoaDon = mongoose.model("HoaDons", hoaDonSchema);
 
 
-// Schema và model thông tin
+
+
+// Schema và model thông tin 
 const thongTinSchema = new mongoose.Schema({
+
   userId: {
     type: String,
-    required: true,
+    required: true
   },
-  phone: String,
+  phone:String,
   anh: String,
   tennguoimua: String,
-});
+
+})
 
 const thongTin = mongoose.model("ThongTins", thongTinSchema);
 
-// // Schema và model lịch sử mua hàng
-// const lichSuSchema = new mongoose.Schema({
-//   userId: {
-//     type: String,
-//     required: true
-//   },
-//   tensp: String,
-//   giasp: String,
-//   img: String,
-//   soluongmua: String,
-//   pttt: String,
-//   tennguoimua: String,
-//   tongtien: String,
 
-//   thoigian: String
-// })
 
-// const lichSu = mongoose.model("LichSus", lichSuSchema)
 
-//Schema và model chi tiết hóa đơn
-
-// const hoaDonChitietSchema = new mongoose.Schema({
-//   userId: {
-//         type: String,
-//         required: true
-//       },
-//       tensp: String,
-//       giasp: String,
-//       img: String,
-//       soluongmua: Number,
-//       hoaDonId: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'HoaDons',
-//         required: true
-//       },
-
-// })
-
-//const hoaDonChiTiet = mongoose.model("ChiTietHoaDons", hoaDonChitietSchema);
-
-// dki tài khoản
+// dki tài khoản 
 app.post("/dangki", (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body
 
-  const newUser = new User({ email, password });
-  newUser.save().then(() => {
-    res.status(201).json({ message: "tạo tài khoản thành công" });
-  });
-});
+  const newUser = new User({ email, password })
+  newUser.save()
+    .then(() => {
+      res.status(201).json({ message: "tạo tài khoản thành công" })
+    })
+})
 app.post("/themdiachi", (req, res) => {
-  const { name, phone, address, thanhpho, state } = req.body;
+  const { name,
+    phone,
+    address,
+    } = req.body
 
-  const newUser = new Address({ name, phone, address, thanhpho, state });
-  newUser.save().then(() => {
-    res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công" });
-  });
-}); //thêm địa chỉ
-app.get("/diachi", async (req, res) => {
+  const newUser = new Address({name,phone,address})
+  newUser.save()
+    .then(() => {
+      res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công" })
+    })
+})//thêm địa chỉ
+app.get('/diachi', async (req, res) => {
   try {
-    const user = await Address.find({});
-    res.json(user);
+    const user = await Address.find({})
+    res.json(user)
   } catch (err) {
     console.log("error ", err);
-    res.status(500).send("lỗi server");
+    res.status(500).send("lỗi server")
   }
-}); //get địa chỉ
+})//get địa chỉ
 
-app.post("/dangnhap", (req, res) => {
+
+app.post('/dangnhap', (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
 
   User.findOne({
     email: email,
-    password: password,
+    password: password
   })
-    .then((data) => {
+    .then(data => {
       if (data) {
         res.json({ success: true, message: "Đăng nhập thành công", data });
       } else {
-        res.status(400).json({
-          success: false,
-          message: "Email hoặc mật khẩu không chính xác",
-        });
+        res.status(400).json({ success: false, message: "Email hoặc mật khẩu không chính xác" });
       }
     })
-    .catch((err) => {
+    .catch(err => {
       console.log(err);
       res.status(500).json({ success: false, message: "Lỗi server" });
     });
 });
 
 // xem toàn bộ tài khoản
-app.get("/user", async (req, res) => {
+app.get('/user', async (req, res) => {
   try {
-    const user = await User.find({});
-    res.json(user);
+    const user = await User.find({})
+    res.json(user)
   } catch (err) {
     console.log("error ", err);
-    res.status(500).send("lỗi server");
+    res.status(500).send("lỗi server")
   }
-});
+})
 
 // xem chi tiết tk theo email
-app.get("/user/email", async (req, res) => {
+app.get('/user/email', async (req, res) => {
   try {
     const email = req.query.email;
 
@@ -258,25 +239,27 @@ app.delete("/User/xoa/:id", (req, res) => {
 app.put("/user/sua/:id", (req, res) => {
   const id = req.params.id;
   const updatePass = {
-    password: req.body.password,
+   
+    password: req.body.password
   };
   User.findByIdAndUpdate(id, updatePass, { new: true })
     .then((data) => {
       if (data) {
         res.status(200).json({
           message: "thay đổi pass thành công",
-          data: data,
+          data: data
         });
       } else {
-        res.status(404).json({ err: "không tìm thấy dữ liệu" });
+        res.status(404).json({ err: "không tìm thấy dữ liệu" })
       }
-    })
-    .catch((err) => {
+
+    }
+    ).catch((err) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
-    });
+    })
 });
 // chi tiết người dùng theo id
-app.get("/user/:id", async (req, res) => {
+app.get('/user/:id', async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -292,28 +275,97 @@ app.get("/user/:id", async (req, res) => {
     res.status(500).send("Lỗi server");
   }
 });
-// xem sản phẩm
-app.get("/sanpham", async (req, res) => {
+
+// xem danh mục
+app.get('/danhmuc',async (req,res)=>{
   try {
-    const sanpham = await SanPham.find({});
-    res.json(sanpham);
+    const danhmuc = await DanhMuc.find({})
+    res.json(danhmuc)
   } catch (err) {
     console.log("error ", err);
-    res.status(500).send("lỗi server");
+    res.status(500).send("lỗi server")
   }
+})
+
+// thêm danh mục
+app.post("/danhmuc/them", (req, res) => {
+  const { tendanhmuc , anhdanhmuc} = req.body;
+
+  const newdanhmuc = new DanhMuc({ tendanhmuc, anhdanhmuc })
+  newdanhmuc.save()
+    .then(() => {
+      res.status(201).json({ message: "thêm sản phẩm thành công" })
+    })
+})
+
+// sửa danh mục
+app.put("/danhmuc/sua/:id", (req, res) => {
+  const id = req.params.id;
+  const updateDanhMuc = {
+    tendanhmuc: req.body.tendanhmuc,
+    anhdanhmuc: req.body.anhdanhmuc,
+  };
+  DanhMuc.findByIdAndUpdate(id, updateDanhMuc, { new: true })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Cập nhật dữ liệu thành công",
+          data: data
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" })
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
 });
+
+// xóa danh mục
+app.delete("/danhmuc/xoa/:id", (req, res) => {
+  const deleteDanhMuc = req.params.id;
+  DanhMuc.findByIdAndRemove(deleteDanhMuc)
+    .then((data) => {
+      if (data) {
+        res
+          .status(200)
+          .json({ message: "Dữ liệu đã được xóa thành công", data: data });
+      } else {
+        res.status(404).json({ error: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
+    });
+});
+
+
+// xem sản phẩm 
+app.get('/sanpham', async (req, res) => {
+  try {
+    const sanpham = await SanPham.find({})
+    res.json(sanpham)
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server")
+  }
+})
 
 // thêm sản phẩm
 app.post("/sanpham/them", (req, res) => {
-  const { tensp, giasp, img, motasp, soluong } = req.body;
+  const { tensp, giasp, img, motasp, soluong, soluongban, danhMucId } = req.body;
 
-  const newSanPham = new SanPham({ tensp, giasp, img, motasp, soluong });
-  newSanPham.save().then(() => {
-    res.status(201).json({ message: "thêm sản phẩm thành công" });
-  });
+  const newSanPham = new SanPham({ tensp, giasp, img, motasp, soluong, soluongban, danhMucId });
+  newSanPham.save()
+    .then(() => {
+      res.status(201).json({ message: "Thêm sản phẩm thành công" });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi thêm sản phẩm" });
+    });
 });
 
-// sửa sản phẩm
+// sửa sản phẩm 
 app.put("/sanpham/sua/:id", (req, res) => {
   const id = req.params.id;
   const updateSanPham = {
@@ -322,16 +374,17 @@ app.put("/sanpham/sua/:id", (req, res) => {
     img: req.body.img,
     motasp: req.body.motasp,
     soluong: req.body.soluong,
+    danhMucId: req.body.danhMucId // Cập nhật giá trị danhMucId
   };
   SanPham.findByIdAndUpdate(id, updateSanPham, { new: true })
     .then((data) => {
       if (data) {
         res.status(200).json({
-          message: "cập nhật dữ liệu thành công",
-          data: data,
+          message: "Cập nhật dữ liệu thành công",
+          data: data
         });
       } else {
-        res.status(404).json({ err: "không tìm thấy dữ liệu" });
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" })
       }
     })
     .catch((err) => {
@@ -357,22 +410,37 @@ app.delete("/sanpham/xoa/:id", (req, res) => {
     });
 });
 
-// xem chi tiết sản phẩm
-app.get("/chitietsanpham/:id", async (req, res) => {
+// xem chi tiết sản phẩm 
+app.get('/chitietsanpham/:id', async (req, res) => {
   const productId = req.params.id;
   try {
     const spct = await SanPham.findById(productId);
     if (!spct) {
       // sản phẩm ko tồn tại
-      res.status(404).json({ message: "sản phẩm ko tồn tại" });
+      res.status(404).json({ message: "sản phẩm ko tồn tại" })
     } else {
       res.json(spct);
     }
   } catch (err) {
     console.log("error ", err);
-    res.status(500).send("lỗi server");
+    res.status(500).send("lỗi server")
   }
+})
+
+// xem sản phẩm theo danh mục
+app.get("/sanpham/danhsach/:danhMucId", (req, res) => {
+  const danhMucId = req.params.danhMucId;
+  SanPham.find({ danhMucId })
+    .then((sanPhams) => {
+      res.status(200).json(sanPhams);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi lấy danh sách sản phẩm" });
+    });
 });
+
+
+
 
 // Xem giỏ hàng của người dùng
 
@@ -407,7 +475,7 @@ app.get("/giohang/:userId", async (req, res) => {
           giasp: giohang.giasp,
           img: giohang.img,
           soluongmua: giohang.soluongmua,
-          sanPham: sanPham, // Thêm thông tin chi tiết của sản phẩm
+          sanPham: sanPham  // Thêm thông tin chi tiết của sản phẩm
         };
 
         // Thêm vào mảng giohangsWithDetails
@@ -442,7 +510,7 @@ app.post("/giohang/them/:userId/:productId", async (req, res) => {
       tensp: tensp,
       giasp: giasp,
       img: img,
-      soluongmua: soluongmua,
+      soluongmua: soluongmua
     });
 
     res.json(giohang);
@@ -467,14 +535,15 @@ app.delete("/giohang/xoa/:userId/:productId", async (req, res) => {
   }
 });
 
+
 // xóa giỏ hàng khi mua thành công
 app.delete("/giohang/xoa/:userId", async (req, res) => {
   const userId = req.params.userId;
   const { tensp, giasp, img, soluongmua } = req.body;
 
   try {
-    await gioHang.deleteMany({
-      userId: userId,
+     await gioHang.deleteMany({
+     userId:userId
     });
     console.log("Giỏ hàng đã được làm mới");
   } catch (err) {
@@ -483,25 +552,26 @@ app.delete("/giohang/xoa/:userId", async (req, res) => {
   }
 });
 
-// sửa số lượng trong giỏ khi thay đổi số lượng
+// sửa số lượng trong giỏ khi thay đổi số lượng 
 
 app.put("/giohang/sua/:userId/:productId", (req, res) => {
   const userId = req.params.userId;
   const productId = req.params.productId;
 
   const updateSoluong = {
-    soluongmua: req.body.soluongmua,
+    soluongmua: req.body.soluongmua
   };
 
-  gioHang
-    .findOneAndUpdate({ userId: userId, productId: productId }, updateSoluong, {
-      new: true,
-    })
+  gioHang.findOneAndUpdate(
+    { userId: userId, productId: productId },
+    updateSoluong,
+    { new: true }
+  )
     .then((data) => {
       if (data) {
         res.status(200).json({
           message: "Thay đổi số lượng thành công",
-          data: data,
+          data: data
         });
       } else {
         res.status(404).json({ err: "Không tìm thấy dữ liệu" });
@@ -512,78 +582,51 @@ app.put("/giohang/sua/:userId/:productId", (req, res) => {
     });
 });
 
-app.get("/thongke", async (req, res) => {
+// tính số lượng mới khi đã mua 
+app.post("/giohang/cap-nhat-sanpham", async (req, res) => {
+  const gioHang = req.body.gioHang;
+
   try {
-    const invoices = await hoaDon.find();
-    const monthlyCountsArray = Array.from({ length: 12 }, (_, i) => ({
-      month: i + 1,
-      count: 0,
-    }));
-    invoices.forEach((invoice) => {
-      const monthString = invoice.thoigian.split(",")[1];
+    for (const item of gioHang) {
+      const sanPhamId = item.sanPhamId;
+      const soLuongMoi = item.soLuongMoi;
+      const soLuongBan = item.soLuongBan;
 
-      if (monthString) {
-        const month = parseInt(monthString.trim().split("/")[1], 10);
-        if (!isNaN(month)) {
-          const monthIndex = month - 1;
-          monthlyCountsArray[monthIndex].count++;
-        }
+      const sanPham = await SanPham.findById(sanPhamId);
+      if (sanPham) {
+        sanPham.soluong = soLuongMoi;
+        sanPham.soluongban = soLuongBan; // Cập nhật số lượng đã bán
+        await sanPham.save();
       }
-    });
-    const formattedData = monthlyCountsArray.map(({ month, count }) => [
-      `Tháng ${month}`,
-      count,
-    ]);
-    const data = [["Month", "Orders"], ...formattedData];
+    }
 
-    res.json(data);
+    res.send("Cập nhật số lượng sản phẩm và số lượng đã bán thành công");
   } catch (err) {
-    console.error("Error:", err);
-    res.status(500).send("Internal Server Error");
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
   }
 });
 
+// xem hóa đơn theo id người dùng
 app.get("/hoadon/:userId", async (req, res) => {
+
   const userId = req.params.userId;
   try {
-    const hoadon = await hoaDon.find({ userId: userId });
-    res.json(hoadon);
+    const hoadon = await hoaDon.find({ userId: userId })
+    res.json(hoadon)
   } catch (err) {
     console.log("error ", err);
-    res.status(500).send("lỗi server");
+    res.status(500).send("lỗi server")
   }
-});
-app.get("/hoadon", async (req, res) => {
-  await hoaDon.find({}).then((data) => {
-    return res.json(data);
-  });
-});
+})
+
 
 // thêm hóa đơn theo id người dùng
 app.post("/hoadon/them/:userId", (req, res) => {
   const userId = req.params.userId;
-  const {
-    danhSachSanPham,
-    diachi,
-    sdt,
-    tennguoimua,
-    pttt,
-    tongtien,
-    thoigian,
-    trangthai,
-  } = req.body;
+  const { danhSachSanPham, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai } = req.body;
 
-  const newHoaDon = new hoaDon({
-    danhSachSanPham,
-    userId,
-    diachi,
-    sdt,
-    tennguoimua,
-    pttt,
-    tongtien,
-    thoigian,
-    trangthai,
-  });
+  const newHoaDon = new hoaDon({ danhSachSanPham, userId, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai });
   newHoaDon
     .save()
     .then(() => {
@@ -616,7 +659,7 @@ app.post("/thongtin/them/:userId", (req, res) => {
   const userId = req.params.userId;
   const { tennguoimua, anh, phone } = req.body;
 
-  const newThongTin = new thongTin({ userId, tennguoimua, anh, phone });
+  const newThongTin = new thongTin({ userId, tennguoimua, anh,phone });
   newThongTin
     .save()
     .then(() => {
@@ -628,76 +671,27 @@ app.post("/thongtin/them/:userId", (req, res) => {
     });
 });
 
-// // xem đơn trạng thái
-// app.get("/trangthai/:userId", async (req, res) => {
-//   const userId = req.params.userId;
-//   try {
-//     const trangthai = await trangThai.find({ userId: userId });
-//     res.json(trangthai);
-//   } catch (err) {
-//     console.log("error ", err);
-//     res.status(500).send("lỗi server");
-//   }
-// })
 
-// // thêm đơn trạng thái
-// app.post("/trangthai/them/:userId", (req, res) => {
-//   const userId = req.params.userId;
-//   const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, thoigian } = req.body;
 
-//   const newTrangThai = new trangThai({
-//     userId,
-//     tensp,
-//     giasp,
-//     img,
-//     soluongmua,
-//     pttt,
-//     tongtien,
-//     trangthai,
-//     thoigian
-//   });
-//   newTrangThai
-//     .save()
-//     .then(() => {
-//       res.status(201).json({ message: "Thêm đơn trạng thái thành công" });
-//     })
-//     .catch((err) => {
-//       console.log("error ", err);
-//       res.status(500).send("lỗi server");
-//     });
-// });
-
-// xem lịch sử mua hàng
-// app.get("/lichsu/:userId", async (req, res) => {
-//   const userId = req.params.userId;
-//   try {
-//     const lichsu = await lichSu.find({ userId: userId });
-//     res.json(lichsu);
-//   } catch (err) {
-//     console.log("error ", err);
-//     res.status(500).send("lỗi server");
-//   }
-// });
 
 app.put("/hoadon/sua/:userId/:id", (req, res) => {
   const userId = req.params.userId;
   const id = req.params.id; // Thay đổi từ req.params._id thành req.params.id
 
   const updateTrangThai = {
-    trangthai: req.body.trangthai,
+    trangthai: req.body.trangthai
   };
 
-  hoaDon
-    .findOneAndUpdate(
-      { userId: userId, _id: id }, // Sửa thành _id thay vì id
-      updateTrangThai, // Sửa thành updateTrangThai thay vì updatetrangthai
-      { new: true }
-    )
+  hoaDon.findOneAndUpdate(
+    { userId: userId, _id: id }, // Sửa thành _id thay vì id
+    updateTrangThai, // Sửa thành updateTrangThai thay vì updatetrangthai
+    { new: true }
+  )
     .then((data) => {
       if (data) {
         res.status(200).json({
           message: "Thay đổi trạng thái thành công",
-          data: data,
+          data: data
         });
       } else {
         res.status(404).json({ err: "Không tìm thấy dữ liệu" });
@@ -706,6 +700,76 @@ app.put("/hoadon/sua/:userId/:id", (req, res) => {
     .catch((err) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
     });
+});
+
+// top3 sản phẩm bán chạy
+app.get("/thongke/top3sanpham", async (req, res) => {
+  try {
+    const result = await hoaDon.aggregate([
+      { $unwind: "$danhSachSanPham" },
+      {
+        $group: {
+          _id: "$danhSachSanPham.tensp",
+          soluongban: { $sum: { $toInt: "$danhSachSanPham.soluongmua" } },
+        },
+      },
+      { $sort: { soluongban: -1 } },
+      { $limit: 3 },
+      {
+        $lookup: {
+          from: "SanPhams",
+          localField: "_id",
+          foreignField: "tensp",
+          as: "sanpham",
+        },
+      },
+      { $unwind: "$sanpham" },
+      {
+        $project: {
+          _id: 0,
+          tensp: "$sanpham.tensp",
+          soluongban: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("Lỗi server");
+  }
+});
+
+// thống kê
+app.get("/thongke", async (req, res) => {
+  try {
+    const invoices = await hoaDon.find();
+    const monthlyCountsArray = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      count: 0,
+    }));
+    invoices.forEach((invoice) => {
+      const monthString = invoice.thoigian.split(",")[1];
+
+      if (monthString) {
+        const month = parseInt(monthString.trim().split("/")[1], 10);
+        if (!isNaN(month)) {
+          const monthIndex = month - 1;
+          monthlyCountsArray[monthIndex].count++;
+        }
+      }
+    });
+    const formattedData = monthlyCountsArray.map(({ month, count }) => [
+     ` Tháng ${month}`,
+      count,
+    ]);
+    const data = [["Month", "Orders"], ...formattedData];
+
+    res.json(data);
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // // thêm lịch sử mua hàng
@@ -736,20 +800,24 @@ app.put("/hoadon/sua/:userId/:id", (req, res) => {
 //     });
 // });
 
-// xem hóa đơn chi tiết schema
-// app.get("/hoadonchitiet/:userId/:hoaDonId", (req, res) => {
-//   const userId = req.params.userId;
-//   const hoaDonId = req.params.hoaDonId;
+// xem hóa đơn chi tiết 
+app.get("/hoadonchitiet/:userId/:_id", (req, res) => {
+  const userId = req.params.userId;
+  const _id = req.params._id;
 
-//   hoaDonChiTiet.find({ userId, hoaDonId })
-//     .then((chiTietList) => {
-//       res.status(200).json(chiTietList);
-//     })
-//     .catch((err) => {
-//       console.log("error ", err);
-//       res.status(500).send("lỗi server");
-//     });
-// });
+  hoaDon.findOne({ userId, _id })
+    .then((hoaDon) => {
+      if (hoaDon) {
+        res.status(200).json(hoaDon);
+      } else {
+        res.status(404).json({ message: 'Không tìm thấy chi tiết hóa đơn' });
+      }
+    })
+    .catch((err) => {
+      console.log("Lỗi truy vấn hóa đơn ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
 
 // app.post("/hoadonchitiet/:userId/:hoaDonId/add", (req, res) => {
 //   const userId = req.params.userId;
@@ -778,8 +846,10 @@ app.put("/hoadon/sua/:userId/:id", (req, res) => {
 //     });
 // });
 
+
+
 //khởi chạy server
 const port = 9997;
 app.listen(port, () => {
-  console.log("server đang lắng nghe tại cổng ${port}");
+  console.log('server đang lắng nghe tại cổng ${port}');
 });
