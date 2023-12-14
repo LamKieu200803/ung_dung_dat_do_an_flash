@@ -1,6 +1,7 @@
-import { View, StyleSheet, Text , ScrollView, FlatList} from "react-native";
+import { View, StyleSheet, Text , ScrollView, FlatList, Image} from "react-native";
 import { useState, useEffect } from "react";
 import { ActivityIndicator } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 const chiTietDanhMuc = ({ route, navigation }) => {
 
     const [tendanhmuc, settendanhmuc] = useState(route.params.item.tendanhmuc);
@@ -24,10 +25,20 @@ const getDuLieu = async() =>{
 
 const renderCart = ({ item }) => {
     return (
-      <View style={{ backgroundColor: 'white' }}>
-        <Text>tensp: {item.tensp}</Text>
-        <Text>giá sp: {item.giasp}</Text>
+        <TouchableOpacity onPress={()=>{navigation.navigate('SanPham',{item_sp:item})}}>
+      <View style={{ backgroundColor: 'white' , padding:10, margin:5, borderRadius:10, }}>
+        <View style={{flexDirection:'row'}}>
+        <View style={{width:80, height:80,}}>
+                <Image source={{uri: item.img}} style={{width:80, height:80 }} />
+            </View>
+        <View style={{marginLeft:10, marginTop:5}}>
+        <Text style={{fontSize:15, fontWeight:'bold'}}> {item.tensp}</Text>
+        <Text style={{fontSize:13, color:'green'}}> loại đồ ăn : {tendanhmuc}</Text>
+        <Text style={{fontSize:15, }}> ${item.giasp}</Text>
+</View>
+        </View>
       </View>
+      </TouchableOpacity>
     );
   };
 
@@ -45,12 +56,10 @@ useEffect(() => {
 
     return (
         <View style={styles.container}>
-<Text style={{fontSize:20, fontWeight:'bold', padding:15, color:'white'}}>{tendanhmuc}</Text>
+<Text style={{fontSize:25, fontWeight:'bold', padding:10, color:'white'}}>{tendanhmuc}</Text>
 
                 <View>
-                    <FlatList
-              
-                        style={{marginLeft:20}}
+                    <FlatList 
                         data={dsPro}
                         keyExtractor={(item_db) => item_db.id}
                         renderItem={renderCart}

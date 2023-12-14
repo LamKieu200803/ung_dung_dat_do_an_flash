@@ -157,7 +157,7 @@ const renderDanhMuc = ({item})=>{
                     />
                 </View>
 <View style={{}}>
-<Text style={{fontWeight:'bold',fontSize:15, marginTop:10}}>Danh mục</Text>
+<Text style={{fontWeight:'bold',fontSize:20, marginTop:10}}>  Danh mục</Text>
 <FlatList
                         data={danhmuc}
                         horizontal 
@@ -167,11 +167,11 @@ const renderDanhMuc = ({item})=>{
                     />
 </View>
                 <View>
-                    <Text style={{ fontSize: 20, marginTop:15 }}>Các sản phẩm </Text>
+                    <Text style={{ fontSize: 20, marginTop:10,paddingLeft:5 , fontWeight:'bold'}}>Các sản phẩm </Text>
                     <Text style={{ borderBottomColor: '#F38E8E', borderBottomWidth: 1 }}></Text>
                 </View>
-                <ScrollView>
-                <View>
+               
+      
                     <FlatList
                      numColumns={2}
                         style={{marginLeft:20}}
@@ -181,8 +181,8 @@ const renderDanhMuc = ({item})=>{
                           
                     />
                 </View>
-    </ScrollView>
-                </View>    
+ 
+             
                   
 
             
