@@ -803,20 +803,24 @@ app.get("/thongke", async (req, res) => {
 //     });
 // });
 
-// xem hóa đơn chi tiết schema
-// app.get("/hoadonchitiet/:userId/:hoaDonId", (req, res) => {
-//   const userId = req.params.userId;
-//   const hoaDonId = req.params.hoaDonId;
+// xem hóa đơn chi tiết 
+app.get("/hoadonchitiet/:userId/:_id", (req, res) => {
+  const userId = req.params.userId;
+  const _id = req.params._id;
 
-//   hoaDonChiTiet.find({ userId, hoaDonId })
-//     .then((chiTietList) => {
-//       res.status(200).json(chiTietList);
-//     })
-//     .catch((err) => {
-//       console.log("error ", err);
-//       res.status(500).send("lỗi server");
-//     });
-// });
+  hoaDon.findOne({ userId, _id })
+    .then((hoaDon) => {
+      if (hoaDon) {
+        res.status(200).json(hoaDon);
+      } else {
+        res.status(404).json({ message: 'Không tìm thấy chi tiết hóa đơn' });
+      }
+    })
+    .catch((err) => {
+      console.log("Lỗi truy vấn hóa đơn ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
 
 // app.post("/hoadonchitiet/:userId/:hoaDonId/add", (req, res) => {
 //   const userId = req.params.userId;
