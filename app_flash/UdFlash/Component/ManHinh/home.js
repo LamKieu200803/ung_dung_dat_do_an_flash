@@ -22,6 +22,8 @@ const data = [
     const [isLoading, setisLoading] = useState(true);
     const [showDialog, setshowDialog] = useState(true)
     const [dsPro, setdsPro] = useState([]);
+    const [danhmuc, setdanhmuc] = useState([]);
+    
     const [searchText, setSearchText] = useState("");
     
 
@@ -39,6 +41,22 @@ const getListPro = async () =>{
     }
   };
 
+  const getListDanhMuc = async () =>{
+
+    let api_url_danhmuc = 'http://172.16.10.106:9997/danhmuc';
+    try {
+      const response = await fetch(api_url_danhmuc);
+      const json = await response.json();
+      setdanhmuc(json);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setisLoading(false);
+    }
+  };
+
+
+
   const filterProducts = () => {
     if (searchText === "") {
       return dsPro;
@@ -48,7 +66,18 @@ const getListPro = async () =>{
     );
   };
 
-
+const renderDanhMuc = ({item})=>{
+    return(
+        <TouchableOpacity onPress={()=>{props.navigation.navigate('chiTietDanhMuc', {item:item})}}>
+            <View style={{margin:10, alignItems:'center', padding:5, backgroundColor:'white', borderRadius:20}}>
+            <View style={{width:80, height:80,}}>
+                <Image source={{uri: item.anhdanhmuc}} style={{width:80, height:80 , borderRadius:150}} />
+            </View>
+                <Text>{item.tendanhmuc}</Text>
+            </View>
+        </TouchableOpacity>
+    )
+}
 
 
   const renderItem = ({ item }) => {
@@ -73,7 +102,7 @@ const getListPro = async () =>{
                         <View style={{flexDirection:'row'}}>
                            
                             <Text style={styles.discountedPrice }> ${item.giasp}      </Text>
-                            <Text>số lượng bán : {item.soluongban}</Text>
+                            <Text style={{marginLeft:32}}>Đã bán : {item.soluongban}</Text>
                             {/* <Text> ${discountedPrice.toFixed(2)}</Text> */}
                         </View>
                     </View>
@@ -94,6 +123,7 @@ const getListPro = async () =>{
         const unsubscribe = props.navigation.addListener('focus', () => {
           // khi màn hình đc active thì lệnh hoạt động
           getListPro();
+          getListDanhMuc();
     
         });
     
@@ -126,7 +156,16 @@ const getListPro = async () =>{
                         renderItem={renderItem}
                     />
                 </View>
-
+<View style={{}}>
+<Text style={{fontWeight:'bold',fontSize:15, marginTop:10}}>Danh mục</Text>
+<FlatList
+                        data={danhmuc}
+                        horizontal 
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={(itema) => itema.danhmuc}
+                        renderItem={renderDanhMuc}
+                    />
+</View>
                 <View>
                     <Text style={{ fontSize: 20, marginTop:15 }}>Các sản phẩm </Text>
                     <Text style={{ borderBottomColor: '#F38E8E', borderBottomWidth: 1 }}></Text>
@@ -167,7 +206,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         padding: 15,
-        margin: 20,
+        margin: 15,
         flexDirection: 'row',
         backgroundColor: 'white',
         borderRadius: 15
@@ -191,8 +230,8 @@ const styles = StyleSheet.create({
         height: 200,
     },
     image1: {
-        width: 200,
-        height: 200,
+        width: 150,
+        height: 150,
         borderRadius: 20
     },
 

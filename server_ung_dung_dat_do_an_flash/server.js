@@ -26,7 +26,8 @@ const User = mongoose.model("Users", userSchema);
 
 // Schema và model danh mục 
 const danhMucSchema = new mongoose.Schema({
-  tendanhmuc :String 
+  tendanhmuc :String ,
+  anhdanhmuc : String
 
 })
 const DanhMuc = mongoose.model("DanhMucs",danhMucSchema)
@@ -288,14 +289,56 @@ app.get('/danhmuc',async (req,res)=>{
 
 // thêm danh mục
 app.post("/danhmuc/them", (req, res) => {
-  const { tendanhmuc } = req.body;
+  const { tendanhmuc , anhdanhmuc} = req.body;
 
-  const newdanhmuc = new DanhMuc({ tendanhmuc })
+  const newdanhmuc = new DanhMuc({ tendanhmuc, anhdanhmuc })
   newdanhmuc.save()
     .then(() => {
       res.status(201).json({ message: "thêm sản phẩm thành công" })
     })
 })
+
+// sửa danh mục
+app.put("/danhmuc/sua/:id", (req, res) => {
+  const id = req.params.id;
+  const updateDanhMuc = {
+    tendanhmuc: req.body.tendanhmuc,
+    anhdanhmuc: req.body.anhdanhmuc,
+  };
+  DanhMuc.findByIdAndUpdate(id, updateDanhMuc, { new: true })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Cập nhật dữ liệu thành công",
+          data: data
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" })
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
+});
+
+// xóa danh mục
+app.delete("/danhmuc/xoa/:id", (req, res) => {
+  const deleteDanhMuc = req.params.id;
+  DanhMuc.findByIdAndRemove(deleteDanhMuc)
+    .then((data) => {
+      if (data) {
+        res
+          .status(200)
+          .json({ message: "Dữ liệu đã được xóa thành công", data: data });
+      } else {
+        res.status(404).json({ error: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
+    });
+});
+
 
 // xem sản phẩm 
 app.get('/sanpham', async (req, res) => {
