@@ -9,12 +9,11 @@ const PaymentButton = ({route,navigation}) => {
     const [isLoading, setisLoading] = useState(true);
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getListPro = async () => {
-        let url_api_lichsu = 'http://172.16.10.106:9997/hoadon/' + loginInfo._id+'/'+ idChitiet;
+        let url_api_lichsu = 'http://172.16.10.100:9997/hoadon/' + loginInfo._id+'/'+ idChitiet;
         try {
             const response = await fetch(url_api_lichsu);
             const json = await response.json();
-
-            console.log(json.danhSachSanPham)
+console.log("AAAAAa");
             setObject(json.danhSachSanPham)
         } catch (e) {
             console.log(e);

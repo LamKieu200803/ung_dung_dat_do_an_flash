@@ -16,7 +16,7 @@ const Profile = (props) => {
 
     const getThongTin = async () => {
 
-        let api_url_pro = 'http://172.16.10.106:9997/thongtin/' + loginInfo._id
+        let api_url_pro = 'http://172.16.10.100:9997/thongtin/' + loginInfo._id
         try {
             const response = await fetch(api_url_pro);
             const json = await response.json();

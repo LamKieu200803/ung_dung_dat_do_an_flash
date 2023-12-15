@@ -41,7 +41,7 @@ const ThanhToan = ({  route }) => {
 
   
     const getlistgiohang = async () => {
-      const url_api_giohang = 'http://172.16.10.106:9997/giohang/' + loginInfo._id;
+      const url_api_giohang = 'http://172.16.10.100:9997/giohang/' + loginInfo._id;
     
       try {
         const response = await fetch(url_api_giohang);
@@ -86,7 +86,7 @@ const ThanhToan = ({  route }) => {
     };
     
     const capNhatSanPham = async (sanPhamId, soLuongMoi , soLuongBan) => {
-      const url_api_capnhat = 'http://172.16.10.106:9997/giohang/cap-nhat-sanpham';
+      const url_api_capnhat = 'http://172.16.10.100:9997/giohang/cap-nhat-sanpham';
       const data = {
         gioHang: [
           {
@@ -129,7 +129,7 @@ const ThanhToan = () =>{
         };
         ;
       
-        let url_api_hoadon = 'http://172.16.10.106:9997/hoadon/them/' + loginInfo._id;
+        let url_api_hoadon = 'http://172.16.10.100:9997/hoadon/them/' + loginInfo._id;
       
         fetch(url_api_hoadon, {
           method: 'POST',

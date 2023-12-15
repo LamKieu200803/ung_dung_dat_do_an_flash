@@ -19,7 +19,7 @@ const TrangThai = (props) => {
     const [isLoading, setisLoading] = useState(true);
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getListPro = async () => {
-        let url_api_lichsu = 'http://172.16.10.106:9997/hoadon/' + loginInfo._id
+        let url_api_lichsu = 'http://172.16.10.100:9997/hoadon/' + loginInfo._id
         try {
             const response = await fetch(url_api_lichsu);
             const json = await response.json();
@@ -81,7 +81,7 @@ const TrangThai = (props) => {
     const renderCartItem = ({ item }) => {
         return (
             <View style={styles.cartItemContainer}>
-<TouchableOpacity onPress={() => props.navigation.navigate('PaymentButton',{item:item})}>
+<TouchableOpacity onPress={() => props.navigation.navigate('Payment',{item:item})}>
                     <View style={{ flexDirection: 'row' }}>
 
                         <View style={{ width: 270, marginLeft: 20 }}>
@@ -90,7 +90,7 @@ const TrangThai = (props) => {
                             <Text style={styles.productPrice}>Phương thức thanh toán: {item.pttt}</Text>
                             <Text style={styles.productPrice}>Địa chỉ: {item.diachi}</Text>
                             <Text style={styles.productPrice}>Tổng tiền: {item.tongtien}</Text>
-                            <Text style={styles.productPrice}>Ngàu mua {item.thoigian}</Text>
+                            <Text style={styles.productPrice}>Ngày mua {item.thoigian}</Text>
                         </View>
                         <Text style={{ fontWeight: 'bold', marginLeft: 80, color: '#000000', textAlignVertical: 'center' }}>{item.trangthai}</Text>
 

@@ -132,6 +132,26 @@ const thongTinSchema = new mongoose.Schema({
 
 const thongTin = mongoose.model("ThongTins", thongTinSchema);
 
+// Schema và model bình luận
+
+const binhLuanSchema = new mongoose.Schema({
+  tennguoimua: String,
+  anh: String,
+  noidung: String,
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SanPhams',
+    required: true
+  },
+  thongtinId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ThongTins',
+    required: true
+  }
+});
+
+const BinhLuan = mongoose.model('BinhLuans', binhLuanSchema);
+
 
 
 
@@ -818,6 +838,56 @@ app.get("/hoadonchitiet/:userId/:_id", (req, res) => {
       res.status(500).send("Lỗi server");
     });
 });
+
+app.get("/binhluan/:productId", (req, res) => {
+  const productId = req.params.productId;
+  BinhLuan.find({ productId })
+    .then((binhLuans) => {
+      if (binhLuans.length > 0) {
+        res.status(200).json(binhLuans);
+      } else {
+        res.status(404).json({ message: 'Không tìm thấy bình luận' });
+      }
+    })
+    .catch((err) => {
+      console.log("Lỗi truy vấn bình luận ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
+
+// thêm bình luận
+app.post("/binhluan/them/:productId/:thongtinId", (req, res) => {
+  const productId = req.params.productId;
+  const thongtinId = req.params.thongtinId;
+  const { noidung } = req.body;
+
+  thongTin.findById(thongtinId)
+    .then((thongtin) => {
+      if (!thongtin) {
+        throw new Error("Thông tin không tồn tại");
+      }
+
+      const newBinhLuan = new BinhLuan({
+        tennguoimua: thongtin.tennguoimua,
+        anh: thongtin.anh,
+        productId,
+        thongtinId,
+        noidung,
+      });
+
+      return newBinhLuan.save();
+    })
+    .then(() => {
+      res.status(201).json({ message: "Thêm bình luận thành công" });
+    })
+    .catch((err) => {
+      console.log("error ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
+
+
+
 
 // app.post("/hoadonchitiet/:userId/:hoaDonId/add", (req, res) => {
 //   const userId = req.params.userId;

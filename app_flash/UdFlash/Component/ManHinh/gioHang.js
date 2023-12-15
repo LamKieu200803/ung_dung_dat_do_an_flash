@@ -22,7 +22,7 @@ const GioHang = (props) => {
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0); // Thêm state để lưu trữ totalPrice
   const getListPro = async () => {
-    let url_api_giohang = 'http://172.16.10.106:9997/giohang/' + loginInfo._id;
+    let url_api_giohang = 'http://172.16.10.100:9997/giohang/' + loginInfo._id;
     try {
       const response = await fetch(url_api_giohang);
       const json = await response.json();
@@ -158,7 +158,7 @@ React.useEffect(() => {
     // console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.16.10.106:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
+      fetch('http://172.16.10.100:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ React.useEffect(() => {
     console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.16.10.106:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
+      fetch('http://172.16.10.100:9997/giohang/sua/' +  loginInfo._id+ "/" + itemToUpdate.productId, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -244,7 +244,7 @@ React.useEffect(() => {
   const renderCartItem = ({ item }) =>{ 
     
     const DelPro = () =>{
-      let url_api_del = 'http://172.16.10.106:9997/giohang/xoa/'+loginInfo._id+"/" +item.productId ;
+      let url_api_del = 'http://172.16.10.100:9997/giohang/xoa/'+loginInfo._id+"/" +item.productId ;
   
       fetch(url_api_del,{
   

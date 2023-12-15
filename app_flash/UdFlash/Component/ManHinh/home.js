@@ -29,7 +29,7 @@ const data = [
 
 const getListPro = async () =>{
 
-    let api_url_pro = 'http://172.16.10.106:9997/sanpham';
+    let api_url_pro = 'http://172.16.10.100:9997/sanpham';
     try {
       const response = await fetch(api_url_pro);
       const json = await response.json();
@@ -43,7 +43,7 @@ const getListPro = async () =>{
 
   const getListDanhMuc = async () =>{
 
-    let api_url_danhmuc = 'http://172.16.10.106:9997/danhmuc';
+    let api_url_danhmuc = 'http://172.16.10.100:9997/danhmuc';
     try {
       const response = await fetch(api_url_danhmuc);
       const json = await response.json();
