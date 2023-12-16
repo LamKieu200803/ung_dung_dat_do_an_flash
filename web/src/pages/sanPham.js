@@ -22,6 +22,9 @@ const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const [searchText, setSearchText] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedFilterCategory, setSelectedFilterCategory] = useState("");
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
@@ -38,7 +41,19 @@ const Products = () => {
 
   useEffect(() => {
     fetchData();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get("http://localhost:9997/danhmuc");
+      setCategories(res.data);
+      console.log(res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleDetailShow = (rowData) => {
     setSelectedProduct(rowData);
     setDetailShow(true);
@@ -134,6 +149,7 @@ const Products = () => {
         img: productImage,
         motasp: productDescription,
         soluong: productQuantity,
+        danhMucId: selectedCategory,
       });
 
       handleClose();
@@ -172,6 +188,7 @@ const Products = () => {
         img: productImage,
         motasp: productDescription,
         soluong: productQuantity,
+        danhMucId: selectedCategory,
       });
 
       handleClose();
@@ -211,6 +228,7 @@ const Products = () => {
                 src={selectedProduct.img}
               />
               <p>Tên sản phẩm: {selectedProduct.tensp}</p>
+              <p>Danh mục: {selectedProduct?.danhMucId?.tendanhmuc}</p>
               <p>Giá sản phẩm: {selectedProduct.giasp}</p>
               <p>Số lượng phẩm: {selectedProduct.soluong}</p>
               <p>Chi tiết sản phẩm: {selectedProduct.motasp}</p>
@@ -237,6 +255,23 @@ const Products = () => {
             onSubmit={productId ? handleUpdate : handleAdd}
             id="addProductForm"
           >
+            <Form.Group as={Col} controlId="productCategory">
+              <Form.Label>Danh mục sản phẩm</Form.Label>
+              <Form.Control
+                as="select"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">Chọn danh mục</option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.tendanhmuc}
+                  </option>
+                ))}
+              </Form.Control>
+              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            </Form.Group>
+
             <Form.Group as={Col} controlId="productName">
               <Form.Label>Tên sản phẩm</Form.Label>
               <Form.Control
@@ -314,10 +349,12 @@ const Products = () => {
         columns={columns}
         data={products.filter(
           (product) =>
-            product.tensp.toLowerCase().includes(searchText.toLowerCase()) ||
-            product.giasp.toString().includes(searchText) ||
-            product.soluong.toString().includes(searchText) ||
-            product.motasp.toLowerCase().includes(searchText.toLowerCase())
+            (selectedFilterCategory === "" ||
+              product.danhMucId?._id === selectedFilterCategory) &&
+            (product.tensp.toLowerCase().includes(searchText.toLowerCase()) ||
+              product.giasp.toString().includes(searchText) ||
+              product.soluong.toString().includes(searchText) ||
+              product.motasp.toLowerCase().includes(searchText.toLowerCase()))
         )}
         pagination
         paginationPerPage={5}
@@ -334,6 +371,25 @@ const Products = () => {
             <Button variant="primary" onClick={handleShow}>
               Thêm sản phẩm
             </Button>
+            <Form.Group controlId="formProductCategory">
+              <Form.Control
+                as="select"
+                onChange={(e) => {
+                  setSelectedFilterCategory(e.target.value);
+                  setSearchText("");
+                }}
+                value={selectedFilterCategory || ""}
+              >
+                <option value="" key="all">
+                  Tất cả danh mục
+                </option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.tendanhmuc}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
             <Form.Control
               type="text"
               placeholder="Tìm kiếm"

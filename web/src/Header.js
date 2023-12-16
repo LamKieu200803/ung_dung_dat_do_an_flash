@@ -20,7 +20,7 @@ const Header = () => {
         <Modal.Header closeButton>
           <Modal.Title>Đăng xuất</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Bạn có chắc muốn đăng xuất không!</Modal.Body>
+        <Modal.Body>Woohoo, bạn có chắc muốn đăng xuất không!</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
@@ -66,6 +66,16 @@ const Header = () => {
             <li className="nav-item">
               <Link className="nav-link" to="/khachHang">
                 Khách hàng
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/danhmuc">
+                Danh Mục
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/binhluan">
+                Bình Luận
               </Link>
             </li>
             <li className="nav-item">
