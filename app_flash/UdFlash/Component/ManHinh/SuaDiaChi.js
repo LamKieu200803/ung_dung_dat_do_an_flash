@@ -41,13 +41,14 @@ const SuaDiaChi = ({route,navigation}) => {
     }).then((res) => {
         if (res.status == 201)
             alert("Bạn sửa địa chỉ  thành công")
-          navigation.navigate('AllDiachi')
+         
             console.log("thanh cong")
 
     })
         .catch((e) => {
             console.log(e);
-        })
+        }) 
+        navigation.navigate('AllDiachi')
     alert('Địa chỉ đã được lưu thành công');
   };
 

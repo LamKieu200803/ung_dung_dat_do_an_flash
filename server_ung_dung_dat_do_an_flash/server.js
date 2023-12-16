@@ -122,6 +122,7 @@ const thongTinSchema = new mongoose.Schema({
 
   userId: {
     type: String,
+    ref: 'Users',
     required: true
   },
   phone:String,
@@ -688,6 +689,32 @@ app.post("/thongtin/them/:userId", (req, res) => {
     .catch((err) => {
       console.log("error ", err);
       res.status(500).send("lỗi server");
+    });
+});
+
+// sửa thông tin người dùng 
+
+app.put("/thongtin/sua/:userId", (req, res) => {
+  const userId = req.params.userId;
+  const updateThongTin = {
+    tennguoimua: req.body.tennguoimua,
+    phone: req.body.phone,
+    anh: req.body.anh
+
+  };
+  thongTin.findOneAndUpdate({ userId: userId }, updateThongTin, { new: true })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Cập nhật dữ liệu thành công",
+          data: data
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" })
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
     });
 });
 

@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Profile from './Profile';
+
 const CHO_XAC_NHAN = 'CHO_XAC_NHAN';
 const DANG_GIAO = 'DANG_GIAO';
 const DA_GIAO = 'DA_GIAO';

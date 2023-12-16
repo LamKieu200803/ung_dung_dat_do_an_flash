@@ -22,6 +22,7 @@ import chiTietDanhMuc from './Component/ManHinh/chiTietDanhMuc';
 import PaymentButton from './Component/ManHinh/PaymentButton';
 import Danhgia from './Component/ManHinh/DanhGia';
 import SuaDiaChi from './Component/ManHinh/SuaDiaChi';
+import Profile from './Component/ManHinh/Profile';
 
 const Stack = createStackNavigator();
 
@@ -46,7 +47,7 @@ export default function App() {
           <Stack.Screen name="Webview" component={Webview} />
           <Stack.Screen name="chiTietDanhMuc" component={chiTietDanhMuc} options={{title:'Chi tiết danh mục'}} />
           <Stack.Screen name="Thongtin" component={Thongtin} />
-       
+          <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="Doipass" component={Doipass} />
           <Stack.Screen name='Main' component={Main} options={{headerShown:false}}/>
           <Stack.Screen name='AddAddress' component={AddAddressScreen} options={{title:'Địa chỉ mới'}}/>
