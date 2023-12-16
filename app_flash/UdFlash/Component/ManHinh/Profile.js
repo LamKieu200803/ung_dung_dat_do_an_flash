@@ -39,14 +39,13 @@ const Profile = (props) => {
             console.log(e);
         }
     };  
-
     const renderNguoidung = ({ item }) => {
         return (
             <View style={{ flexDirection: 'row', marginTop:120, marginLeft:20 }}>
                
-                <View style={{borderRadius:300,backgroundColor:'white', width:100, height:100}}> 
+                <View style={{borderRadius:300,backgroundColor:'white', width:100, height:100,}}> 
                      <Image
-                    style={{ width: 100, height: 80 }}
+                    style={{ width: 100, height: 100, borderRadius:200 }}
                     source={{ uri: item.anh }} />
                     </View>
  <View>
@@ -90,7 +89,7 @@ const Profile = (props) => {
                     keyExtractor={(item) => item._id}
                     renderItem={renderNguoidung}
 
-                />
+                /> 
             </View>
             <View >
                 <Text style={styles.chu1} onPress={() => { props.navigation.navigate('Thongtin') }}>Cập nhật thông tin</Text>

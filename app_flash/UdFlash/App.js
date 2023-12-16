@@ -32,7 +32,7 @@ export default function App() {
           <Stack.Screen name="SignUp" component={DangKi} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="SanPham" component={ChiTietSanPham} />
+          <Stack.Screen name="SanPham" component={ChiTietSanPham} options={{title:'Chi tiết sản phẩm'}}/>
           <Stack.Screen name="gioHang" component={GioHang} />
           <Stack.Screen name="AllDiachi" component={AllDiachi} options={{title:'Chọn địa chỉ nhận hàng'}} />
           <Stack.Screen name="LichSu" component={LichSu} />

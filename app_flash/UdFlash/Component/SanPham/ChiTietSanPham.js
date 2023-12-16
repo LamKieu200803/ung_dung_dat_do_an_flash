@@ -202,7 +202,7 @@ const ChiTietSanPham = ({ route, navigation }) => {
             borderBottomWidth: 1
           }}></Text>
         </View>
-        <View style={{ width: '100%', height: 300, marginTop: 10 }}>
+        <View style={{ width: '100%', height: 250, marginTop: 10 }}>
           <Text style={{ marginLeft: 12, fontSize: 16, fontWeight: 'bold' }}>Đánh giá từ người mua</Text>
           <Text style={{
             borderBottomColor: '#F38E8E',
@@ -216,7 +216,7 @@ const ChiTietSanPham = ({ route, navigation }) => {
                     
                     <View style={{ borderWidth: 0.8, width: 60, height: 60, backgroundColor: 'white', borderRadius: 50 }}>
                       <Image
-                        style={{ width: 60, height: 60 }}
+                        style={{ width: 60, height: 60 , borderRadius:50}}
                         source={{ uri: itembl.anh }} />
                     </View>
                     <View style={{backgroundColor:'silver', padding:10,borderRadius:30,marginLeft:5, marginRight:20}}>
@@ -228,12 +228,20 @@ const ChiTietSanPham = ({ route, navigation }) => {
                 </View>
               ))
             ) : (
-              <Text>Không có bình luận</Text>
-            )}
+              <View>
+              <Text style={{textAlign:'center', fontSize:20, marginTop:60}}>Chưa có đánh giá nào</Text>
+              <Text style={{textAlign:'center', fontSize:15}}>Hãy là người đầu tiên đánh giá cho sản phẩm này.</Text>
+          </View>
+          )}
           </ScrollView>
+        
+          <Text style={{
+            borderBottomColor: '#F38E8E',
+            borderBottomWidth: 1,
 
-
+          }}></Text>
         </View>
+        
       </ScrollView>
 
       <TouchableOpacity onPress={Save_Pro} >

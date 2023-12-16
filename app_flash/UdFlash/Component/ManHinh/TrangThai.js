@@ -158,6 +158,25 @@ const TrangThai = (props) => {
     //     </View>
     // )
     const Choxacnhan = () => {
+
+        const check = () => {
+            return dspro.filter((item) => {
+                console.log("okee");
+                return item.trangthai.toLowerCase().includes("Đã giao");
+            });
+        }
+        useEffect(() => {
+         
+            const unsubscribe = props.navigation.addListener('focus', () => {
+               console.log("a");
+                check();
+             
+            });
+        
+            return unsubscribe;
+        }, [props.navigation]);
+
+
         return (
             <View style={styles.container}>
                 {dspro.length > 0 ? (
@@ -187,6 +206,10 @@ const TrangThai = (props) => {
     // }
 
     const Dang_giao = () => {
+
+
+
+
         return (
             <View style={styles.container}>
                 {dspro.length > 0 ? (

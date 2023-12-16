@@ -9,12 +9,13 @@ const PaymentButton = ({route,navigation}) => {
     const [isLoading, setisLoading] = useState(true);
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getListPro = async () => {
-        let url_api_lichsu = 'http://172.16.10.100:9997/hoadon/' + loginInfo._id+'/'+ idChitiet;
+        let url_api_lichsu = 'http://172.16.10.100:9997/hoadonchitiet/' + loginInfo._id+'/'+ idChitiet;
         try {
             const response = await fetch(url_api_lichsu);
             const json = await response.json();
-console.log("AAAAAa");
+
             setObject(json.danhSachSanPham)
+            console.log(json.danhSachSanPham);
         } catch (e) {
             console.log(e);
 
@@ -82,7 +83,7 @@ console.log("AAAAAa");
     return (
         <View style={styles.container}>
                  <FlatList
-data={object}
+                 data={object}
                     renderItem={renderCartItem}
                     keyExtractor={(item) => item._id}
                 />
