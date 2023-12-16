@@ -125,22 +125,7 @@ const TrangThai = (props) => {
             <Text style={styles.emptyCartText}>Your cart is empty.</Text>
         </View>
     );
-    const renderCart = () => (
-        <View style={{ flex: 1, marginTop: 10 }}>
-            {dspro.length > 0 ? (
-                <FlatList
-                    data={dspro}
-                    renderItem={renderCartItem}
-                    keyExtractor={(item) => item._id}
-                    ListEmptyComponent={renderEmptyCart}
-                />
-            ) : (
-                <View style={styles.emptyCartContainer}>
-                    <Text style={styles.emptyCartText}>Your cart is empty.</Text>
-                </View>
-            )}
-</View>
-    )
+   
     // const renderDanggiao = () => (
     //     <View style={{ flex: 1, marginTop: 10 }}>
     //         {dspro.length > 0 ? (
@@ -157,24 +142,33 @@ const TrangThai = (props) => {
     //         )}
     //     </View>
     // )
-    const Choxacnhan = () => {
+
+   
+    const Choxacnhan = ({trangThai}) => {
 
         const check = () => {
             return dspro.filter((item) => {
-                console.log("okee");
-                return item.trangthai.toLowerCase().includes("Đã giao");
+              return item.trangthai.toLowerCase().includes(trangThai.toLowerCase());
             });
-        }
-        useEffect(() => {
-         
-            const unsubscribe = props.navigation.addListener('focus', () => {
-               console.log("a");
-                check();
-             
-            });
-        
-            return unsubscribe;
-        }, [props.navigation]);
+          };
+
+          const renderCart = () => (
+            <View style={{ flex: 1, marginTop: 10 }}>
+              {check().length > 0 ? (
+                <FlatList
+                  data={check()} // Sử dụng danh sách đã lọc
+                  renderItem={renderCartItem}
+                  keyExtractor={(item) => item._id}
+                  ListEmptyComponent={renderEmptyCart}
+                />
+              ) : (
+                    <View style={styles.emptyCartContainer}>
+                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                    </View>
+                )}
+    </View>
+        )
+       
 
 
         return (
@@ -190,24 +184,35 @@ const TrangThai = (props) => {
 
         )
     }
-    // const Dang_giao1 = () => {
-    //     return (
-    //         <View style={styles.container}>
-    //             {dspro.length > 0 ? (
-    //                 renderCart()
-    //             ) : (
-    //                 <View style={styles.emptyCartContainer}>
-    //                     <Text style={styles.emptyCartText}>Your cart is empty.</Text>
-    //                 </View>
-    //             )}
-    //         </View>
-
-    //     )
-    // }
-
-    const Dang_giao = () => {
 
 
+    const Dang_giao = ({trangThai}) => {
+
+
+
+        const check = () => {
+            return dspro.filter((item) => {
+              return item.trangthai.toLowerCase().includes(trangThai.toLowerCase());
+            });
+          };
+
+          const renderCart = () => (
+            <View style={{ flex: 1, marginTop: 10 }}>
+              {check().length > 0 ? (
+                <FlatList
+                  data={check()} // Sử dụng danh sách đã lọc
+                  renderItem={renderCartItem}
+                  keyExtractor={(item) => item._id}
+                  ListEmptyComponent={renderEmptyCart}
+                />
+              ) : (
+                    <View style={styles.emptyCartContainer}>
+                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                    </View>
+                )}
+    </View>
+        )
+       
 
 
         return (
@@ -223,26 +228,80 @@ const TrangThai = (props) => {
 
         )
     }
-    const Da_giao = () => {
+    const Da_giao = ({trangThai}) => {
+        const check = () => {
+            return dspro.filter((item) => {
+              return item.trangthai.toLowerCase().includes(trangThai.toLowerCase());
+            });
+          };
+
+          const renderCart = () => (
+            <View style={{ flex: 1, marginTop: 10 }}>
+              {check().length > 0 ? (
+                <FlatList
+                  data={check()} // Sử dụng danh sách đã lọc
+                  renderItem={renderCartItem}
+                  keyExtractor={(item) => item._id}
+                  ListEmptyComponent={renderEmptyCart}
+                />
+              ) : (
+                    <View style={styles.emptyCartContainer}>
+                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                    </View>
+                )}
+    </View>
+        )
+       
+
+
         return (
             <View style={styles.container}>
-                {console.log('dagioaoooooo')}
-                <View style={styles.emptyCartContainer}>
-                    <Text style={styles.emptyCartText}>Your cart is empty.</Text>
-                </View>
-
+                {dspro.length > 0 ? (
+                    renderCart()
+                ) : (
+                    <View style={styles.emptyCartContainer}>
+                        <Text style={styles.emptyCartText}>Chưa có đơn nào đã giao</Text>
+                    </View>
+                )}
             </View>
 
         )
     }
-    const Da_huy = () => {
+    const Da_huy = ({trangThai}) => {
+        const check = () => {
+            return dspro.filter((item) => {
+              return item.trangthai.toLowerCase().includes(trangThai.toLowerCase());
+            });
+          };
+
+          const renderCart = () => (
+            <View style={{ flex: 1, marginTop: 10 }}>
+              {check().length > 0 ? (
+                <FlatList
+                  data={check()} // Sử dụng danh sách đã lọc
+                  renderItem={renderCartItem}
+                  keyExtractor={(item) => item._id}
+                  ListEmptyComponent={renderEmptyCart}
+                />
+              ) : (
+                    <View style={styles.emptyCartContainer}>
+                        <Text style={styles.emptyCartText}>Chưa có đơn nào bị hủy</Text>
+                    </View>
+                )}
+    </View>
+        )
+       
+
+
         return (
             <View style={styles.container}>
-                {console.log('huyyyyy')}
-                <View style={styles.emptyCartContainer}>
-                    <Text style={styles.emptyCartText}>Your cart is empty.</Text>
-                </View>
-
+                {dspro.length > 0 ? (
+                    renderCart()
+                ) : (
+                    <View style={styles.emptyCartContainer}>
+                        <Text style={styles.emptyCartText}>Chưa có đơn nào bị hủy</Text>
+                    </View>
+                )}
             </View>
 
         )
@@ -286,10 +345,10 @@ const TrangThai = (props) => {
                 <RedComponent page={page} setPage={setPage} />
             </View>
             <View style={{ height: '85%', width: '100%' }}>
-                {page === CHO_XAC_NHAN ? <Choxacnhan /> : null}
-                {page === DANG_GIAO ? <Dang_giao /> : null}
-                {page === DA_GIAO ? <Da_giao /> : null} 
-                {page === DA_HUY ? <Da_huy /> : null}
+                {page === CHO_XAC_NHAN ? <Choxacnhan trangThai="Chờ xác nhận" /> : null}
+                {page === DANG_GIAO ? <Dang_giao trangThai="Đang giao" /> : null}
+                {page === DA_GIAO ? <Da_giao trangThai="đã giao"/> : null} 
+                {page === DA_HUY ? <Da_huy trangThai="Đã hủy" /> : null}
             </View>
         </View>
 
