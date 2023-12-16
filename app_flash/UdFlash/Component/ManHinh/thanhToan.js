@@ -18,7 +18,7 @@ const ThanhToan = ({  route }) => {
     const [thanhpho, setthanhpho] = useState('');
     const [state, setState] = useState('');
     const [thoigian, setthoigian] = useState();
-   const [trangthai, settrangthai] = useState("đang chờ xác nhận");
+   const [trangthai, settrangthai] = useState("Chờ xác nhận");
    const [idHoadon, setidHoadon] = useState('');
    
    

@@ -75,6 +75,8 @@ const PaymentButton = ({route,navigation}) => {
                         <Text style={styles.productPrice}> $ {item.giasp}</Text>
                         <Text style={styles.productPrice1}>Số lượng mua:{item.soluongmua}</Text>
                     </View>
+
+                    <Text style={{marginTop:40}} onPress={()=>{navigation.navigate('Danhgia', {item:item})}}>đánh giá</Text>
                 </View>
 
             </View>

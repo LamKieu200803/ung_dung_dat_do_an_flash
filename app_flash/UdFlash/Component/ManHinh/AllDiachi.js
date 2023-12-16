@@ -54,7 +54,7 @@ const AllDiachi = (props) => {
                             textAlign: 'center',
                             color: 'red',
                         }}
-                        onPress={()=>{alert("sua")}}
+                        onPress={()=>{props.navigation.navigate('SuaDiaChi',{item:item})}}
                         >sửa</Text>
 
 

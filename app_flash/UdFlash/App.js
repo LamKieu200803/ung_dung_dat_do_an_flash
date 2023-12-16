@@ -20,6 +20,8 @@ import Webview from './Component/ManHinh/Webview';
 import TrangThai from './Component/ManHinh/TrangThai';
 import chiTietDanhMuc from './Component/ManHinh/chiTietDanhMuc';
 import PaymentButton from './Component/ManHinh/PaymentButton';
+import Danhgia from './Component/ManHinh/DanhGia';
+import SuaDiaChi from './Component/ManHinh/SuaDiaChi';
 
 const Stack = createStackNavigator();
 
@@ -28,10 +30,12 @@ export default function App() {
     <View style={styles.container}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Main'>
+        <Stack.Screen name="SuaDiaChi" component={SuaDiaChi} />
           <Stack.Screen name="MhChao" component={MhChao} />
           <Stack.Screen name="SignUp" component={DangKi} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Danhgia" component={Danhgia} />
           <Stack.Screen name="SanPham" component={ChiTietSanPham} options={{title:'Chi tiết sản phẩm'}}/>
           <Stack.Screen name="gioHang" component={GioHang} />
           <Stack.Screen name="AllDiachi" component={AllDiachi} options={{title:'Chọn địa chỉ nhận hàng'}} />

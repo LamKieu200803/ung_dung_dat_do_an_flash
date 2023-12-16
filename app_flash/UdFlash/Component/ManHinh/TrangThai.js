@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import RadioGroup, { RadioButtonProps } from 'react-native-radio-buttons-group';
-import { View, TextInput, StyleSheet, Modal, FlatList, VirtualizedList, Image, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, Modal, FlatList,Button, VirtualizedList, Image, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +10,7 @@ const DANG_GIAO = 'DANG_GIAO';
 const DA_GIAO = 'DA_GIAO';
 const DA_HUY = 'DA_HUY';
 const TrangThai = (props) => {
+    const [showButton, setShowButton] = useState(false); // Thêm biến trạng thái cho nút
     const [searchText, setSearchText] = useState("");
     const [dspro, setdspro] = useState([]);
     const [object, setObject] = useState([]);
@@ -67,6 +68,7 @@ const TrangThai = (props) => {
             // khi màn hình đc active thì lệnh hoạt động
             if (isLoginInfoLoaded) {
                 getListPro();
+    
                 setisLoading(true)
                 console.log(loginInfo._id);
             }
@@ -78,7 +80,7 @@ const TrangThai = (props) => {
             item.trangthai.toLowerCase().includes(page)
         );
     };
-    const renderCartItem = ({ item }) => {
+    const renderCartItem = ({ item, showButton  }) => {
         return (
             <View style={styles.cartItemContainer}>
 <TouchableOpacity onPress={() => props.navigation.navigate('Payment',{item:item})}>
@@ -93,6 +95,8 @@ const TrangThai = (props) => {
                             <Text style={styles.productPrice}>Ngày mua {item.thoigian}</Text>
                         </View>
                         <Text style={{ fontWeight: 'bold', marginLeft: 80, color: '#000000', textAlignVertical: 'center' }}>{item.trangthai}</Text>
+                      
+                       
 
                     </View>
                 </TouchableOpacity>
@@ -125,66 +129,111 @@ const TrangThai = (props) => {
             <Text style={styles.emptyCartText}>Your cart is empty.</Text>
         </View>
     );
-   
-    // const renderDanggiao = () => (
-    //     <View style={{ flex: 1, marginTop: 10 }}>
-    //         {dspro.length > 0 ? (
-    //             <FlatList
-    //                 data={dspro}
-    //                 renderItem={renderDang_giao}
-    //                 keyExtractor={(item) => item._id}
-    //                 ListEmptyComponent={renderEmptyCart}
-    //             />
-    //         ) : (
-    //             <View style={styles.emptyCartContainer}>
-    //                 <Text style={styles.emptyCartText}>Your cart is empty.</Text>
-    //             </View>
-    //         )}
-    //     </View>
-    // )
+
 
    
-    const Choxacnhan = ({trangThai}) => {
-
-        const check = () => {
-            return dspro.filter((item) => {
-              return item.trangthai.toLowerCase().includes(trangThai.toLowerCase());
-            });
-          };
-
-          const renderCart = () => (
-            <View style={{ flex: 1, marginTop: 10 }}>
-              {check().length > 0 ? (
-                <FlatList
-                  data={check()} // Sử dụng danh sách đã lọc
-                  renderItem={renderCartItem}
-                  keyExtractor={(item) => item._id}
-                  ListEmptyComponent={renderEmptyCart}
-                />
-              ) : (
-                    <View style={styles.emptyCartContainer}>
-                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
-                    </View>
-                )}
-    </View>
-        )
+    const Choxacnhan = ({ trangThai }) => {
        
+      
+        const check = () => {
+          const filteredItems = dspro.filter((item) => {
+            return item.trangthai.toLowerCase().includes(trangThai.toLowerCase());
+          });
+      
+          setShowButton(trangThai.toLowerCase() === "chờ xác nhận"); // Cập nhật biến showButton
+      
+          return filteredItems;
+        };
+      
+     
+      
+        const renderCartItem = ({ item }) => {
 
-
-        return (
-            <View style={styles.container}>
-                {dspro.length > 0 ? (
-                    renderCart()
-                ) : (
-                    <View style={styles.emptyCartContainer}>
-                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
-                    </View>
-                )}
-            </View>
-
-        )
+   const huydon = (itemId) => {
+let obj = {trangthai: "Đã hủy"}
+fetch(
+    "http://172.16.10.100:9997/hoadon/sua/" + loginInfo._id+"/"+itemId,
+    {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(obj),
     }
+  )
+    .then((res) => {
+      if (res.status === 200) {
+        console.log("Hủy thành công");
+        return res.json();
+      } else {
+        throw new Error("Hủy thất bại");
+      }
+    });
 
+      
+        };
+
+
+          return (
+            <View style={styles.cartItemContainer}>
+<TouchableOpacity onPress={() => props.navigation.navigate('Payment',{item:item})}>
+                    <View style={{ flexDirection: 'row' }}>
+
+                        <View style={{ width: 270, marginLeft: 20 }}>
+                            <Text style={styles.productName}>Tên người mua:{item.tennguoimua}</Text>
+                            <Text style={styles.productPrice}>Phone:{item.sdt}</Text>
+                            <Text style={styles.productPrice}>Phương thức thanh toán: {item.pttt}</Text>
+                            <Text style={styles.productPrice}>Địa chỉ: {item.diachi}</Text>
+                            <Text style={styles.productPrice}>Tổng tiền: {item.tongtien}</Text>
+                            <Text style={styles.productPrice}>Ngày mua {item.thoigian}</Text>
+                        </View>
+                        <View style={{marginTop:50}}>
+                        <Text style={{ fontWeight: 'bold', marginLeft: 50, color: '#000000', textAlignVertical: 'center', marginTop:20 }}>{item.trangthai}</Text>
+                       {showButton && (
+           <Text style={{marginLeft:50, marginTop:20,}} onPress={()=>{huydon(item._id)}}>Hủy đơn hàng</Text>
+           
+          )}
+                      </View>
+               
+
+                    </View>
+                </TouchableOpacity>
+            </View>
+          );
+        };
+      
+        const renderCart = () => (
+          <View style={{ flex: 1, marginTop: 10 }}>
+            {check().length > 0 ? (
+              <FlatList
+                data={check()}
+                renderItem={({ item }) =>
+                  renderCartItem({ item, showButton })
+                }
+                keyExtractor={(item) => item._id}
+                ListEmptyComponent={renderEmptyCart}
+              />
+            ) : (
+              <View style={styles.emptyCartContainer}>
+                <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+              </View>
+            )}
+          </View>
+        );
+      
+        return (
+          <View style={styles.container}>
+            {dspro.length > 0 ? (
+              renderCart()
+            ) : (
+              <View style={styles.emptyCartContainer}>
+                <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+              </View>
+            )}
+          </View>
+        );
+      };
 
     const Dang_giao = ({trangThai}) => {
 

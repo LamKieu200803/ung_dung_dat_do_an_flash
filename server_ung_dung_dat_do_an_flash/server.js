@@ -693,7 +693,7 @@ app.post("/thongtin/them/:userId", (req, res) => {
 
 
 
-
+// sửa trạng thái
 app.put("/hoadon/sua/:userId/:id", (req, res) => {
   const userId = req.params.userId;
   const id = req.params.id; // Thay đổi từ req.params._id thành req.params.id
@@ -854,6 +854,8 @@ app.get("/binhluan/:productId", (req, res) => {
       res.status(500).send("Lỗi server");
     });
 });
+
+
 
 // thêm bình luận
 app.post("/binhluan/them/:productId/:thongtinId", (req, res) => {
