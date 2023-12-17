@@ -60,7 +60,7 @@ const Products = () => {
   };
 
   const columns = [
-    { name: "ID", selector: (row, index) => `#${index + 1}` },
+    { name: "STT", selector: (row, index) => `${index + 1}` },
     {
       name: "Ảnh",
       selector: (row) => (

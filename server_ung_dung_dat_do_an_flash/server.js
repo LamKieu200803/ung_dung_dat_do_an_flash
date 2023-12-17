@@ -19,12 +19,17 @@ mongoose
     console.error("lỗi kết nối", error);
   });
 
-// Schema và model user
+// Schema và model user 
 const userSchema = new mongoose.Schema({
   email: String,
   password: String,
-});
+  thongtinId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ThongTins',
+    required: true
+  },
 
+});
 const User = mongoose.model("Users", userSchema);
 
 // Schema và model danh mục
@@ -199,13 +204,47 @@ app.post("/dangnhap", (req, res) => {
 });
 
 // xem toàn bộ tài khoản
-app.get("/user", async (req, res) => {
+// xem toàn bộ tài khoản
+app.get('/user', async (req, res) => {
   try {
-    const user = await User.find({});
-    res.json(user);
+    const users = await User.find({});
+    const usersWithDetails = [];
+
+    for (const user of users) {
+      const userId = user._id;
+
+      // Lấy thông tin từ bảng "thongTin" dựa trên userId
+      const thongtin = await thongTin.findOne({ userId: userId });
+
+      if (thongtin) {
+        const userWithDetails = {
+          userId: userId,
+          email: user.email,
+          password: user.password,
+          phone: thongtin.phone,
+          anh: thongtin.anh,
+          tennguoimua: thongtin.tennguoimua
+        };
+
+        usersWithDetails.push(userWithDetails);
+      } else {
+        const userWithoutDetails = {
+          userId: userId,
+          email: user.email,
+          password: user.password,
+          phone: '',
+          anh: '',
+          tennguoimua: ''
+        };
+
+        usersWithDetails.push(userWithoutDetails);
+      }
+    }
+
+    res.json(usersWithDetails);
   } catch (err) {
-    console.log("error ", err);
-    res.status(500).send("lỗi server");
+    console.log('Lỗi', err);
+    res.status(500).send('Lỗi server');
   }
 });
 
@@ -785,43 +824,43 @@ app.put("/hoadon/sua/:userId/:id", (req, res) => {
     });
 });
 
-// top3 sản phẩm bán chạy
-app.get("/thongke/top3sanpham", async (req, res) => {
-  try {
-    const result = await hoaDon.aggregate([
-      { $unwind: "$danhSachSanPham" },
-      {
-        $group: {
-          _id: "$danhSachSanPham.tensp",
-          soluongban: { $sum: { $toInt: "$danhSachSanPham.soluongmua" } },
-        },
-      },
-      { $sort: { soluongban: -1 } },
-      { $limit: 3 },
-      {
-        $lookup: {
-          from: "SanPhams",
-          localField: "_id",
-          foreignField: "tensp",
-          as: "sanpham",
-        },
-      },
-      { $unwind: "$sanpham" },
-      {
-        $project: {
-          _id: 0,
-          tensp: "$sanpham.tensp",
-          soluongban: 1,
-        },
-      },
-    ]);
+// // top3 sản phẩm bán chạy
+// app.get("/thongke/top3sanpham", async (req, res) => {
+//   try {
+//     const result = await hoaDon.aggregate([
+//       { $unwind: "$danhSachSanPham" },
+//       {
+//         $group: {
+//           _id: "$danhSachSanPham.tensp",
+//           soluongban: { $sum: { $toInt: "$danhSachSanPham.soluongmua" } },
+//         },
+//       },
+//       { $sort: { soluongban: -1 } },
+//       { $limit: 3 },
+//       {
+//         $lookup: {
+//           from: "SanPhams",
+//           localField: "_id",
+//           foreignField: "tensp",
+//           as: "sanpham",
+//         },
+//       },
+//       { $unwind: "$sanpham" },
+//       {
+//         $project: {
+//           _id: 0,
+//           tensp: "$sanpham.tensp",
+//           soluongban: 1,
+//         },
+//       },
+//     ]);
 
-    res.status(200).json(result);
-  } catch (err) {
-    console.log("error ", err);
-    res.status(500).send("Lỗi server");
-  }
-});
+//     res.status(200).json(result);
+//   } catch (err) {
+//     console.log("error ", err);
+//     res.status(500).send("Lỗi server");
+//   }
+// });
 
 // thống kê
 app.get("/thongke", async (req, res) => {
@@ -843,11 +882,10 @@ app.get("/thongke", async (req, res) => {
       }
     });
     const formattedData = monthlyCountsArray.map(({ month, count }) => [
-      ` Tháng ${month}`,
+      ` T${month}`,
       count,
     ]);
     const data = [["Month", "Orders"], ...formattedData];
-
     res.json(data);
   } catch (err) {
     console.error("Error:", err);
@@ -985,7 +1023,7 @@ app.post("/binhluan/them/:productId/:thongtinId", (req, res) => {
 //   hoaDonChiTiet.insertMany(newChiTietList)
 //     .then(() => {
 //       res.status(201).json({ message: "Thêm danh sách chi tiết hóa đơn thành công" });
-//     })
+//     })b
 //     .catch((err) => {
 //       console.log("error ", err);
 //       res.status(500).send("lỗi server");

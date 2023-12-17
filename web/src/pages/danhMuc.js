@@ -99,7 +99,7 @@ const DanhMuc = () => {
   }, []);
 
   const columns = [
-    { name: "ID", selector: (row, index) => `#${index + 1}` },
+    { name: "STT", selector: (row, index) => `#${index + 1}` },
     {
       name: "Ảnh danh mục",
       cell: (row) => (
@@ -123,14 +123,14 @@ const DanhMuc = () => {
         </Button>
       ),
     },
-    {
-      name: "Xóa",
-      cell: (row) => (
-        <Button variant="outline-danger" onClick={() => handleDeleteClick(row)}>
-          Xóa danh mục
-        </Button>
-      ),
-    },
+    // {
+    //   name: "Xóa",
+    //   cell: (row) => (
+    //     <Button variant="outline-danger" onClick={() => handleDeleteClick(row)}>
+    //       Xóa danh mục
+    //     </Button>
+    //   ),
+    // },
   ];
 
   return (

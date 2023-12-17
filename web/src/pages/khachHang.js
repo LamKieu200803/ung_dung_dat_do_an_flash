@@ -80,9 +80,9 @@ const KhachHang = () => {
         <Modal.Body>
           {selectedUser && (
             <div>
-              {/* <img src={selectedUser?}/> */}
-              <p>Email: {selectedUser.email}</p>
-              <p>Password: {selectedUser.password}</p>
+              <img src={selectedUser?.anh} style={{width: "200px", height: "150px"}}/>
+              <p>Tên Khách Hàng: {selectedUser.tennguoimua}</p>
+              <p>Số Điện Thoại: {selectedUser.phone}</p>
             </div>
           )}
         </Modal.Body>
@@ -94,7 +94,6 @@ const KhachHang = () => {
         pagination
         paginationPerPage={5}
         striped
-        onRowClicked={handleRowClick}
       />
     </div>
   );

@@ -50,7 +50,7 @@ const Orders = () => {
     setSelectedOrder(order);
   };
   const columns = [
-    { name: "ID", selector: (row, index) => `#${index + 1}` },
+    { name: "Mã đơn hàng", selector: (row, index) => row._id },
     {
       name: "Tên người mua",
       selector: (row) => row.tennguoimua,
@@ -139,10 +139,9 @@ const Orders = () => {
         <Dropdown.Menu>
           <Dropdown.Item eventKey="Tất cả">Tất cả</Dropdown.Item>
           <Dropdown.Item eventKey="Chưa xác nhận">Chưa xác nhận</Dropdown.Item>
-          <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
           <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
+          <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
           <Dropdown.Item eventKey="Đã hủy">Đã hủy</Dropdown.Item>
-          <Dropdown.Item eventKey="Giao hàng thành công">Đã giao</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
       <DataTable
@@ -166,13 +165,10 @@ const Orders = () => {
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item eventKey="Tất cả">Tất cả</Dropdown.Item>
-              <Dropdown.Item eventKey="Chưa xác nhận">
-                Chưa xác nhận
-              </Dropdown.Item>
-              <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
+              <Dropdown.Item eventKey="Chưa xác nhận">Chưa xác nhận</Dropdown.Item>
               <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
+              <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
               <Dropdown.Item eventKey="Đã hủy">Đã hủy</Dropdown.Item>
-              <Dropdown.Item eventKey="Giao hàng thành công">Đã giao</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Modal.Body>
@@ -193,7 +189,7 @@ const Orders = () => {
         <Modal.Body>
           {selectedOrder && (
             <div>
-              <p>ID hóa đơn: {selectedOrder._id}</p>
+              <p>Mã đơn hàng: {selectedOrder._id}</p>
               <p>Tên khách hàng: {selectedOrder.tennguoimua}</p>
               <p>Phương thức thanh toán: {selectedOrder.pttt ?? "Tiền mặt"}</p>
               <p>Địa chỉ: {selectedOrder.diachi}</p>
