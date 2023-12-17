@@ -819,6 +819,56 @@ app.get("/thongke", async (req, res) => {
   }
 });
 
+// top 5 sản phẩm 
+app.get("/top5products", async (req, res) => {
+  try {
+    const result = await hoaDon.aggregate([
+      { $unwind: "$danhSachSanPham" },
+      {
+        $group: {
+          _id: "$danhSachSanPham.tensp",
+          soluongban: { $sum: { $toInt: "$danhSachSanPham.soluongmua" } },
+        },
+      },
+      { $sort: { soluongban: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: "SanPhams",
+          localField: "_id",
+          foreignField: "tensp",
+          as: "sanpham",
+        },
+      },
+      { $unwind: "$sanpham" },
+      {
+        $project: {
+          _id: 0,
+          tensp: "$sanpham.tensp",
+          soluongban: 1,
+          giasp: "$sanpham.giasp",
+          img: "$sanpham.img",
+        },
+      },
+    ]);
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/top5sold", (req, res) => {
+  SanPham.find({})
+    .populate("danhMucId")
+    .sort({ soluongban: -1 })
+    .limit(5)
+    .then((data) => {
+      res.json(data);
+    });
+});
+
 // // thêm lịch sử mua hàng
 // app.post("/lichsu/them/:userId", (req, res) => {
 //   const userId = req.params.userId;
