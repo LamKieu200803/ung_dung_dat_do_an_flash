@@ -43,10 +43,10 @@ export default function Main(){
                 }
             })}
         >
-            <Tab.Screen name={TrangChuName} component={HomeScreen} options={{ headerShown: false }} />
-            <Tab.Screen name={GioHangName} component={GioHang} options={{ headerShown: false }} />
+            <Tab.Screen name={TrangChuName} component={HomeScreen} options={{title:'Trang chủ'}}/>
+            <Tab.Screen name={GioHangName} component={GioHang} options={{title:'Giỏ hàng'}} />
         {/* //    <Tab.Screen name={LichSuName} component={LichSu} options={{ headerShown: false }}/> */}
-            <Tab.Screen name={ProfileName} component={Profile} options={{ headerShown: false }}/> 
+            <Tab.Screen name={ProfileName} component={Profile} options={{title:'Thông tin người dùng'}}/> 
           
         </Tab.Navigator>
     )

@@ -105,27 +105,7 @@ const TrangThai = (props) => {
             </View>
         );
     }
-    // const renderDang_giao = ({ item1 }) => {
-    //     return (
-    //         <View style={styles.cartItemContainer}>
-    //             <View style={{ flexDirection: 'row' }}>
 
-    //                 <View style={{ width: 270, marginLeft: 20 }}>
-    //                     <Text style={styles.productName}>Tên người mua:{item1.tennguoimua}</Text>
-    //                     <Text style={styles.productPrice}>Phone:{item1.giasp}</Text>
-    //                     <Text style={styles.productPrice}>Phương thức thanh toán: {item1.pttt}</Text>
-    //                     <Text style={styles.productPrice}>Địa chỉ: {item1.diachi}</Text>
-    //                     <Text style={styles.productPrice}>Tổng tiền: {item1.tongtien}</Text>
-    //                     <Text style={styles.productPrice}>Trạng Thai: {item1.trangthai}</Text>
-    //                     <Text style={styles.productPrice}>Ngàu mua {item1.thoigian}</Text>
-    //                 </View>
-    //                 <Text style={{ fontWeight: 'bold', marginLeft: 80, color: 'white', textAlignVertical: 'center' }}>Chờ xác nhận</Text>
-
-    //             </View>
-
-    //         </View>
-    //     );
-    // }
     const renderEmptyCart = () => (
         <View style={styles.emptyCartContainer}>
             <Text style={styles.emptyCartText}>Your cart is empty.</Text>
@@ -206,7 +186,7 @@ fetch(
         };
       
         const renderCart = () => (
-          <View style={{ flex: 1, marginTop: 10 }}>
+          <View style={{ flex: 1,  }}>
             {check().length > 0 ? (
               <FlatList
                 data={check()}
@@ -248,7 +228,7 @@ fetch(
           };
 
           const renderCart = () => (
-            <View style={{ flex: 1, marginTop: 10 }}>
+            <View style={{ flex: 1 }}>
               {check().length > 0 ? (
                 <FlatList
                   data={check()} // Sử dụng danh sách đã lọc
@@ -287,7 +267,7 @@ fetch(
           };
 
           const renderCart = () => (
-            <View style={{ flex: 1, marginTop: 10 }}>
+            <View style={{ flex: 1}}>
               {check().length > 0 ? (
                 <FlatList
                   data={check()} // Sử dụng danh sách đã lọc
@@ -326,7 +306,7 @@ fetch(
           };
 
           const renderCart = () => (
-            <View style={{ flex: 1, marginTop: 10 }}>
+            <View style={{ flex: 1 }}>
               {check().length > 0 ? (
                 <FlatList
                   data={check()} // Sử dụng danh sách đã lọc
@@ -361,8 +341,8 @@ fetch(
         return (
             <View style={styles.container}>
 
-                <Text style={styles.dontrangthai}>Đơn trạng thái</Text>
-                <View style={{ flexDirection: 'row', marginTop: 15 }}>
+              
+                <View style={{ flexDirection: 'row', marginTop: 50 }}>
 
                     <TouchableOpacity onPress={() => { setPage(CHO_XAC_NHAN) }} disabled={page === CHO_XAC_NHAN ? true : false}>
 <Text style={styles.left}>Chờ xác nhận</Text>

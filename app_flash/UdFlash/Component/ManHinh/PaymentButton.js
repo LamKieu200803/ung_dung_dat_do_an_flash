@@ -7,6 +7,12 @@ const PaymentButton = ({route,navigation}) => {
     const [idChitiet,setIdchitiet]=useState(route.params.item._id);
     const [loginInfo, setloginInfo] = useState('');
     const [isLoading, setisLoading] = useState(true);
+
+    const [thoigian11, setThoigian1] = useState(route.params.item.thoigian)
+    const [tenkhachhang11, setTenkhachhang] = useState(route.params.item.tennguoimua)
+    const [sodienthoai11, seSodienthoai] = useState(route.params.item.sodienthoai)
+    const [tongtien11, setTongtien] = useState(route.params.item.tongtien)
+    const [diachi11, setDiachi11] = useState(route.params.item.diachi)
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getListPro = async () => {
         let url_api_lichsu = 'http://172.16.10.100:9997/hoadonchitiet/' + loginInfo._id+'/'+ idChitiet;
@@ -70,13 +76,13 @@ const PaymentButton = ({route,navigation}) => {
             <View style={styles.cartItemContainer}>
                 <View style={{ flexDirection: 'row' , marginTop:2}}>
                 <Image source={{ uri: item.img }} style={styles.productImage} />
-                    <View style={{ width: 270, marginLeft: 5 }}>
+                    <View style={{ width: 250, marginLeft: 5 }}>
                         <Text style={styles.productName}>{item.tensp}</Text>
                         <Text style={styles.productPrice}> $ {item.giasp}</Text>
                         <Text style={styles.productPrice1}>Số lượng mua:{item.soluongmua}</Text>
                     </View>
 
-                    <Text style={{marginTop:40}} onPress={()=>{navigation.navigate('Danhgia', {item:item})}}>đánh giá</Text>
+                    <Text style={{ textAlignVertical:'center'}} onPress={()=>{navigation.navigate('Danhgia', {item:item})}}>Đánh giá</Text>
                 </View>
 
             </View>
@@ -84,11 +90,22 @@ const PaymentButton = ({route,navigation}) => {
     }
     return (
         <View style={styles.container}>
+                <View style={{width:450}}>
+            <Text style={styles.productName}> Tên khách hàng:   {tenkhachhang11}</Text>
+            <Text style={styles.productName}> Số điện thoại:  {sodienthoai11}</Text>
+            <Text style={styles.productName}> Tổng tiền:  {tongtien11}</Text>
+            <Text style={styles.productName}> Ngày mua:   {thoigian11}</Text>
+            <Text style={styles.productName}> Địa chỉ:{diachi11}</Text>
+            </View> 
+                       <Text style={{fontSize:18.5,marginTop:15,fontWeight:'bold',textAlign:'center',marginBottom:25}}> Danh sách các sản phẩm trong hoá đơn bạn 
+                        đã mua </Text>
+            <View style={{flex:1,width:455,marginLeft:12,borderRadius:20}}>
                  <FlatList
-                 data={object}
-                    renderItem={renderCartItem}
-                    keyExtractor={(item) => item._id}
-                />
+                data={object}
+                renderItem={renderCartItem}
+                keyExtractor={(item) => item._id}
+            />
+            </View>
 
         </View>
 
@@ -99,7 +116,7 @@ export default PaymentButton;
 const styles = StyleSheet.create({
   container: {
       flex: 1,
-      backgroundColor: '#DF5A5A',
+      backgroundColor: '#FFF',
   },
   dontrangthai: {
       fontSize: 25,
@@ -117,7 +134,7 @@ const styles = StyleSheet.create({
   }, cartItemContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#DF5A5A',
       borderWidth: 1,
       margin:5,
       borderRadius:10

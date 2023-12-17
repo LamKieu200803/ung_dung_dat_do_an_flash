@@ -134,7 +134,7 @@ const renderDanhMuc = ({item})=>{
             <View style={styles.container}>
                 <View style={styles.menu}>
                     {/* <Ionicons name="menu" size={24} color="#8a6fcf" /> */}
-                    <Ionicons name="notifications" size={24} color="#8a6fcf" />
+                    {/* <Ionicons name="notifications" size={24} color="#8a6fcf" /> */}
                 </View>
                 <View style={styles.icon}>
                     <Ionicons name="search" size={24} color="#888"  />

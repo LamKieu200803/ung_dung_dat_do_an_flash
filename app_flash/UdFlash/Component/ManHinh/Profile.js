@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     chu2: {
         marginTop: 35,
         marginLeft: 340,
-        color: "red",
+        color: "yellow",
         fontSize: 15
     }
 

@@ -41,7 +41,7 @@ export default function App() {
           <Stack.Screen name="gioHang" component={GioHang} />
           <Stack.Screen name="AllDiachi" component={AllDiachi} options={{title:'Chọn địa chỉ nhận hàng'}} />
           <Stack.Screen name="LichSu" component={LichSu} />
-          <Stack.Screen name="TrangThai" component={TrangThai} />
+          <Stack.Screen name="TrangThai" component={TrangThai} options={{title:'Đơn mua'}}/>
          <Stack.Screen name='Payment' component={PaymentButton} />
           <Stack.Screen name="ThanhToan" component={ThanhToan} />
           <Stack.Screen name="Webview" component={Webview} />
