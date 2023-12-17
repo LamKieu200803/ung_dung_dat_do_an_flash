@@ -5,6 +5,8 @@ import SanPham from "./pages/sanPham";
 import KhachHang from "./pages/khachHang";
 import Orders from "./pages/hoaDon";
 import DangNhap from "./pages/dangNhap";
+import DanhMuc from "./pages/danhMuc";
+import BinhLuan from "./pages/binhLuan";
 
 const ContentLayout = ({ children }) => (
   <div>
@@ -47,6 +49,22 @@ function App() {
           element={
             <ContentLayout>
               <Orders />
+            </ContentLayout>
+          }
+        />
+        <Route
+          path="/danhmuc"
+          element={
+            <ContentLayout>
+              <DanhMuc />
+            </ContentLayout>
+          }
+        />
+        <Route
+          path="/binhluan"
+          element={
+            <ContentLayout>
+              <BinhLuan />
             </ContentLayout>
           }
         />

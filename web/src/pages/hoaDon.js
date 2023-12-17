@@ -138,8 +138,11 @@ const Orders = () => {
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item eventKey="Tất cả">Tất cả</Dropdown.Item>
-          <Dropdown.Item eventKey="Đang xử lý">Đang xử lý</Dropdown.Item>
-          <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
+          <Dropdown.Item eventKey="Chưa xác nhận">Chưa xác nhận</Dropdown.Item>
+          <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
+          <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
+          <Dropdown.Item eventKey="Đã hủy">Đã hủy</Dropdown.Item>
+          <Dropdown.Item eventKey="Giao hàng thành công">Đã giao</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
       <DataTable
@@ -162,8 +165,14 @@ const Orders = () => {
               {newStatus}
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item eventKey="Đang xử lý">Đang xử lý</Dropdown.Item>
-              <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
+              <Dropdown.Item eventKey="Tất cả">Tất cả</Dropdown.Item>
+              <Dropdown.Item eventKey="Chưa xác nhận">
+                Chưa xác nhận
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
+              <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
+              <Dropdown.Item eventKey="Đã hủy">Đã hủy</Dropdown.Item>
+              <Dropdown.Item eventKey="Giao hàng thành công">Đã giao</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Modal.Body>
@@ -182,7 +191,7 @@ const Orders = () => {
           <Modal.Title>Chi tiết hóa đơn</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {selectedOrder && (
+{selectedOrder && (
             <div>
               <p>ID hóa đơn: {selectedOrder._id}</p>
               <p>Tên khách hàng: {selectedOrder.tennguoimua}</p>
@@ -194,7 +203,7 @@ const Orders = () => {
               <h5>Danh sách sản phẩm:</h5>
               <Table striped bordered hover>
                 <thead>
-<tr>
+                  <tr>
                     <th>Tên sản phẩm</th>
                     <th>Số lượng</th>
                     <th>Giá</th>

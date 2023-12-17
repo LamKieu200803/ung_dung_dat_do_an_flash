@@ -69,6 +69,16 @@ const Header = () => {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="/danhmuc">
+                Danh Mục
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/binhluan">
+                Bình Luận
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" to="/sanPham">
                 Sản Phẩm
               </Link>
