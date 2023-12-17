@@ -25,8 +25,7 @@ const userSchema = new mongoose.Schema({
     ref: 'ThongTins',
     required: true
   },
-
-})
+});
 
 const User = mongoose.model("Users", userSchema);
 
@@ -104,6 +103,10 @@ const hoaDonSchema = new mongoose.Schema({
     required: true
   },
   danhSachSanPham: [{
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'SanPham'
+    },
     tensp: String,
     giasp: String,
     img: String,
@@ -150,11 +153,12 @@ const binhLuanSchema = new mongoose.Schema({
     ref: 'SanPhams',
     required: true
   },
-  thongtinId: {
+  
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ThongTins',
+    ref: 'Users',
     required: true
-  }
+  },
 });
 
 const BinhLuan = mongoose.model('BinhLuans', binhLuanSchema);
@@ -681,16 +685,48 @@ app.get("/hoadon/:userId", async (req, res) => {
 })
 
 
-// thêm hóa đơn theo id người dùng
 app.post("/hoadon/them/:userId", (req, res) => {
   const userId = req.params.userId;
   const { danhSachSanPham, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai } = req.body;
 
-  const newHoaDon = new hoaDon({ danhSachSanPham, userId, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai });
-  newHoaDon
-    .save()
-    .then(() => {
-      res.status(201).json({ message: "Thêm hóa đơn thành công" });
+  // Lấy thông tin người dùng dựa trên userId
+  User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ message: "Người dùng không tồn tại" });
+      }
+
+      // Tạo danh sách sản phẩm mới với các thông tin, bao gồm cả productId
+      const newDanhSachSanPham = danhSachSanPham.map((sp) => ({
+        productId: sp.productId, // Thêm productId vào danh sách sản phẩm
+        tensp: sp.tensp,
+        giasp: sp.giasp,
+        img: sp.img,
+        soluongmua: sp.soluongmua,
+      }));
+
+      // Tạo hóa đơn mới với thông tin người dùng và danh sách sản phẩm
+      const newHoaDon = new hoaDon({
+        danhSachSanPham: newDanhSachSanPham,
+        userId,
+        diachi,
+        sdt,
+        tennguoimua,
+        pttt,
+        tongtien,
+        thoigian,
+        trangthai,
+      });
+
+      newHoaDon
+        .save()
+        .then(() => {
+          res.status(201).json({ message: "Thêm hóa đơn thành công" });
+        })
+        .catch((err) => {
+          console.log("error ", err);
+          res.status(500).send("Lỗi server");
+        });
     })
     .catch((err) => {
       console.log("error ", err);
@@ -707,6 +743,7 @@ app.get("/thongtin/:userId", async (req, res) => {
       res.json(thongtin);
     } else {
       res.status(404).json({ message: "Không tìm thấy thông tin người dùng" });
+      
     }
   } catch (err) {
     console.log("error ", err);
@@ -973,23 +1010,22 @@ app.get("/binhluan/:productId", (req, res) => {
 
 
 
-// thêm bình luận
-app.post("/binhluan/them/:productId/:thongtinId", (req, res) => {
+app.post("/binhluan/them/:productId/:userId", (req, res) => {
   const productId = req.params.productId;
-  const thongtinId = req.params.thongtinId;
+  const userId = req.params.userId;
   const { noidung } = req.body;
 
-  thongTin.findById(thongtinId)
-    .then((thongtin) => {
-      if (!thongtin) {
+  thongTin.findOne({ userId }) // Tìm thông tin từ collection ThongTins dựa trên userId
+    .then((user) => {
+      if (!user) {
         throw new Error("Thông tin không tồn tại");
       }
 
       const newBinhLuan = new BinhLuan({
-        tennguoimua: thongtin.tennguoimua,
-        anh: thongtin.anh,
+        tennguoimua: user.tennguoimua,
+        anh: user.anh,
         productId,
-        thongtinId,
+        userId,
         noidung,
       });
 
@@ -1004,6 +1040,23 @@ app.post("/binhluan/them/:productId/:thongtinId", (req, res) => {
     });
 });
 
+// Xóa bình luận 
+app.delete("/binhluan/xoa/:binhLuanId", (req, res) => {
+  const binhLuanId = req.params.binhLuanId;
+
+  BinhLuan.findByIdAndDelete(binhLuanId)
+    .then((deletedBinhLuan) => {
+      if (!deletedBinhLuan) {
+        throw new Error("Bình luận không tồn tại");
+      }
+
+      res.status(200).json({ message: "Xóa bình luận thành công" });
+    })
+    .catch((err) => {
+      console.log("error", err);
+      res.status(500).send("Lỗi server");
+    });
+});
 
 
 

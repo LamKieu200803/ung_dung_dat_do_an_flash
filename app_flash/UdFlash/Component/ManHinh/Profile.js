@@ -13,14 +13,13 @@ const Profile = (props) => {
     const [isLoading, setisLoading] = useState(true);
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getThongTin = async () => {
-
         let api_url_pro = 'http://172.16.10.100:9997/thongtin/' + loginInfo._id
         try {
             const response = await fetch(api_url_pro);
             const json = await response.json();
             setdsPro(json);
             console.log("mang tt nguoi dung" + json);
-            console.log(loginInfo._id);
+            console.log(loginInfo._id); 
 
         } catch (e) {
             console.log(e);
@@ -92,6 +91,7 @@ const Profile = (props) => {
         );
       };
     const renderNguoidung = ({ item }) => {
+        console.log("da di den dea");
         return (
             <View>
                 <Text style={styles.chu2} onPress={() => { props.navigation.navigate('Thongtin', { item: item }) }}>Cập nhật thông tin</Text>
@@ -143,7 +143,7 @@ const Profile = (props) => {
                 />
             </View>
             <View >
-             
+                <Text style={styles.chu1} onPress={() => { props.navigation.navigate('LichSu') }}>Lịch Sử</Text>
                 <Text style={styles.chu1} onPress={() => { props.navigation.navigate('TrangThai') }}>Đơn Trạng Thái</Text>
                 <Text style={styles.chu1} onPress={() => showAlert()}>Đăng xuất</Text>
                 <TouchableOpacity onPress={() => { props.navigation.navigate('Doipass') }}>
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     chu2: {
         marginTop: 35,
         marginLeft: 340,
-        color: "yellow",
+        color: "red",
         fontSize: 15
     }
 

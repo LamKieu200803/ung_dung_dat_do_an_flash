@@ -140,8 +140,10 @@ const ThanhToan = () =>{
           body: JSON.stringify(objUserMua)
         })
         .then((res) => {
+
            if (value === 'Ví VNPay') {
                     navigation.navigate('Webview')
+                    DelPro();
                 } else if (res.status == 201) {
                     alert("đặt hàng thành công")
                    DelPro();
@@ -158,7 +160,7 @@ const ThanhToan = () =>{
         });
       };
       const DelPro = () => {
-        let url_api_del = 'http://172.16.10.106:9997/giohang/xoa/' + loginInfo._id;
+        let url_api_del = 'http://172.16.10.100:9997/giohang/xoa/' + loginInfo._id;
       
         fetch(url_api_del, {
           method: 'DELETE',

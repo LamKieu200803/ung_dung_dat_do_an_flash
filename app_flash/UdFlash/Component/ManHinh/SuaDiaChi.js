@@ -37,7 +37,7 @@ const SuaDiaChi = ({route,navigation}) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(objPro)
+        body: JSON.stringify(objPro) 
     }).then((res) => {
         if (res.status == 201)
             alert("Bạn sửa địa chỉ  thành công")
