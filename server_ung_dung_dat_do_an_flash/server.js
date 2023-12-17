@@ -19,7 +19,13 @@ mongoose.connect(
 // Schema và model user 
 const userSchema = new mongoose.Schema({
   email: String,
-  password: String
+  password: String,
+  thongtinId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ThongTins',
+    required: true
+  },
+
 })
 
 const User = mongoose.model("Users", userSchema);
@@ -213,13 +219,46 @@ app.post('/dangnhap', (req, res) => {
 // xem toàn bộ tài khoản
 app.get('/user', async (req, res) => {
   try {
-    const user = await User.find({})
-    res.json(user)
+    const users = await User.find({});
+    const usersWithDetails = [];
+
+    for (const user of users) {
+      const userId = user._id;
+
+      // Lấy thông tin từ bảng "thongTin" dựa trên userId
+      const thongtin = await thongTin.findOne({ userId: userId });
+
+      if (thongtin) {
+        const userWithDetails = {
+          userId: userId,
+          email: user.email,
+          password: user.password,
+          phone: thongtin.phone,
+          anh: thongtin.anh,
+          tennguoimua: thongtin.tennguoimua
+        };
+
+        usersWithDetails.push(userWithDetails);
+      } else {
+        const userWithoutDetails = {
+          userId: userId,
+          email: user.email,
+          password: user.password,
+          phone: '',
+          anh: '',
+          tennguoimua: ''
+        };
+
+        usersWithDetails.push(userWithoutDetails);
+      }
+    }
+
+    res.json(usersWithDetails);
   } catch (err) {
-    console.log("error ", err);
-    res.status(500).send("lỗi server")
+    console.log('Lỗi', err);
+    res.status(500).send('Lỗi server');
   }
-})
+});
 
 // xem chi tiết tk theo email
 app.get('/user/email', async (req, res) => {
