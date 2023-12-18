@@ -53,7 +53,7 @@ const Danhgia = ({ navigation, route }) => {
       .catch((error) => {
         console.log(error);
       });
-
+navigation.navigate('Home')
     alert("Thêm đánh giá thành công");
   };
 
@@ -90,7 +90,7 @@ const Danhgia = ({ navigation, route }) => {
     numberOfLines={4}
   />
   <TouchableOpacity style={{ backgroundColor: "#FFD700", width: 80, borderRadius: 8, marginTop: 10,marginLeft:350, alignItems: 'center', justifyContent: 'center' }} onPress={themBl}>
-    <Text style={{ color: "white", fontSize: 16 }}>Thêm</Text>
+    <Text style={{ color: "white", fontSize: 16 }} >Thêm</Text>
   </TouchableOpacity>
 </View>
     </View>

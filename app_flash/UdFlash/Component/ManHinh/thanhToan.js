@@ -114,6 +114,7 @@ const ThanhToan = ({ route }) => {
   const ThanhToan = () => {
     tinhSoLuongMoi(dspro);
     Save_UserMua();
+    navigation.navigate('Home')
   }
 
   const Save_UserMua = () => {

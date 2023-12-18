@@ -108,7 +108,7 @@ const TrangThai = (props) => {
 
     const renderEmptyCart = () => (
         <View style={styles.emptyCartContainer}>
-            <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+            <Text style={styles.emptyCartText}>Chưa có đơn hàng</Text>
         </View>
     );
 
@@ -198,7 +198,7 @@ fetch(
               />
             ) : (
               <View style={styles.emptyCartContainer}>
-                <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                <Text style={styles.emptyCartText}>Chưa có đơn hàng</Text>
               </View>
             )}
           </View>
@@ -238,7 +238,7 @@ fetch(
                 />
               ) : (
                     <View style={styles.emptyCartContainer}>
-                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                        <Text style={styles.emptyCartText}>Chưa có đơn hàng</Text>
                     </View>
                 )}
     </View>
