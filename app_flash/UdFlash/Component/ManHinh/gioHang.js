@@ -77,18 +77,19 @@ const GioHang = (props) => {
   }
 
   const BUY = () => {
-
+    if (dspro.length === 0) {
+      alert("Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.");
+      return;
+    }
+  
     const insufficientStockItem = check();
   
-if (insufficientStockItem) {
-
+    if (insufficientStockItem) {
       // Thực hiện các xử lý khác khi không đủ hàng, ví dụ: thông báo cho người dùng.
     } else {
       props.navigation.navigate('ThanhToan', { totalPrice: totalPrice });
     }
-
-
-  }
+  };
 
 
 
