@@ -172,7 +172,6 @@ const Products = () => {
 
     setShow(true);
   };
-
   const handleUpdate = async () => {
     const form = document.getElementById("addProductForm");
 

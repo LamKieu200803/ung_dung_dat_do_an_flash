@@ -39,10 +39,14 @@ const Orders = () => {
   };
 
   const handleOpenStatusModal = (order) => {
-    setShowStatusModal(true);
-    setSelectedOrder(order);
-    setOriginalStatus(order.trangthai);
-    setNewStatus(order.trangthai);
+    if (order.daCapNhatTrangThai) {
+      alert("Hóa đơn đã cập nhật trạng thái, không thể cập nhật lại.");
+    } else {
+      setShowStatusModal(true);
+      setSelectedOrder(order);
+      setOriginalStatus(order.trangthai);
+      setNewStatus(order.trangthai);
+    }
   };
 
   const handleOpenDetailModal = (order) => {
@@ -50,7 +54,7 @@ const Orders = () => {
     setSelectedOrder(order);
   };
   const columns = [
-    { name: "Mã đơn hàng", selector: (row, index) => row._id },
+    { name: "ID", selector: (row, index) => `#${index + 1}` },
     {
       name: "Tên người mua",
       selector: (row) => row.tennguoimua,
@@ -87,6 +91,7 @@ const Orders = () => {
         <Button
           variant="outline-warning"
           onClick={() => handleOpenStatusModal(row)}
+          disabled={row.daCapNhatTrangThai}
         >
           Sửa trạng thái
         </Button>
@@ -110,21 +115,27 @@ const Orders = () => {
         console.error("No order selected.");
         return;
       }
+
       if (newStatus !== originalStatus) {
+        // Kiểm tra xem trạng thái mới có khác trạng thái ban đầu hay không
         const res = await axios.put(
           `http://localhost:9997/hoadon/sua/${selectedOrder.userId}/${selectedOrder._id}`,
           { trangthai: newStatus }
         );
         console.log(res.data);
+        setOriginalStatus(newStatus);
 
         fetchData();
         setShowStatusModal(false);
       } else {
+        // Trạng thái không thay đổi, có thể hiển thị thông báo hoặc không làm gì cả
+        console.log("Trạng thái không thay đổi.");
       }
     } catch (error) {
       console.error(error);
     }
   };
+
   const filteredData = orders.filter((order) => {
     if (filterStatus === "Tất cả") return true;
     return order.trangthai === filterStatus;
@@ -139,9 +150,12 @@ const Orders = () => {
         <Dropdown.Menu>
           <Dropdown.Item eventKey="Tất cả">Tất cả</Dropdown.Item>
           <Dropdown.Item eventKey="Chưa xác nhận">Chưa xác nhận</Dropdown.Item>
+          <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
           <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
-          <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
           <Dropdown.Item eventKey="Đã hủy">Đã hủy</Dropdown.Item>
+          <Dropdown.Item eventKey="Giao hàng thành công">
+            Giao hàng thành công
+          </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
       <DataTable
@@ -165,10 +179,15 @@ const Orders = () => {
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item eventKey="Tất cả">Tất cả</Dropdown.Item>
-              <Dropdown.Item eventKey="Chưa xác nhận">Chưa xác nhận</Dropdown.Item>
+              <Dropdown.Item eventKey="Chưa xác nhận">
+                Chưa xác nhận
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
               <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
-              <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
               <Dropdown.Item eventKey="Đã hủy">Đã hủy</Dropdown.Item>
+              <Dropdown.Item eventKey="Giao hàng thành công">
+                Giao hàng thành công
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Modal.Body>
@@ -189,7 +208,7 @@ const Orders = () => {
         <Modal.Body>
           {selectedOrder && (
             <div>
-              <p>Mã đơn hàng: {selectedOrder._id}</p>
+              <p>ID hóa đơn: {selectedOrder._id}</p>
               <p>Tên khách hàng: {selectedOrder.tennguoimua}</p>
               <p>Phương thức thanh toán: {selectedOrder.pttt ?? "Tiền mặt"}</p>
               <p>Địa chỉ: {selectedOrder.diachi}</p>
