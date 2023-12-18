@@ -18,7 +18,7 @@ mongoose
   .catch((error) => {
     console.error("lỗi kết nối", error);
   });
-// Schema và model user 
+// Schema và model user
 const userSchema = new mongoose.Schema({
   email: String,
   password: String,
@@ -28,7 +28,6 @@ const userSchema = new mongoose.Schema({
     required: true
   },
 });
-
 const User = mongoose.model("Users", userSchema);
 
 // Schema và model danh mục
@@ -114,10 +113,6 @@ const hoaDonSchema = new mongoose.Schema({
   tongtien: Number,
   thoigian: String,
   trangthai: String,
-  daCapNhatTrangThai: {
-    type: Boolean,
-    default: false, // Khởi tạo giá trị mặc định là false
-  },
 });
 
 const hoaDon = mongoose.model("HoaDons", hoaDonSchema);
@@ -802,56 +797,52 @@ app.put("/hoadon/sua/:userId/:id", async (req, res) => {
   }
 });
 
-// top3 sản phẩm bán chạy
-app.get("/thongke/top3sanpham", async (req, res) => {
-  try {
-    const result = await hoaDon.aggregate([
-      { $unwind: "$danhSachSanPham" },
-      {
-        $group: {
-          _id: "$danhSachSanPham.tensp",
-          soluongban: { $sum: { $toInt: "$danhSachSanPham.soluongmua" } },
-        },
-      },
-      { $sort: { soluongban: -1 } },
-      { $limit: 3 },
-      {
-        $lookup: {
-          from: "SanPhams",
-          localField: "_id",
-          foreignField: "tensp",
-          as: "sanpham",
-        },
-      },
-      { $unwind: "$sanpham" },
-      {
-        $project: {
-          _id: 0,
-          tensp: "$sanpham.tensp",
-          soluongban: 1,
-        },
-      },
-    ]);
+// // top3 sản phẩm bán chạy
+// app.get("/thongke/top3sanpham", async (req, res) => {
+//   try {
+//     const result = await hoaDon.aggregate([
+//       { $unwind: "$danhSachSanPham" },
+//       {
+//         $group: {
+//           _id: "$danhSachSanPham.tensp",
+//           soluongban: { $sum: { $toInt: "$danhSachSanPham.soluongmua" } },
+//         },
+//       },
+//       { $sort: { soluongban: -1 } },
+//       { $limit: 3 },
+//       {
+//         $lookup: {
+//           from: "SanPhams",
+//           localField: "_id",
+//           foreignField: "tensp",
+//           as: "sanpham",
+//         },
+//       },
+//       { $unwind: "$sanpham" },
+//       {
+//         $project: {
+//           _id: 0,
+//           tensp: "$sanpham.tensp",
+//           soluongban: 1,
+//         },
+//       },
+//     ]);
 
-    res.status(200).json(result);
-  } catch (err) {
-    console.log("error ", err);
-    res.status(500).send("Lỗi server");
-  }
-});
+//     res.status(200).json(result);
+//   } catch (err) {
+//     console.log("error ", err);
+//     res.status(500).send("Lỗi server");
+//   }
+// });
 
 // thống kê
-app.get("/orderstats", async (req, res) => {
+app.get("/thongke", async (req, res) => {
   try {
     const invoices = await hoaDon.find();
-
-    // Tạo mảng để lưu số lượng hóa đơn theo tháng
-    const orderDataArray = Array.from({ length: 12 }, (_, i) => ({
+    const monthlyCountsArray = Array.from({ length: 12 }, (_, i) => ({
       month: i + 1,
-      orderCount: 0,
+      count: 0,
     }));
-
-    // Lặp qua danh sách hóa đơn và tính số lượng hóa đơn cho mỗi tháng
     invoices.forEach((invoice) => {
       const monthString = invoice.thoigian.split(",")[1];
 
@@ -859,58 +850,15 @@ app.get("/orderstats", async (req, res) => {
         const month = parseInt(monthString.trim().split("/")[1], 10);
         if (!isNaN(month)) {
           const monthIndex = month - 1;
-          // Cộng dồn số lượng hóa đơn
-          orderDataArray[monthIndex].orderCount++;
+          monthlyCountsArray[monthIndex].count++;
         }
       }
     });
-
-    // Chuẩn bị dữ liệu để trả về
-    const orderFormattedData = orderDataArray.map(({ month, orderCount }) => [
-      month.toString(),
-      orderCount,
+    const formattedData = monthlyCountsArray.map(({ month, count }) => [
+      ` T${month}`,
+      count,
     ]);
-
-    const data = [["Month", "Order"], ...orderFormattedData];
-
-    res.json(data);
-  } catch (err) {
-    console.error("Error:", err);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
-// Định nghĩa endpoint để lấy thống kê tổng giá trị
-app.get("/amountstats", async (req, res) => {
-  try {
-    const invoices = await hoaDon.find();
-
-    // Tạo mảng để lưu tổng tiền theo tháng
-    const amountDataArray = Array.from({ length: 12 }, (_, i) => ({
-      month: i + 1,
-      totalAmount: 0,
-    }));
-
-    // Lặp qua danh sách hóa đơn và tính tổng tiền cho mỗi tháng
-    invoices.forEach((invoice) => {
-      const monthString = invoice.thoigian.split(",")[1];
-
-      if (monthString) {
-        const month = parseInt(monthString.trim().split("/")[1], 10);
-        if (!isNaN(month)) {
-          const monthIndex = month - 1;
-          // Cộng dồn tổng tiền từ hóa đơn vào tháng tương ứng
-          amountDataArray[monthIndex].totalAmount += invoice.tongtien || 0;
-        }
-      }
-    });
-
-    // Chuẩn bị dữ liệu để trả về
-    const amountFormattedData = amountDataArray.map(
-      ({ month, totalAmount }) => [month.toString(), totalAmount]
-    );
-
-    const data = [["Month", "TotalPrice"], ...amountFormattedData];
+    const data = [["Month", "Orders"], ...formattedData];
 
     res.json(data);
   } catch (err) {
@@ -918,6 +866,7 @@ app.get("/amountstats", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
 // // thêm lịch sử mua hàng
 // app.post("/lichsu/them/:userId", (req, res) => {
 //   const userId = req.params.userId;
@@ -1027,23 +976,6 @@ app.post("/binhluan/them/:productId/:thongtinId", (req, res) => {
       res.status(500).send("Lỗi server");
     });
 });
-// Xóa bình luận 
-app.delete("/binhluan/xoa/:binhLuanId", (req, res) => {
-  const binhLuanId = req.params.binhLuanId;
-
-  BinhLuan.findByIdAndDelete(binhLuanId)
-    .then((deletedBinhLuan) => {
-      if (!deletedBinhLuan) {
-        throw new Error("Bình luận không tồn tại");
-      }
-
-      res.status(200).json({ message: "Xóa bình luận thành công" });
-    })
-    .catch((err) => {
-      console.log("error", err);
-      res.status(500).send("Lỗi server");
-    });
-});
 
 // app.post("/hoadonchitiet/:userId/:hoaDonId/add", (req, res) => {
 //   const userId = req.params.userId;
@@ -1065,7 +997,7 @@ app.delete("/binhluan/xoa/:binhLuanId", (req, res) => {
 //   hoaDonChiTiet.insertMany(newChiTietList)
 //     .then(() => {
 //       res.status(201).json({ message: "Thêm danh sách chi tiết hóa đơn thành công" });
-//     })
+//     })b
 //     .catch((err) => {
 //       console.log("error ", err);
 //       res.status(500).send("lỗi server");

@@ -123,14 +123,7 @@ const DanhMuc = () => {
         </Button>
       ),
     },
-    {
-      name: "Xóa",
-      cell: (row) => (
-        <Button variant="outline-danger" onClick={() => handleDeleteClick(row)}>
-          Xóa danh mục
-        </Button>
-      ),
-    },
+    
   ];
 
   return (
