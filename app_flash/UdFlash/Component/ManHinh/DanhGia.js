@@ -31,6 +31,10 @@ const Danhgia = ({ navigation, route }) => {
     console.log(loginInfo._id);
     console.log(idsp);
     const objPro = { noidung: noidung };
+    if(noidung==0){
+      alert('Bạn chưa nhập nội dùng bình luận')
+      return
+    }
     const url_api_bl = `http://172.16.10.100:9997/binhluan/them/${idsp}/${loginInfo._id}`;
 
     fetch(url_api_bl, {
@@ -55,36 +59,40 @@ const Danhgia = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ backgroundColor: "white", width: "100%", height: 80, flexDirection: "row" }}>
+      <View style={{ backgroundColor: "white", width: "97%", height: 120, flexDirection: "row" ,borderWidth:1,borderRadius:30,marginLeft:8,marginTop:20}}>
         <Image
           source={{ uri: img }}
           style={{
-            width: 70,
-            height: 70,
+            width: 90,
+            height: 90,
             marginRight: 5,
-            margin: 5,
+            margin: 15,
             marginBottom: 10,
-            marginLeft: 10,
+            marginLeft: 20,
             borderRadius: 10,
+           
           }}
         />
-        <View style={{ width: 250, marginLeft: 5, marginTop: 5 }}>
+        <View style={{ width: 250, marginLeft: 5, marginTop:20,marginLeft:20}}>
           <Text style={styles.productName}>{tensp}</Text>
           <Text style={styles.productPrice}> $ {giasp}</Text>
-          <Text style={styles.productPrice1}>Số lượng mua: {soluongmua}</Text>
+          <Text style={styles.productPrice}>Số lượng mua: {soluongmua}</Text>
         </View>
       </View>
 
-      <View style={{ backgroundColor: "white", width: 250, height: 250, margin: 10, padding: 10 }}>
-        <TextInput
-          style={{ width: 300, height: 50, backgroundColor: "gray", color: "white" }}
-          placeholder="Nhập bình luận"
-          onChangeText={(txt) => setNoidung(txt)}
-        />
-        <TouchableOpacity style={{ backgroundColor: "yellow", width: 80 }} onPress={themBl}>
-          <Text>Thêm</Text>
-        </TouchableOpacity>
-      </View>
+      <View style={{ backgroundColor: "white", width: '95%', margin: 10, borderRadius: 8, padding: 10 }}>
+  <TextInput
+    style={{ width: '100%', height: 150, backgroundColor: "#F2F2F2", borderRadius: 8, paddingHorizontal: 10, fontSize: 16 }}
+    placeholder="Nhập bình luận"
+    placeholderTextColor="#A9A9A9"
+    onChangeText={(txt) => setNoidung(txt)}
+    multiline={true}
+    numberOfLines={4}
+  />
+  <TouchableOpacity style={{ backgroundColor: "#FFD700", width: 80, borderRadius: 8, marginTop: 10,marginLeft:350, alignItems: 'center', justifyContent: 'center' }} onPress={themBl}>
+    <Text style={{ color: "white", fontSize: 16 }}>Thêm</Text>
+  </TouchableOpacity>
+</View>
     </View>
   );
 };
@@ -98,5 +106,8 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontWeight: "bold",
+  },
+  productPrice: {
+    marginTop:10
   },
 });

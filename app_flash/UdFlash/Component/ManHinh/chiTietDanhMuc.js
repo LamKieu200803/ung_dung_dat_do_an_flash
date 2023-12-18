@@ -34,7 +34,7 @@ const renderCart = ({ item }) => {
         <View style={{marginLeft:10}}>
         <Text style={{fontSize:15, fontWeight:'bold'}}> {item.tensp}</Text>
         <Text style={{fontSize:13, color:'green'}}> loại đồ ăn : {tendanhmuc}</Text>
-        <Text style={{fontSize:15, }}> ${item.giasp}</Text>
+        <Text style={{fontSize:15, }}>{item.giasp}đ</Text>
         <Text style={{fontSize:12, }}> đã bán: {item.soluongban}</Text>
 </View>
         </View>

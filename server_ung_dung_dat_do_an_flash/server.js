@@ -1020,7 +1020,6 @@ app.post("/binhluan/them/:productId/:userId", (req, res) => {
       if (!user) {
         throw new Error("Thông tin không tồn tại");
       }
-
       const newBinhLuan = new BinhLuan({
         tennguoimua: user.tennguoimua,
         anh: user.anh,

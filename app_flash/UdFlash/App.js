@@ -23,7 +23,7 @@ import PaymentButton from './Component/ManHinh/PaymentButton';
 import Danhgia from './Component/ManHinh/DanhGia';
 import SuaDiaChi from './Component/ManHinh/SuaDiaChi';
 import Profile from './Component/ManHinh/Profile';
-
+import Lienhe from './Component/Lienhe';
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -33,12 +33,13 @@ export default function App() {
         <Stack.Navigator initialRouteName='Main'>
         <Stack.Screen name="SuaDiaChi" component={SuaDiaChi} />
           <Stack.Screen name="MhChao" component={MhChao} />
-          <Stack.Screen name="SignUp" component={DangKi} />
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="SignUp" component={DangKi} options={{title:'Đăng ký'}}/>
+          <Stack.Screen name="Login" component={LoginScreen} options={{title:'Đăng nhập'}}/>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Danhgia" component={Danhgia} />
           <Stack.Screen name="SanPham" component={ChiTietSanPham} options={{title:'Chi tiết sản phẩm'}}/>
           <Stack.Screen name="gioHang" component={GioHang} />
+          <Stack.Screen name="Lienhe" component={Lienhe} />
           <Stack.Screen name="AllDiachi" component={AllDiachi} options={{title:'Chọn địa chỉ nhận hàng'}} />
           <Stack.Screen name="LichSu" component={LichSu} />
           <Stack.Screen name="TrangThai" component={TrangThai} options={{title:'Đơn mua'}}/>

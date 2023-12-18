@@ -71,23 +71,23 @@ const LoginScreen = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.welcome}>Welcome to Flash shop</Text>
-      <Text style={styles.tx1}>Login to your account</Text>
+      <Text style={styles.welcome}>Chào mừng bạn tới app Flash shop</Text>
+      <Text style={styles.tx1}>Đăng nhập tài khoản của bạn</Text>
       <TextInput
         style={styles.input}
-        placeholder="Email/Mobile Number"
+        placeholder="Nhập email"
         onChangeText={(txt) => setemaildn(txt)}
         value={emaildn}
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="Nhập mật khẩu"
         onChangeText={(txt) => setpassworddn(txt)}
         value={passworddn}
       />
-      <TouchableOpacity onPress={handleForgotPassword}>
+      {/* <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={styles.forgotPassword}>Forgot your Password?</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <View style={{ paddingTop: 80 }}>
         <TouchableOpacity style={styles.button} onPress={doLogin}>
@@ -96,7 +96,7 @@ const LoginScreen = (props) => {
       </View>
 
       <TouchableOpacity onPress={handleSignUp}>
-        <Text style={styles.signUp}>Don’t have an account? Sign up</Text>
+        <Text style={styles.signUp}>Bạn chưa có tài khoản? Đăng ký</Text>
       </TouchableOpacity>
     </View>
   );
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   welcome: {
     paddingTop: 100,
-    left: 90,
+    textAlign:'center',
     color: '#FFFFFF',
     fontSize: 27,
     fontWeight: '700',

@@ -57,12 +57,12 @@ const DangKi = (props) => {
 
   return (
     <View style={styles.container} backgroundColor="#DF5A5A">
-      <Text style={styles.texthello}>Welcome to Flash Shop</Text>
-      <Text style={{ color: 'white', paddingBottom: 50, paddingTop: 30 }}>
-        Sign Up to your account
+      <Text style={styles.texthello}>Chào mừng bạn đến với app Flash Shop</Text>
+      <Text style={{ color: 'white', paddingBottom: 50, paddingTop: 30 ,fontSize:20}}>
+        Đăng ký tài khoản của bạn
       </Text>
       <View style={styles.inputcontainer}>
-        <TextInput style={styles.textInput} placeholder="Email/Phone Number"  value={email} onChangeText={(txt)=>setemail(txt)} />
+        <TextInput style={styles.textInput} placeholder="Nhập email"  value={email} onChangeText={(txt)=>setemail(txt)} />
       </View>
       <View style={styles.inputcontainer}>
         <View
@@ -92,8 +92,8 @@ const DangKi = (props) => {
       >
         <Text style={styles.button} onPress={SaveUser}>Đăng ký</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleLogin}>
-        <Text style={styles.signIn} >Have an account? Sign in</Text>
+      <TouchableOpacity  onPress={handleLogin}>
+        <Text style={styles.signIn} >Bạn đã có tài khoản?Đăng nhập</Text>
       </TouchableOpacity>
     </View>
   );
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   button: {
-    width: '100%',
+    width: '50%',
     paddingVertical: 10,
     borderRadius: 8,
     color: 'red',
@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textDecorationLine: 'underline',
     textAlign: 'center',
+    fontSize:20
   },
 });
 

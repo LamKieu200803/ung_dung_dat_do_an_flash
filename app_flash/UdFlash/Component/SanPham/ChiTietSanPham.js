@@ -169,7 +169,7 @@ const ChiTietSanPham = ({ route, navigation }) => {
             {route.params.item_sp.tensp}
           </Text>
           <Text style={{ color: "white", left: 10, paddingTop: 10, fontSize: 20, fontWeight: '700' }}>
-            Giá: ${route.params.item_sp.giasp}
+            Giá: {route.params.item_sp.giasp} đ
           </Text>
 
 

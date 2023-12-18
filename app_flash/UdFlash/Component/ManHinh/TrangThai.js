@@ -89,12 +89,12 @@ const TrangThai = (props) => {
                     <View style={{ flexDirection: 'row' }}>
 
                         <View style={{ width: 270, marginLeft: 20 }}>
-                            <Text style={styles.productName}>Tên người mua:{item.tennguoimua}</Text>
-                            <Text style={styles.productPrice}>Phone:{item.sdt}</Text>
+                            <Text style={styles.productName}>Tên người mua: {item.tennguoimua}</Text>
+                          
                             <Text style={styles.productPrice}>Phương thức thanh toán: {item.pttt}</Text>
-                            <Text style={styles.productPrice}>Địa chỉ: {item.diachi}</Text>
+
                             <Text style={styles.productPrice}>Tổng tiền: {item.tongtien}</Text>
-                            <Text style={styles.productPrice}>Ngày mua {item.thoigian}</Text>
+                          
                         </View>
                         <Text style={{ fontWeight: 'bold', marginLeft: 80, color: '#000000', textAlignVertical: 'center' }}>{item.trangthai}</Text>
                       
@@ -108,7 +108,7 @@ const TrangThai = (props) => {
 
     const renderEmptyCart = () => (
         <View style={styles.emptyCartContainer}>
-            <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+            <Text style={styles.emptyCartText}>Không có đơn hàng</Text>
         </View>
     );
 
@@ -198,7 +198,7 @@ fetch(
               />
             ) : (
               <View style={styles.emptyCartContainer}>
-                <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                <Text style={styles.emptyCartText}>Không có đơn hàng</Text>
               </View>
             )}
           </View>
@@ -210,7 +210,7 @@ fetch(
               renderCart()
             ) : (
               <View style={styles.emptyCartContainer}>
-                <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                <Text style={styles.emptyCartText}>Không có đơn hàng</Text>
               </View>
             )}
           </View>
@@ -238,7 +238,7 @@ fetch(
                 />
               ) : (
                     <View style={styles.emptyCartContainer}>
-                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                        <Text style={styles.emptyCartText}>Không có đơn hàng</Text>
                     </View>
                 )}
     </View>
@@ -252,7 +252,7 @@ fetch(
                     renderCart()
                 ) : (
                     <View style={styles.emptyCartContainer}>
-                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                        <Text style={styles.emptyCartText}>Không có đơn hàng</Text>
                     </View>
                 )}
             </View>
@@ -277,7 +277,7 @@ fetch(
                 />
               ) : (
                     <View style={styles.emptyCartContainer}>
-                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                        <Text style={styles.emptyCartText}>Không có đơn hàng nào đã giao</Text>
                     </View>
                 )}
     </View>
@@ -346,22 +346,22 @@ fetch(
 
                     <TouchableOpacity onPress={() => { setPage(CHO_XAC_NHAN) }} disabled={page === CHO_XAC_NHAN ? true : false}>
 <Text style={styles.left}>Chờ xác nhận</Text>
-                        {page === CHO_XAC_NHAN ? <View style={{ position: 'absolute', bottom: 0, marginLeft: 10, height: 3, width: '100%', backgroundColor: '#DF5A5A' }}></View>
+                        {page === CHO_XAC_NHAN ? <View style={{ position: 'absolute', bottom: 0, marginLeft: 10, height: 3, width: '100%', backgroundColor: 'white' }}></View>
                             : null}
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { setPage(DANG_GIAO) }} disabled={page === DANG_GIAO ? true : false}>
                         <Text style={styles.chu}>Đang giao</Text>
-                        {page === DANG_GIAO ? <View style={{ position: 'absolute', bottom: 0, marginLeft: 20, height: 3, width: '100%', backgroundColor: '#DF5A5A' }}></View>
+                        {page === DANG_GIAO ? <View style={{ position: 'absolute', bottom: 0, marginLeft: 20, height: 3, width: '100%', backgroundColor: 'white' }}></View>
                             : null}
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { setPage(DA_GIAO) }} disabled={page === DA_GIAO ? true : false}>
                         <Text style={styles.chu}>Đã giao</Text>
-                        {page === DA_GIAO ? <View style={{ position: 'absolute', bottom: 0, marginLeft: 30, height: 3, width: '100%', backgroundColor: '#DF5A5A' }}></View>
+                        {page === DA_GIAO ? <View style={{ position: 'absolute', bottom: 0, marginLeft: 30, height: 3, width: '100%', backgroundColor: 'white' }}></View>
                             : null}
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { setPage(DA_HUY) }} disabled={page === DA_HUY ? true : false}>
                         <Text style={styles.chu}>Đã Huỷ</Text>
-                        {page === DA_HUY ? <View style={{ position: 'absolute', bottom: 0, marginLeft: 30, height: 3, width: '90%', backgroundColor: '#DF5A5A' }}></View>
+                        {page === DA_HUY ? <View style={{ position: 'absolute', bottom: 0, marginLeft: 30, height: 3, width: '90%', backgroundColor: 'white' }}></View>
                             : null}
                     </TouchableOpacity>
 
@@ -389,7 +389,7 @@ export default TrangThai
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#DF5A5A',
     },
     dontrangthai: {
         fontSize: 25,
@@ -403,14 +403,15 @@ const styles = StyleSheet.create({
         marginLeft: 55,
         fontSize: 15,
         fontWeight: 'bold',
-        color: '#DF5A5A'
+        color: 'white'
     }, cartItemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 16,
         backgroundColor: '#FFFFFF',
         borderRadius: 10,
-        borderWidth: 1
+        borderWidth: 1,
+      
     },
     productImage: {
         width: 80,
@@ -439,7 +440,7 @@ flex: 1,
         marginLeft: 20,
         fontWeight: 'bold',
         fontSize: 15,
-        color: '#DF5A5A'
+        color: 'white'
     },
     emptyCartContainer: {
         flex: 1,

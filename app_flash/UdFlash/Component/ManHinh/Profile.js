@@ -127,7 +127,7 @@ const Profile = (props) => {
         return unsubscribe;
     }, [props.navigation]);
     const handleLinkPress = () => {
-        Linking.openURL('https://www.facebook.com/pham.haibang78');
+      props.navigation.navigate('Lienhe')
     };
 
 
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     chu2: {
         marginTop: 35,
         marginLeft: 340,
-        color: "red",
+        color: "white",
         fontSize: 15
     }
 

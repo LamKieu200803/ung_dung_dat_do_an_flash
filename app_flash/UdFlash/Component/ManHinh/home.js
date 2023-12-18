@@ -101,7 +101,7 @@ const renderDanhMuc = ({item})=>{
                         <Text style={styles.name}>{item.tensp}</Text>
                         <View style={{flexDirection:'row'}}>
                            
-                            <Text style={styles.discountedPrice }> ${item.giasp}      </Text>
+                            <Text style={styles.discountedPrice }> {item.giasp} đ     </Text>
                             <Text style={{marginLeft:32}}>Đã bán : {item.soluongban}</Text>
                             {/* <Text> ${discountedPrice.toFixed(2)}</Text> */}
                         </View>
@@ -175,7 +175,7 @@ const renderDanhMuc = ({item})=>{
                     <FlatList
                      numColumns={2}
                         style={{marginLeft:20}}
-                        data={filterProducts()}
+                        data={filterProducts()} 
                         keyExtractor={(item_db) => item_db.id}
                         renderItem={renderItem1}
                           
