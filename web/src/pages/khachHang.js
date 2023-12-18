@@ -86,7 +86,7 @@ const KhachHang = () => {
               <p>Email: {selectedUser.email}</p>
               <p>Mật Khẩu: {selectedUser.password}</p>
             </div>
-          )};
+          )}
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>
