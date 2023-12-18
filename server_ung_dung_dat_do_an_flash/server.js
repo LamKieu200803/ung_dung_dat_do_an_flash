@@ -18,11 +18,15 @@ mongoose
   .catch((error) => {
     console.error("lỗi kết nối", error);
   });
-
-// Schema và model user
+// Schema và model user 
 const userSchema = new mongoose.Schema({
   email: String,
   password: String,
+  thongtinId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ThongTins',
+    required: true
+  },
 });
 
 const User = mongoose.model("Users", userSchema);
