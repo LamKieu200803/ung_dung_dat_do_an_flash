@@ -117,20 +117,29 @@ const ThanhToan = ({ route }) => {
   }
 
   const Save_UserMua = () => {
+    if (!value) {
+      alert("Vui lòng chọn phương thức thanh toán");
+      return;
+    }
+  
+    if (!item?.name || !item?.phone || !item?.address) {
+      alert("Vui lòng chọn địa chỉ nhận hàng");
+      return;
+    }
+  
     let objUserMua = {
       tennguoimua: tennguoimua,
       sdt: sdt,
-      diachi: diachi,
+      diachi: item?.address,
       pttt: value,
       tongtien: tongtien,
       thoigian: thoigian,
       trangthai: trangthai,
       danhSachSanPham: dspro
     };
-    ;
-
+  
     let url_api_hoadon = 'http://172.16.10.100:9997/hoadon/them/' + loginInfo._id;
-
+  
     fetch(url_api_hoadon, {
       method: 'POST',
       headers: {
@@ -139,25 +148,18 @@ const ThanhToan = ({ route }) => {
       },
       body: JSON.stringify(objUserMua)
     })
-      .then((res) => {
-
-        if (value === 'Ví VNPay') {
-          navigation.navigate('Webview')
-          DelPro();
-        } else if (res.status == 201) {
-          alert("đặt hàng thành công")
-          DelPro();
-        }
-
-
-
-
-
-
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((res) => {
+      if (value === 'Ví VNPay') {
+        navigation.navigate('Webview')
+        DelPro();
+      } else if (res.status == 201) {
+        alert("đặt hàng thành công")
+        DelPro();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   };
   const DelPro = () => {
     let url_api_del = 'http://172.16.10.100:9997/giohang/xoa/' + loginInfo._id;
@@ -358,7 +360,7 @@ const ThanhToan = ({ route }) => {
 
         
           <Text style={{ marginTop: 27, marginRight: 10,paddingLeft:200 }}>Tổng thanh toán: {tongtien} đ</Text>
-          <TouchableOpacity style={styles.buyButton} onPress={() => Save_UserMua()}>
+          <TouchableOpacity style={styles.buyButton} onPress={() => ThanhToan()}>
             <Text style={styles.buyButtonText}>Đặt hàng</Text>
           </TouchableOpacity>
        

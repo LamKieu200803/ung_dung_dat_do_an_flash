@@ -101,9 +101,9 @@ const HomeScreen = (props) => {
     const renderItem = ({ item }) => {
       
         return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => { props.navigation.navigate('SanPham', { item_sp: item }) }}>
                 <View style={{ marginHorizontal: 10, borderRadius: 20 }}>
-                    <Image source={item.img} style={styles.image1} />
+                    <Image source={{ uri: item.img }} style={styles.image1} />
                 </View>
             </TouchableOpacity>
         );
@@ -138,7 +138,7 @@ const HomeScreen = (props) => {
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
           getListPro();
-          console.log();
+         
           getListDanhMuc();
           gettop5sp();
         });
@@ -167,7 +167,7 @@ const HomeScreen = (props) => {
                     data={top5sp}
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item2) => item2._id}
                     renderItem={renderItem}
                 />
             </View>

@@ -210,7 +210,7 @@ fetch(
               renderCart()
             ) : (
               <View style={styles.emptyCartContainer}>
-                <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                <Text style={styles.emptyCartText}>Chưa có đơn hàng</Text>
               </View>
             )}
           </View>
@@ -252,7 +252,7 @@ fetch(
                     renderCart()
                 ) : (
                     <View style={styles.emptyCartContainer}>
-                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                        <Text style={styles.emptyCartText}>Chưa có đơn hàng</Text>
                     </View>
                 )}
             </View>
@@ -277,7 +277,7 @@ fetch(
                 />
               ) : (
                     <View style={styles.emptyCartContainer}>
-                        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+                        <Text style={styles.emptyCartText}>Chưa có đơn hàng</Text>
                     </View>
                 )}
     </View>
@@ -291,7 +291,7 @@ fetch(
                     renderCart()
                 ) : (
                     <View style={styles.emptyCartContainer}>
-                        <Text style={styles.emptyCartText}>Chưa có đơn nào đã giao</Text>
+                        <Text style={styles.emptyCartText}>Chưa có đơn hàng</Text>
                     </View>
                 )}
             </View>

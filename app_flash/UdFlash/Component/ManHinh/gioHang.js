@@ -67,7 +67,8 @@ const GioHang = (props) => {
       // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
       if (giohang.soluongmua <= giohang.sanPham.soluong) {
         console.log("Đủ hàng để mua");
-      } else {
+      }
+       else {
         console.log("Không đủ hàng để mua, mặt hàng " + giohang.tensp + " đã hết");
         alert("Không đủ hàng để mua, mặt hàng " + giohang.tensp + " đã hết");
         return giohang;
@@ -78,9 +79,8 @@ const GioHang = (props) => {
   const BUY = () => {
 
     const insufficientStockItem = check();
-   
-    if (insufficientStockItem) {
-
+  
+if (insufficientStockItem) {
 
       // Thực hiện các xử lý khác khi không đủ hàng, ví dụ: thông báo cho người dùng.
     } else {
@@ -319,6 +319,7 @@ const GioHang = (props) => {
   const renderEmptyCart = () => (
     <View style={styles.emptyCartContainer}>
       <Text style={styles.emptyCartText}>Giỏ hàng của bạn hiện đang trống</Text>
+  
     </View>
   );
 
@@ -354,10 +355,14 @@ const GioHang = (props) => {
       <View style={{ flexDirection: 'row', backgroundColor: '#F2F2F2', width: '100%' }}>
 
         
-          <Text style={{ marginTop: 27, marginRight: 10,paddingLeft:250 }}>Tổng tiền: {totalPrice} đ</Text>
-          <TouchableOpacity style={styles.buyButton} onPress={() => BUY()}>
+          <Text style={{ marginTop: 27, marginRight: 150,paddingLeft:20, fontSize:20 }}>Tổng tiền: {totalPrice} đ</Text>
+          
+
+          <View>
+            <TouchableOpacity style={styles.buyButton} onPress={() => BUY()}>
             <Text style={styles.buyButtonText}>Mua hàng</Text>
           </TouchableOpacity>
+          </View>
        
       </View>
 
@@ -434,7 +439,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 10,
     marginTop: 15,
-    width: '20%'
+    width: 120
   },
   buyButtonText: {
     fontSize: 16,
