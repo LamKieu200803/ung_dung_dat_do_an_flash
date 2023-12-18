@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  Button,
+  Dropdown,
+  Table,
+} from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import axios from "axios";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Dropdown from "react-bootstrap/Dropdown";
-import Table from "react-bootstrap/Table";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -14,6 +16,7 @@ const Orders = () => {
   const [newStatus, setNewStatus] = useState("");
   const [filterStatus, setFilterStatus] = useState("Tất cả");
   const [originalStatus, setOriginalStatus] = useState("");
+  const [statusChangeCounts, setStatusChangeCounts] = useState({});
 
   const fetchData = async () => {
     try {
@@ -31,6 +34,7 @@ const Orders = () => {
   const handleCloseStatusModal = () => {
     setShowStatusModal(false);
     setSelectedOrder(null);
+    setNewStatus("");
   };
 
   const handleCloseDetailModal = () => {
@@ -49,6 +53,7 @@ const Orders = () => {
     setShowDetailModal(true);
     setSelectedOrder(order);
   };
+
   const columns = [
     { name: "ID", selector: (row, index) => `#${index + 1}` },
     {
@@ -87,6 +92,7 @@ const Orders = () => {
         <Button
           variant="outline-warning"
           onClick={() => handleOpenStatusModal(row)}
+          disabled={statusChangeCounts[row._id] >= 2}
         >
           Sửa trạng thái
         </Button>
@@ -104,6 +110,7 @@ const Orders = () => {
       ),
     },
   ];
+
   const handleStatusUpdate = async () => {
     try {
       if (!selectedOrder) {
@@ -112,24 +119,30 @@ const Orders = () => {
       }
       if (newStatus !== originalStatus) {
         const res = await axios.put(
-`http://localhost:9997/hoadon/sua/${selectedOrder.userId}/${selectedOrder._id}`,
+          `http://localhost:9997/hoadon/sua/${selectedOrder.userId}/${selectedOrder._id}`,
           { trangthai: newStatus }
         );
         console.log(res.data);
 
         fetchData();
         setShowStatusModal(false);
+
+        setStatusChangeCounts((prevCounts) => ({
+          ...prevCounts,
+          [selectedOrder._id]: (prevCounts[selectedOrder._id] || 0) + 1,
+        }));
       } else {
+        setShowStatusModal(false);
       }
     } catch (error) {
       console.error(error);
     }
   };
+
   const filteredData = orders.filter((order) => {
     if (filterStatus === "Tất cả") return true;
     return order.trangthai === filterStatus;
   });
-
   return (
     <div style={{ padding: "20px 50px" }}>
       <Dropdown onSelect={(status) => setFilterStatus(status)}>
@@ -142,7 +155,9 @@ const Orders = () => {
           <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
           <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
           <Dropdown.Item eventKey="Đã hủy">Đã hủy</Dropdown.Item>
-          <Dropdown.Item eventKey="Giao hàng thành công">Đã giao</Dropdown.Item>
+          <Dropdown.Item eventKey="Giao hàng thành công">
+            Giao hàng thành công
+          </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
       <DataTable
@@ -172,7 +187,9 @@ const Orders = () => {
               <Dropdown.Item eventKey="Đã xác nhận">Đã xác nhận</Dropdown.Item>
               <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
               <Dropdown.Item eventKey="Đã hủy">Đã hủy</Dropdown.Item>
-              <Dropdown.Item eventKey="Giao hàng thành công">Đã giao</Dropdown.Item>
+              <Dropdown.Item eventKey="Giao hàng thành công">
+                Giao hàng thành công
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Modal.Body>
@@ -191,7 +208,7 @@ const Orders = () => {
           <Modal.Title>Chi tiết hóa đơn</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-{selectedOrder && (
+          {selectedOrder && (
             <div>
               <p>ID hóa đơn: {selectedOrder._id}</p>
               <p>Tên khách hàng: {selectedOrder.tennguoimua}</p>

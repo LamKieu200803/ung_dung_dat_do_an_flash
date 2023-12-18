@@ -27,6 +27,7 @@ const KhachHang = () => {
     try {
       const res = await axios.get("http://localhost:9997/user");
       setUsers(res.data);
+      console.log(res.data);
     } catch (error) {
       console.error(error);
     }
@@ -79,6 +80,7 @@ const KhachHang = () => {
         <Modal.Body>
           {selectedUser && (
             <div>
+              {/* <img src={selectedUser?}/> */}
               <p>Email: {selectedUser.email}</p>
               <p>Password: {selectedUser.password}</p>
             </div>
