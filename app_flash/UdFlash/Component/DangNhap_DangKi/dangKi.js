@@ -13,9 +13,17 @@ const DangKi = (props) => {
   const [email, setemail] = useState('');
   const [password, setpassword] = useState('');
   const [enterpasswd, setenterpasswd] = useState('');
-
+  const validateEmail = (email) => {
+    // Biểu thức chính quy để kiểm tra tính hợp lệ của email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  
   const SaveUser = () =>{
-
+    if (!validateEmail(email)) {
+      alert("Email không hợp lệ");
+      return;
+    }
     if(email ==0){
       alert("chưa nhập email")
         return
@@ -68,14 +76,14 @@ const DangKi = (props) => {
         <View
           style={[styles.textInput, { flexDirection: 'row', alignItems: 'center' }]}
         >
-          <TextInput style={{ flex: 1 }} placeholder="Nhập mật khẩu" onChangeText={(txt)=>setpassword(txt)} />
+          <TextInput style={{ flex: 1, color:'black' }}secureTextEntry={true} placeholder="Nhập mật khẩu" onChangeText={(txt)=>setpassword(txt)} />
         </View>
       </View>
       <View style={styles.inputcontainer}>
         <View
           style={[styles.textInput, { flexDirection: 'row', alignItems: 'center' }]}
         >
-          <TextInput style={{ flex: 1 }} placeholder="Nhập lại mật khẩu" onChangeText={(txt)=>setenterpasswd(txt)} />
+          <TextInput style={{ flex: 1 ,color:'black'  }} secureTextEntry={true} placeholder="Nhập lại mật khẩu" onChangeText={(txt)=>setenterpasswd(txt)} />
         </View>
       </View>
       <TouchableOpacity

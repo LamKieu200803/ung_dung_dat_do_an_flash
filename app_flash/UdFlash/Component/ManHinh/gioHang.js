@@ -58,17 +58,18 @@ const GioHang = (props) => {
   };
 
   const check = () => {
+   
+  
     for (const giohang of dspro) {
       console.log("Số lượng mua:", giohang.soluongmua);
       console.log("Số lượng sản phẩm:", giohang.sanPham.soluong);
-
+  
       // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
       if (giohang.soluongmua <= giohang.sanPham.soluong) {
         console.log("Đủ hàng để mua");
-
       } else {
-        console.log("Không đủ hàng để mua , mặt hàng " + giohang.tensp + " đã hết");
-        alert("Không đủ hàng để mua , mặt hàng " + giohang.tensp + " đã hết")
+        console.log("Không đủ hàng để mua, mặt hàng " + giohang.tensp + " đã hết");
+        alert("Không đủ hàng để mua, mặt hàng " + giohang.tensp + " đã hết");
         return giohang;
       }
     }
@@ -77,7 +78,7 @@ const GioHang = (props) => {
   const BUY = () => {
 
     const insufficientStockItem = check();
-
+   
     if (insufficientStockItem) {
 
 

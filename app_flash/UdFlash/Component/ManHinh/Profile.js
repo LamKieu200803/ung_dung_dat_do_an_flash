@@ -143,7 +143,7 @@ const Profile = (props) => {
                 />
             </View>
             <View >
-                <Text style={styles.chu1} onPress={() => { props.navigation.navigate('LichSu') }}>Lịch Sử</Text>
+           
                 <Text style={styles.chu1} onPress={() => { props.navigation.navigate('TrangThai') }}>Đơn Trạng Thái</Text>
                 <Text style={styles.chu1} onPress={() => showAlert()}>Đăng xuất</Text>
                 <TouchableOpacity onPress={() => { props.navigation.navigate('Doipass') }}>

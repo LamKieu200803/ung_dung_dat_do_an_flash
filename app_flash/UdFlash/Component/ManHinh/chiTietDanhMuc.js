@@ -2,7 +2,7 @@ import { View, StyleSheet, Text , ScrollView, FlatList, Image} from "react-nativ
 import { useState, useEffect } from "react";
 import { ActivityIndicator } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-const chiTietDanhMuc = ({ route, navigation }) => {
+const ChiTietDanhMuc = ({ route, navigation }) => {
 
     const [tendanhmuc, settendanhmuc] = useState(route.params.item.tendanhmuc);
     const [iddanhmuc, setiddanhmuc] = useState(route.params.item._id);
@@ -73,7 +73,7 @@ useEffect(() => {
     )
 }
 
-export default chiTietDanhMuc;
+export default ChiTietDanhMuc;
 
 const styles = StyleSheet.create({
     container: {

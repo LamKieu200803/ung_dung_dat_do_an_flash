@@ -80,6 +80,7 @@ const LoginScreen = (props) => {
         value={emaildn}
       />
       <TextInput
+      secureTextEntry={true}
         style={styles.input}
         placeholder="Nhập mật khẩu"
         onChangeText={(txt) => setpassworddn(txt)}

@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   thongtinId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ThongTins',
-    required: true
+    required: false
   },
 });
 
@@ -166,16 +166,24 @@ const BinhLuan = mongoose.model('BinhLuans', binhLuanSchema);
 
 
 
-// dki tài khoản 
 app.post("/dangki", (req, res) => {
-  const { email, password } = req.body
+  const { email, password, tennguoimua, phone, anh, thongtinId } = req.body;
 
-  const newUser = new User({ email, password })
-  newUser.save()
-    .then(() => {
-      res.status(201).json({ message: "tạo tài khoản thành công" })
+  const newUser = new User({ email, password, thongtinId }); // Thêm trường thongtinId vào đối tượng newUser
+  newUser
+    .save()
+    .then((user) => {
+      const newThongTin = new thongTin({ userId: user._id, tennguoimua, phone, anh });
+      return newThongTin.save();
     })
-})
+    .then(() => {
+      res.status(201).json({ message: "Tạo tài khoản thành công" });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Lỗi server" });
+    });
+});
+//thêm địa chỉ
 app.post("/themdiachi", (req, res) => {
   const { name,
     phone,
@@ -187,7 +195,9 @@ app.post("/themdiachi", (req, res) => {
     .then(() => {
       res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công" })
     })
-})//thêm địa chỉ
+})
+
+
 app.get('/diachi', async (req, res) => {
   try {
     const user = await Address.find({})
