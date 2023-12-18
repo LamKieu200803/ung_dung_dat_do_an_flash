@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
   thongtinId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ThongTins',
-    required: true
+    required: false
   },
 });
 
@@ -143,9 +143,9 @@ const binhLuanSchema = new mongoose.Schema({
     ref: "SanPhams",
     required: true,
   },
-  thongtinId: {
+  userID: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "ThongTins",
+    ref: "Users",
     required: true,
   },
 });
@@ -438,7 +438,6 @@ app.get("/sanpham", async (req, res) => {
     res.status(500).send("lỗi server");
   }
 });
-
 // thêm sản phẩm
 app.post("/sanpham/them", (req, res) => {
   const { tensp, giasp, img, motasp, soluong, soluongban, danhMucId } =
@@ -460,15 +459,6 @@ app.post("/sanpham/them", (req, res) => {
     })
     .catch((err) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi thêm sản phẩm" });
-    });
-});
-app.get("/top5sold", (req, res) => {
-  SanPham.find({})
-    .populate("danhMucId")
-    .sort({ soluongban: -1 })
-    .limit(5)
-    .then((data) => {
-      res.json(data);
     });
 });
 // sửa sản phẩm
@@ -497,7 +487,6 @@ app.put("/sanpham/sua/:id", (req, res) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
     });
 });
-
 // xóa sản phẩm
 app.delete("/sanpham/xoa/:id", (req, res) => {
   const deleteSanPham = req.params.id;
@@ -515,7 +504,6 @@ app.delete("/sanpham/xoa/:id", (req, res) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
     });
 });
-
 // xem chi tiết sản phẩm
 app.get("/chitietsanpham/:id", async (req, res) => {
   const productId = req.params.id;
@@ -964,6 +952,7 @@ app.get("/amountstats", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
 // // thêm lịch sử mua hàng
 // app.post("/lichsu/them/:userId", (req, res) => {
 //   const userId = req.params.userId;
