@@ -45,7 +45,7 @@ const KhachHang = () => {
       sortable: true,
     },
     {
-      name: "Mật Khẩu",
+      name: "Password",
       selector: (row) => (
         <span style={{ display: "flex", alignItems: "center" }}>
           {showPassword[row._id] ? row.password : "****"}
@@ -80,9 +80,9 @@ const KhachHang = () => {
         <Modal.Body>
           {selectedUser && (
             <div>
-              <img src={selectedUser?.thongtinId?.anh} style={{width: "200px", height: "150px"}}/>
-              <p>Tên Khách Hàng: {selectedUser.thongtinId?.tennguoimua}</p>
-              <p>Số Điện Thoại: {selectedUser.thongtinId?.phone}</p>
+              <img src={selectedUser?.anh} style={{width: "200px", height: "150px"}}/>
+              <p>Tên Khách Hàng: {selectedUser.tennguoimua}</p>
+              <p>Số Điện Thoại: {selectedUser.phone}</p>
               <p>Email: {selectedUser.email}</p>
               <p>Mật Khẩu: {selectedUser.password}</p>
             </div>

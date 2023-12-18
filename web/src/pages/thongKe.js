@@ -15,7 +15,7 @@ const ThongKe = () => {
   ];
   const [products, setProducts] = useState([]);
   const options = {
-    hAxis: { title: "Month", titleTextStyle: { color: "#333" } },
+    hAxis: { title: "", titleTextStyle: { color: "#333" } },
     vAxis: { minValue: 0 },
     chartArea: { width: "50%", height: "70%" },
   };
@@ -71,8 +71,8 @@ const ThongKe = () => {
       sortable: true,
     },
     {
-      name: "Số lượng",
-      selector: (row) => row.soluong,
+      name: "Số lượng bán",
+      selector: (row) => row.soluongban,
       sortable: true,
     },
   ];
@@ -105,7 +105,7 @@ const ThongKe = () => {
         />
       </div>
       <div style={{ width: "97vw", padding: "30px" }}>
-        <p>Top 5 sản phẩm</p>
+        <p>Top 5 sản phẩm bán chạy</p>
         <DataTable
           columns={columns}
           data={products}

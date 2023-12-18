@@ -230,7 +230,7 @@ const Products = () => {
               <p>Danh mục: {selectedProduct?.danhMucId?.tendanhmuc}</p>
               <p>Giá sản phẩm: {selectedProduct.giasp}</p>
               <p>Số lượng phẩm: {selectedProduct.soluong}</p>
-              <p>Chi tiết sản phẩm: {selectedProduct.motasp}</p>
+              <p>Mô tả sản phẩm: {selectedProduct.motasp}</p>
             </div>
           )}
         </Modal.Body>
@@ -379,8 +379,8 @@ const Products = () => {
                 }}
                 value={selectedFilterCategory || ""}
               >
-                <option value="" key="all">
-                  Tất cả danh mục
+                <option value="" key="all" style={{textAlign: "center"}}>
+                  Danh sách danh mục
                 </option>
                 {categories.map((category) => (
                   <option key={category._id} value={category._id}>

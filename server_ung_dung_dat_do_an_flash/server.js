@@ -18,7 +18,8 @@ mongoose
   .catch((error) => {
     console.error("lỗi kết nối", error);
   });
-// Schema và model user
+
+// Schema và model user 
 const userSchema = new mongoose.Schema({
   email: String,
   password: String,
@@ -28,6 +29,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
 });
+
 const User = mongoose.model("Users", userSchema);
 
 // Schema và model danh mục
@@ -202,16 +204,46 @@ app.post("/dangnhap", (req, res) => {
 });
 
 // xem toàn bộ tài khoản
-app.get("/user", async (req, res) => {
+app.get('/user', async (req, res) => {
   try {
-    const user = await User.find({});
-    res.json(user);
+    const users = await User.find({});
+    const usersWithDetails = [];
+
+    for (const user of users) {
+      const userId = user._id;
+
+      // Lấy thông tin từ bảng "thongTin" dựa trên userId
+      const thongtin = await thongTin.findOne({ userId: userId });
+
+      if (thongtin) {
+        const userWithDetails = {
+          userId: userId,
+          email: user.email,
+          password: user.password,
+          phone: thongtin.phone,
+          anh: thongtin.anh,
+          tennguoimua: thongtin.tennguoimua
+        };
+
+        usersWithDetails.push(userWithDetails);
+      } else {
+        const userWithoutDetails = {
+          userId: userId,
+          email: user.email,
+          password: user.password,
+          phone: '',
+          anh: '',
+          tennguoimua: ''
+        };
+        usersWithDetails.push(userWithoutDetails);
+      }
+    }
+    res.json(usersWithDetails);
   } catch (err) {
-    console.log("error ", err);
-    res.status(500).send("lỗi server");
+    console.log('Lỗi', err);
+    res.status(500).send('Lỗi server');
   }
 });
-
 // xem chi tiết tk theo email
 app.get("/user/email", async (req, res) => {
   try {
@@ -759,42 +791,33 @@ app.post("/thongtin/them/:userId", (req, res) => {
     });
 });
 
-app.put("/hoadon/sua/:userId/:id", async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    const id = req.params.id;
+app.put("/hoadon/sua/:userId/:id", (req, res) => {
+  const userId = req.params.userId;
+  const id = req.params.id; // Thay đổi từ req.params._id thành req.params.id
 
-    // Kiểm tra trạng thái trước khi cập nhật
-    const existingOrder = await hoaDon.findOne({ userId: userId, _id: id });
-    if (existingOrder && existingOrder.daCapNhatTrangThai) {
-      return res.status(400).json({
-        error: "Hóa đơn đã cập nhật trạng thái, không thể cập nhật lại.",
-      });
-    }
+  const updateTrangThai = {
+    trangthai: req.body.trangthai,
+  };
 
-    const updateTrangThai = {
-      trangthai: req.body.trangthai,
-      daCapNhatTrangThai: true, // Cập nhật trường này khi cập nhật trạng thái
-    };
-
-    const data = await hoaDon.findOneAndUpdate(
-      { userId: userId, _id: id },
-      updateTrangThai,
+  hoaDon
+    .findOneAndUpdate(
+      { userId: userId, _id: id }, // Sửa thành _id thay vì id
+      updateTrangThai, // Sửa thành updateTrangThai thay vì updatetrangthai
       { new: true }
-    );
-
-    if (data) {
-      res.status(200).json({
-        message: "Thay đổi trạng thái thành công",
-        data: data,
-      });
-    } else {
-      res.status(404).json({ error: "Không tìm thấy dữ liệu" });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
-  }
+    )
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Thay đổi trạng thái thành công",
+          data: data,
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
 });
 
 // // top3 sản phẩm bán chạy
@@ -855,7 +878,7 @@ app.get("/thongke", async (req, res) => {
       }
     });
     const formattedData = monthlyCountsArray.map(({ month, count }) => [
-      ` T${month}`,
+      ` T ${month}`,
       count,
     ]);
     const data = [["Month", "Orders"], ...formattedData];
@@ -866,7 +889,81 @@ app.get("/thongke", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+app.get("/orderstats", async (req, res) => {
+  try {
+    const invoices = await hoaDon.find();
 
+    // Tạo mảng để lưu số lượng hóa đơn theo tháng
+    const orderDataArray = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      orderCount: 0,
+    }));
+
+    // Lặp qua danh sách hóa đơn và tính số lượng hóa đơn cho mỗi tháng
+    invoices.forEach((invoice) => {
+      const monthString = invoice.thoigian.split(",")[1];
+
+      if (monthString) {
+        const month = parseInt(monthString.trim().split("/")[1], 10);
+        if (!isNaN(month)) {
+          const monthIndex = month - 1;
+          // Cộng dồn số lượng hóa đơn
+          orderDataArray[monthIndex].orderCount++;
+        }
+      }
+    });
+
+    // Chuẩn bị dữ liệu để trả về
+    const orderFormattedData = orderDataArray.map(({ month, orderCount }) => [
+      month.toString(),
+      orderCount,
+    ]);
+
+    const data = [["Tháng", "Đơn hàng"], ...orderFormattedData];
+
+    res.json(data);
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+app.get("/amountstats", async (req, res) => {
+  try {
+    const invoices = await hoaDon.find();
+
+    // Tạo mảng để lưu tổng tiền theo tháng
+    const amountDataArray = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      totalAmount: 0,
+    }));
+
+    // Lặp qua danh sách hóa đơn và tính tổng tiền cho mỗi tháng
+    invoices.forEach((invoice) => {
+      const monthString = invoice.thoigian.split(",")[1];
+
+      if (monthString) {
+        const month = parseInt(monthString.trim().split("/")[1], 10);
+        if (!isNaN(month)) {
+          const monthIndex = month - 1;
+          // Cộng dồn tổng tiền từ hóa đơn vào tháng tương ứng
+          amountDataArray[monthIndex].totalAmount += invoice.tongtien || 0;
+        }
+      }
+    });
+
+    // Chuẩn bị dữ liệu để trả về
+    const amountFormattedData = amountDataArray.map(
+      ({ month, totalAmount }) => [month.toString(), totalAmount]
+    );
+
+    const data = [["Tháng", "Tổng tiền"], ...amountFormattedData];
+
+    res.json(data);
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
 // // thêm lịch sử mua hàng
 // app.post("/lichsu/them/:userId", (req, res) => {
 //   const userId = req.params.userId;
