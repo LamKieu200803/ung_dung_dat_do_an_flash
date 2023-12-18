@@ -114,7 +114,7 @@ const ThanhToan = ({ route }) => {
   const ThanhToan = () => {
     tinhSoLuongMoi(dspro);
     Save_UserMua();
-    navigation.navigate('Home')
+
   }
 
   const Save_UserMua = () => {
@@ -156,6 +156,7 @@ const ThanhToan = ({ route }) => {
       } else if (res.status == 201) {
         alert("đặt hàng thành công")
         DelPro();
+        navigation.navigate('Main')
       }
     })
     .catch((error) => {

@@ -53,7 +53,7 @@ const Danhgia = ({ navigation, route }) => {
       .catch((error) => {
         console.log(error);
       });
-navigation.navigate('Home')
+navigation.navigate('Main')
     alert("Thêm đánh giá thành công");
   };
 

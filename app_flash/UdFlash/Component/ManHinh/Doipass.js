@@ -79,7 +79,7 @@ useEffect(() => {
             if(newPassword != confirmPassword){
                 alert("mật khẩu không trùng khớp")
             }else{
-                 let url_api_doipass = "172.16.10.100:9997/user/sua/"+loginInfo._id ;
+                 let url_api_doipass = "http://172.16.10.100:9997/user/sua/"+loginInfo._id ;
             let user_pass = {password :newPassword}
         
             fetch(url_api_doipass, {
@@ -92,6 +92,8 @@ useEffect(() => {
             }).then((res) => {
                 if (res.status == 200)
                     alert("thay doi thanh cong")
+                props.navigation.navigate('Login')
+                
             
             })
                 .catch((e) => {

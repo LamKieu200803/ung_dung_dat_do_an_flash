@@ -73,25 +73,27 @@ useEffect(() => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Điền thông tin</Text>
-      <Text style={styles.label}>Name</Text>
+      <Text style={styles.label}>Họ tên</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Name"
+          placeholder="Họ tên"
           value={tennguoimua}
           onChangeText={(txt)=>setTennguoimua(txt)}
         />
       </View>
 
-      <Text style={styles.label}>Phone</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Phone"
-          value={phone}
-          onChangeText={(txt)=>setPhone(txt)}
-        />
-      </View>
+    
+      <Text style={styles.label}>Số điện thoại</Text>
+<View style={styles.inputContainer}>
+  <TextInput
+    style={styles.input}
+    placeholder="Số điện thoại"
+    value={phone}
+    onChangeText={txt => setPhone(txt.replace(/[^0-9]/g, ''))}
+    keyboardType="number-pad" // Chỉ cho phép nhập số
+  />
+</View>
 
       <Text style={styles.label}>Ảnh</Text>
       <View style={styles.inputContainer}>
@@ -104,7 +106,7 @@ useEffect(() => {
       </View>
 
       <TouchableOpacity style={styles.button} onPress={handleSavett}>
-        <Text style={styles.buttonText}>Save</Text>
+        <Text style={styles.buttonText}>Lưu thông tin</Text>
       </TouchableOpacity>
     </View>
   );
