@@ -10,7 +10,7 @@ const DangNhap = () => {
   const navigation = useNavigate();
   const handleLogin = () => {
     if (email === "admin@gmail.com" && password === "admin") {
-      navigation("/home");
+      navigation("/thongke");
     }
   };
   return (

@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./Header";
-import Home from "./pages/home";
 import SanPham from "./pages/sanPham";
 import KhachHang from "./pages/khachHang";
 import Orders from "./pages/hoaDon";
 import DangNhap from "./pages/dangNhap";
 import DanhMuc from "./pages/danhMuc";
 import BinhLuan from "./pages/binhLuan";
+import ThongKe from "./pages/thongKe";
 
 const ContentLayout = ({ children }) => (
   <div>
@@ -21,10 +21,10 @@ function App() {
       <Routes>
         <Route path="/" element={<DangNhap />} />
         <Route
-          path="/home"
+          path="/thongke"
           element={
             <ContentLayout>
-              <Home />
+              <ThongKe />
             </ContentLayout>
           }
         />

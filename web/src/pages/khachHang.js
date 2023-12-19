@@ -38,7 +38,7 @@ const KhachHang = () => {
   }, []);
 
   const columns = [
-    { name: "ID", selector: (row, index) => `#${index + 1}` },
+    { name: "STT", selector: (row, index) => `${index + 1}` },
     {
       name: "Email",
       selector: (row) => row.email,
@@ -80,9 +80,11 @@ const KhachHang = () => {
         <Modal.Body>
           {selectedUser && (
             <div>
-              {/* <img src={selectedUser?}/> */}
+              <img src={selectedUser?.anh} style={{width: "200px", height: "150px"}}/>
+              <p>Tên Khách Hàng: {selectedUser.tennguoimua}</p>
+              <p>Số Điện Thoại: {selectedUser.phone}</p>
               <p>Email: {selectedUser.email}</p>
-              <p>Password: {selectedUser.password}</p>
+              <p>Mật Khẩu: {selectedUser.password}</p>
             </div>
           )}
         </Modal.Body>
@@ -94,7 +96,6 @@ const KhachHang = () => {
         pagination
         paginationPerPage={5}
         striped
-        onRowClicked={handleRowClick}
       />
     </div>
   );

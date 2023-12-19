@@ -20,7 +20,7 @@ const Header = () => {
         <Modal.Header closeButton>
           <Modal.Title>Đăng xuất</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Woohoo, bạn có chắc muốn đăng xuất không!</Modal.Body>
+        <Modal.Body>Bạn có chắc muốn đăng xuất không!</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
@@ -41,7 +41,7 @@ const Header = () => {
           >
             <img src={logo} style={{ width: "50px" }} />
             <p style={{ color: "red", margin: "10px 0 0 0" }}>
-              Flash Food Shop
+              Flash Shop
             </p>
           </div>
         </Link>
@@ -59,8 +59,8 @@ const Header = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <Link className="nav-link" to="/home">
-                Home
+              <Link className="nav-link" to="/thongke">
+                Thống Kê
               </Link>
             </li>
             <li className="nav-item">
