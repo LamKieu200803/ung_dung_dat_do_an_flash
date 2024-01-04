@@ -40,7 +40,8 @@ const danhMucSchema = new mongoose.Schema({
 });
 const DanhMuc = mongoose.model("DanhMucs", danhMucSchema);
 
-const productSchema = new mongoose.Schema({
+//Schema và model sản phẩm
+const sanPhamSchema = new mongoose.Schema({
   tensp: String,
   img: String,
   motasp: String,
@@ -54,14 +55,14 @@ const productSchema = new mongoose.Schema({
     ref: "DanhMucs",
     required: true,
   },
-  chitietsp:{
-    size : String,
-    giasp: String,  
+  chitietsp: [{
+    size: String,
+    giasp: Number, 
     soluong: Number
-  }
+  }]
 });
 
-const Product = mongoose.model("Products", productSchema);
+const SanPham = mongoose.model("SanPhams", sanPhamSchema);
 const AddressSChema = new mongoose.Schema({
   name: String,
   phone: String,
@@ -389,7 +390,6 @@ app.delete("/danhmuc/xoa/:id", (req, res) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
     });
 });
-// top5 sp
 app.get("/top5products", async (req, res) => {
   try {
     const result = await hoaDon.aggregate([
@@ -439,29 +439,6 @@ app.get("/top5sold", (req, res) => {
       res.json(data);
     });
 });
-
-
-// xem product
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // xem sản phẩm
 app.get("/sanpham", async (req, res) => {
   try {
@@ -475,22 +452,29 @@ app.get("/sanpham", async (req, res) => {
 });
 // thêm sản phẩm
 app.post("/sanpham/them", (req, res) => {
-  const { tensp, giasp, img, motasp, soluong, soluongban, danhMucId } =
+  const { tensp, img, motasp, soluongsp, soluongban, danhMucId, chitietsp } =
     req.body;
+// tạo ra new chitietsp
+const newchitiet = chitietsp.map((sp)=> ({
+  size: sp.size,
+  giasp: sp.giasp,
+  soluong: sp.soluong
 
-  const newSanPham = new SanPham({
-    tensp,
-    giasp,
-    img,
-    motasp,
-    soluong,
-    soluongban,
-    danhMucId,
-  });
+}))
+const newSanPham = new SanPham({
+  tensp,
+  img,
+  motasp,
+  soluongsp,
+  soluongban,
+  danhMucId,
+  chitietsp: newchitiet // Thay đổi từ newchitiet thành chitietsp
+});
   newSanPham
     .save()
     .then(() => {
       res.status(201).json({ message: "Thêm sản phẩm thành công" });
+      
     })
     .catch((err) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi thêm sản phẩm" });
