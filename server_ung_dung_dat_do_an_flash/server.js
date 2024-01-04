@@ -23,6 +23,7 @@ mongoose
 const userSchema = new mongoose.Schema({
   email: String,
   password: String,
+  
   thongtinId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ThongTins',
@@ -39,12 +40,11 @@ const danhMucSchema = new mongoose.Schema({
 });
 const DanhMuc = mongoose.model("DanhMucs", danhMucSchema);
 
-const sanPhamSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema({
   tensp: String,
-  giasp: String,
   img: String,
   motasp: String,
-  soluong: Number,
+  soluongsp: Number,
   soluongban: {
     type: Number,
     default: 0,
@@ -54,9 +54,14 @@ const sanPhamSchema = new mongoose.Schema({
     ref: "DanhMucs",
     required: true,
   },
+  chitietsp:{
+    size : String,
+    giasp: String,  
+    soluong: Number
+  }
 });
 
-const SanPham = mongoose.model("SanPhams", sanPhamSchema);
+const Product = mongoose.model("Products", productSchema);
 const AddressSChema = new mongoose.Schema({
   name: String,
   phone: String,
@@ -64,16 +69,6 @@ const AddressSChema = new mongoose.Schema({
 });
 const Address = mongoose.model("Diachis", AddressSChema);
 
-// Schema và model chitietsanpham
-const chiTietSanPhamSchema = new mongoose.Schema({
-  tensp: String,
-  giasp: String,
-  img: String,
-  motasp: String,
-  soluong: Number,
-});
-
-const chiTietSanPham = mongoose.model("ChiTietSanPhams", chiTietSanPhamSchema);
 
 // Schema và model giohang
 const gioHangSchema = new mongoose.Schema({
@@ -394,6 +389,7 @@ app.delete("/danhmuc/xoa/:id", (req, res) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
     });
 });
+// top5 sp
 app.get("/top5products", async (req, res) => {
   try {
     const result = await hoaDon.aggregate([
@@ -443,6 +439,29 @@ app.get("/top5sold", (req, res) => {
       res.json(data);
     });
 });
+
+
+// xem product
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // xem sản phẩm
 app.get("/sanpham", async (req, res) => {
   try {

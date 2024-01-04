@@ -29,7 +29,7 @@ const SuaDiaChi = ({route,navigation}) => {
 
   const handleSaveAddress = () => {
     let objPro = { name: name, phone: phone, address: address }
-    let url_api_diachi = 'http://172.16.10.110:9997/diachi/sua/'+ idd;
+    let url_api_diachi = 'http://172.20.10.11:9997/diachi/sua/'+ idd;
 
     fetch(url_api_diachi, {
         method: 'PUT',

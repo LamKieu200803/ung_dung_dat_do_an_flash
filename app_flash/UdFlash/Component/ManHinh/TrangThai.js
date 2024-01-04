@@ -22,7 +22,7 @@ const TrangThai = (props) => {
     const [isLoading, setisLoading] = useState(true);
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getListPro = async () => {
-        let url_api_lichsu = 'http://172.16.10.100:9997/hoadon/' + loginInfo._id
+        let url_api_lichsu = 'http://172.20.10.11:9997/hoadon/' + loginInfo._id
         try {
             const response = await fetch(url_api_lichsu);
             const json = await response.json();
@@ -134,7 +134,7 @@ const TrangThai = (props) => {
    const huydon = (itemId) => {
 let obj = {trangthai: "Đã hủy"}
 fetch(
-    "http://172.16.10.100:9997/hoadon/sua/" + loginInfo._id+"/"+itemId,
+    "http://172.20.10.11:9997/hoadon/sua/" + loginInfo._id+"/"+itemId,
     {
       method: "PUT",
       headers: {

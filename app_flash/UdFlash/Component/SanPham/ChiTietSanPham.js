@@ -27,8 +27,8 @@ const ChiTietSanPham = ({ route, navigation }) => {
   const Save_Pro = () => {
     let objPro = { img: img, tensp: tensp, giasp: giasp, soluongmua: 1 };
 
-    let url_api_giohang = "http://172.16.10.100:9997/giohang/them/" + loginInfo._id + "/" + idsp;
-    let url_api_gio = "http://172.16.10.100:9997/giohang/" + loginInfo._id;
+    let url_api_giohang = "http://172.20.10.11:9997/giohang/them/" + loginInfo._id + "/" + idsp;
+    let url_api_gio = "http://172.20.10.11:9997/giohang/" + loginInfo._id;
 
     fetch(url_api_gio)
       .then((response) => {
@@ -44,7 +44,7 @@ const ChiTietSanPham = ({ route, navigation }) => {
           existingProduct.soluongmua += 1;
 
           return fetch(
-            "http://172.16.10.100:9997/giohang/sua/" + loginInfo._id + "/" + idsp,
+            "http://172.20.10.11:9997/giohang/sua/" + loginInfo._id + "/" + idsp,
             {
               method: "PUT",
               headers: {
@@ -94,7 +94,7 @@ const ChiTietSanPham = ({ route, navigation }) => {
 
 
   const getBl = async () => {
-    let api_bl = 'http://172.16.10.100:9997/binhluan/' + idsp
+    let api_bl = 'http://172.20.10.11:9997/binhluan/' + idsp
     try {
       const response = await fetch(api_bl);
       const json = await response.json();

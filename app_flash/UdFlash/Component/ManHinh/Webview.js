@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { StatusBar } from 'react-native';
 import { WebView } from 'react-native-webview';
-const ThanhToan1 = 'http://172.16.10.100:8888/order/create_payment_url';
+const ThanhToan1 = 'http://172.20.10.11:8888/order/create_payment_url';
 const Webview = (props) =>  {
     return (
         <View style={styles.container}>

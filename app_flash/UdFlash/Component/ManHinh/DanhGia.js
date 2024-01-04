@@ -35,7 +35,7 @@ const Danhgia = ({ navigation, route }) => {
       alert('Bạn chưa nhập nội dùng bình luận')
       return
     }
-    const url_api_bl = `http://172.16.10.100:9997/binhluan/them/${idsp}/${loginInfo._id}`;
+    const url_api_bl = `http://172.20.10.11:9997/binhluan/them/${idsp}/${loginInfo._id}`;
 
     fetch(url_api_bl, {
       method: "POST",

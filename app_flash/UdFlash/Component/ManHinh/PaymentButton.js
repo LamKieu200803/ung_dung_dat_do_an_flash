@@ -15,7 +15,7 @@ const PaymentButton = ({route,navigation}) => {
     const [diachi11, setDiachi11] = useState(route.params.item.diachi)
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getListPro = async () => {
-        let url_api_lichsu = 'http://172.16.10.100:9997/hoadonchitiet/' + loginInfo._id+'/'+ idChitiet;
+        let url_api_lichsu = 'http://172.20.10.11:9997/hoadonchitiet/' + loginInfo._id+'/'+ idChitiet;
         try {
             const response = await fetch(url_api_lichsu);
             const json = await response.json();

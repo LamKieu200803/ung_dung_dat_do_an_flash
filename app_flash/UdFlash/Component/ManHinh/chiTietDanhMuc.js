@@ -10,7 +10,7 @@ const ChiTietDanhMuc = ({ route, navigation }) => {
     const [isLoading, setisLoading] = useState(true);
     
 const getDuLieu = async() =>{
-    let api_url_pro = 'http://172.16.10.100:9997/sanpham/danhsach/'+iddanhmuc;
+    let api_url_pro = 'http://172.20.10.11:9997/sanpham/danhsach/'+iddanhmuc;
     try {
       const response = await fetch(api_url_pro);
       const json = await response.json();

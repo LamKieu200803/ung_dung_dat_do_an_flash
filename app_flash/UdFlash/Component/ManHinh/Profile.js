@@ -13,7 +13,7 @@ const Profile = (props) => {
     const [isLoading, setisLoading] = useState(true);
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getThongTin = async () => {
-        let api_url_pro = 'http://172.16.10.100:9997/thongtin/' + loginInfo._id
+        let api_url_pro = 'http://172.20.10.11:9997/thongtin/' + loginInfo._id
         try {
             const response = await fetch(api_url_pro);
             const json = await response.json();
@@ -25,7 +25,6 @@ const Profile = (props) => {
             console.log(e);
         }
     };
-
     const getLoginInfo = async () => {
         try {
             const value = await AsyncStorage.getItem('loginInfo')
@@ -39,7 +38,7 @@ const Profile = (props) => {
 
             console.log(e);
         }
-    };
+    }; 
     useEffect(() => {
         const loadData = async () => {
             await getLoginInfo();
