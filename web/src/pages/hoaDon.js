@@ -13,6 +13,7 @@ const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
   const [filterStatus, setFilterStatus] = useState("Tất cả");
+  const [notification, setNotification] = useState({ show: false, message: "" });
   const [originalStatus, setOriginalStatus] = useState("");
 
   const fetchData = async () => {
@@ -49,6 +50,7 @@ const Orders = () => {
     setShowDetailModal(true);
     setSelectedOrder(order);
   };
+  
   const columns = [
     { name: "Mã đơn hàng", selector: (row, index) => row._id },
     {
@@ -87,6 +89,8 @@ const Orders = () => {
         <Button
           variant="outline-warning"
           onClick={() => handleOpenStatusModal(row)}
+          disabled={row.trangthai === "Đã hủy"}
+          style={{ opacity: row.trangthai === "Đã hủy" ? 0.5 : 1 }}
         >
           Sửa trạng thái
         </Button>
@@ -110,17 +114,29 @@ const Orders = () => {
         console.error("No order selected.");
         return;
       }
-      if (newStatus !== originalStatus) {
-        const res = await axios.put(
-          `http://localhost:9997/hoadon/sua/${selectedOrder.userId}/${selectedOrder._id}`,
-          { trangthai: newStatus }
-        );
-        console.log(res.data);
 
-        fetchData();
-        setShowStatusModal(false);
-      } else {
+      if (selectedOrder.trangthai === "Đã hủy") {
+        setNotification({ show: true, message: "Cannot change status for Đã hủy order." });
+        return;
       }
+
+      const statusOrder = ["Chưa xác nhận", "Đang giao", "Đã giao", "Đã hủy"];
+      const currentIndex = statusOrder.indexOf(selectedOrder.trangthai);
+      const newIndex = statusOrder.indexOf(newStatus);
+
+      if (newIndex < currentIndex || newIndex - currentIndex > 1) {
+        setNotification({ show: true, message: "Không thể chuyển trạng thái." });
+        return;
+      }
+
+      const res = await axios.put(
+        `http://localhost:9997/hoadon/sua/${selectedOrder.userId}/${selectedOrder._id}`,
+        { trangthai: newStatus }
+      );
+      console.log(res.data);
+
+      fetchData();
+      setShowStatusModal(false);
     } catch (error) {
       console.error(error);
     }
@@ -153,6 +169,19 @@ const Orders = () => {
         subHeader
         subHeaderAlign="left"
       />
+      <Modal show={notification.show} onHide={() => setNotification({ show: false, message: "" })}>
+        <Modal.Header closeButton>
+          <Modal.Title>Notification</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>{notification.message}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => setNotification({ show: false, message: "" })}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Modal show={showStatusModal} onHide={handleCloseStatusModal}>
         <Modal.Header closeButton>
           <Modal.Title>Cập nhật trạng thái đơn hàng</Modal.Title>
