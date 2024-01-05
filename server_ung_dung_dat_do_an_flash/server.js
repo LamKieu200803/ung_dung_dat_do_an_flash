@@ -523,6 +523,109 @@ app.delete("/sanpham/xoa/:id", (req, res) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
     });
 });
+
+
+// Route POST để thêm đối tượng mới vào "chitietsp"
+app.post('/chitietsp/them/:id', (req, res) => {
+  const sanPhamId = req.params.id; // Lấy ID của sản phẩm từ tham số đường dẫn
+  const newChitietSp = {
+    size: req.body.size,
+    soluong: req.body.soluong,
+    giasp: req.body.giasp,
+  };
+
+  SanPham.findById(sanPhamId)
+    .then((sanPham) => {
+      if (!sanPham) {
+        return res.status(404).json({ error: 'Không tìm thấy sản phẩm' });
+      }
+
+      sanPham.chitietsp.push(newChitietSp);
+      return sanPham.save();
+    })
+    .then((updatedSanPham) => {
+      res.status(200).json({
+        message: 'Thêm chitietsp thành công',
+        sanPham: updatedSanPham,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: 'Đã xảy ra lỗi khi thêm chitietsp' });
+    });
+});
+
+
+// sửa biến thể sản phẩm theo size theo size
+
+app.put('/chitietsp/sua/:id', (req, res) => {
+  const idctsp = req.params.id;
+  const updatechitietsp = {};
+
+  if (req.body.size) {
+    updatechitietsp['chitietsp.$.size'] = req.body.size;
+  }
+
+  if (req.body.soluong) {
+    updatechitietsp['chitietsp.$.soluong'] = req.body.soluong;
+  }
+  
+  if (req.body.giasp) {
+    updatechitietsp['chitietsp.$.giasp'] = req.body.giasp;
+  }
+
+  SanPham.findOneAndUpdate(
+    { 'chitietsp._id': idctsp },
+    { $set: updatechitietsp },
+    { new: true }
+  )
+    .then((updatedSanPham) => {
+      if (!updatedSanPham) {
+        return res.status(404).json({ error: 'Không tìm thấy sản phẩm' });
+      }
+      res.status(200).json({
+        message: 'Cập nhật thông tin chitietsp thành công',
+        sanPham: updatedSanPham,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: 'Đã xảy ra lỗi khi cập nhật thông tin chitietsp',
+      });
+    });
+});
+
+// Route DELETE để xóa đối tượng trong "chitietsp" dựa trên ID của "chitietsp"
+app.delete('/chitietsp/xoa/:id', (req, res) => {
+  const chitietSpId = req.params.id; // ID của đối tượng chitietsp cần xóa
+
+  SanPham.findOneAndUpdate(
+    { 'chitietsp._id': chitietSpId },
+    { $pull: { chitietsp: { _id: chitietSpId } } },
+    { new: true }
+  )
+    .then((updatedSanPham) => {
+      if (!updatedSanPham) {
+        return res.status(404).json({ error: 'Không tìm thấy chitietsp' });
+      }
+
+      res.status(200).json({
+        message: 'Xóa chitietsp thành công',
+        sanPham: updatedSanPham,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa chitietsp' });
+    });
+});
+
+
+
+
+
+
+
+
+
 // xem chi tiết sản phẩm
 app.get("/chitietsanpham/:id", async (req, res) => {
   const productId = req.params.id;
