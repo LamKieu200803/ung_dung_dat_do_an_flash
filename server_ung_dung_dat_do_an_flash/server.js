@@ -152,7 +152,7 @@ const Address = mongoose.model("Diachis", AddressSChema);
 app.post("/dangki", (req, res) => {
   const { email, password, tenkhachhang, diachi, anhdaidien, sdt } = req.body;
 
-  const newKhachHang = new User({ email, password, tenkhachhang,sdt, anhdaidien, diachi });
+  const newKhachHang = new KhachHang({ email, password, tenkhachhang,sdt, anhdaidien, diachi });
   newKhachHang.save().then(() => {
     res.status(201).json({ message: "tạo tài khoản thành công" });
   });
@@ -307,6 +307,185 @@ app.delete("/danhmuc/xoa/:id", (req, res) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
     });
 });
+
+
+
+
+// xem sản phẩm
+app.get("/sanpham", async (req, res) => {
+  try {
+    const sanpham = await SanPham.find({}).populate("danhMucId");
+
+    res.json(sanpham);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server");
+  }
+});
+// thêm sản phẩm
+app.post("/sanpham/them", (req, res) => {
+  const { tensp, img, motasp, soluongsp, soluongban, danhMucId, chitietsp } =
+    req.body;
+// tạo ra new chitietsp
+const newchitiet = chitietsp.map((sp)=> ({
+  size: sp.size,
+  giasp: sp.giasp,
+  soluong: sp.soluong
+
+}))
+const newSanPham = new SanPham({
+  tensp,
+  img,
+  motasp,
+  soluongsp,
+  soluongban,
+  danhMucId,
+  chitietsp: newchitiet // Thay đổi từ newchitiet thành chitietsp
+});
+  newSanPham
+    .save()
+    .then(() => {
+      res.status(201).json({ message: "Thêm sản phẩm thành công" });
+      
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi thêm sản phẩm" });
+    });
+});
+
+
+// Route POST để thêm đối tượng mới vào "chitietsp"
+app.post('/chitietsp/them/:id', (req, res) => {
+  const sanPhamId = req.params.id; // Lấy ID của sản phẩm từ tham số đường dẫn
+  const newChitietSp = {
+    size: req.body.size,
+    soluong: req.body.soluong,
+    giasp: req.body.giasp,
+  };
+
+  SanPham.findById(sanPhamId)
+    .then((sanPham) => {
+      if (!sanPham) {
+        return res.status(404).json({ error: 'Không tìm thấy sản phẩm' });
+      }
+
+      sanPham.chitietsp.push(newChitietSp);
+      return sanPham.save();
+    })
+    .then((updatedSanPham) => {
+      res.status(200).json({
+        message: 'Thêm chitietsp thành công',
+        sanPham: updatedSanPham,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: 'Đã xảy ra lỗi khi thêm chitietsp' });
+    });
+});
+
+// Route DELETE để xóa đối tượng trong "chitietsp" dựa trên ID của "chitietsp"
+app.delete('/chitietsp/xoa/:id', (req, res) => {
+  const chitietSpId = req.params.id; // ID của đối tượng chitietsp cần xóa
+
+  SanPham.findOneAndUpdate(
+    { 'chitietsp._id': chitietSpId },
+    { $pull: { chitietsp: { _id: chitietSpId } } },
+    { new: true }
+  )
+    .then((updatedSanPham) => {
+      if (!updatedSanPham) {
+        return res.status(404).json({ error: 'Không tìm thấy chitietsp' });
+      }
+
+      res.status(200).json({
+        message: 'Xóa chitietsp thành công',
+        sanPham: updatedSanPham,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa chitietsp' });
+    });
+});
+
+
+// Xem giỏ hàng của khách hàng
+
+app.get("/giohang/:idKhachHang", async (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+
+  try {
+    // Lấy thông tin giỏ hàng của người dùng
+    const giohangs = await gioHang.find({ idKhachHang: idKhachHang });
+
+    // Tạo một mảng rỗng để lưu trữ thông tin sản phẩm trong giỏ hàng
+    const giohangsWithDetails = [];
+
+    // Lặp qua từng mục giỏ hàng
+    for (const giohang of giohangs) {
+      // Kiểm tra giá trị soluongmua, nếu nhỏ hơn 1, đặt lại là 1
+      if (giohang.soluongmua < 1) {
+        giohang.soluongmua = 1;
+      }
+
+      // Lấy thông tin chi tiết của sản phẩm từ collection "SanPham"
+      const sanPham = await SanPham.findById(giohang.idSanPham);
+
+      // Kiểm tra xem sản phẩm có tồn tại không
+      if (sanPham) {
+        // Tạo một đối tượng mới chứa thông tin sản phẩm và thông tin giỏ hàng
+        const giohangWithDetails = {
+          giohangId: giohang._id,
+          idKhachHang: giohang.idKhachHang,
+          idSanPham: giohang.idSanPham,
+          tensp: giohang.tensp,
+          chitietsp: giohang.chitietsp,
+          img: giohang.img,
+          soluongmua: giohang.soluongmua,
+          sanPham: sanPham, // Thêm thông tin chi tiết của sản phẩm
+        };
+
+        // Thêm vào mảng giohangsWithDetails
+        giohangsWithDetails.push(giohangWithDetails);
+      }
+    }
+
+    res.json(giohangsWithDetails);
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
+  }
+});
+
+// thêm sản phẩm vào giỏ hàng người dùng
+app.post("/giohang/them/:idKhachHang/:idSanPham", async (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const idSanPham = req.params.idSanPham;
+  const { tensp, img, soluongmua, chitietsp } = req.body;
+
+  try {
+    // Kiểm tra xem sản phẩm có tồn tại trong collection "SanPham" không
+    const sanPham = await SanPham.findById(idSanPham);
+    if (!sanPham) {
+      return res.status(404).send("Sản phẩm không tồn tại");
+    }
+
+    // Tạo mục giỏ hàng mới
+    const giohang = await gioHang.create({
+      idKhachHang: idKhachHang,
+      idSanPham: idSanPham,
+      tensp: tensp,
+      img: img,
+      soluongmua: soluongmua,
+      chitietsp: chitietsp,
+    });
+
+    res.json(giohang);
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
+  }
+});
+
 
 //khởi chạy server
 const port = 9997;
