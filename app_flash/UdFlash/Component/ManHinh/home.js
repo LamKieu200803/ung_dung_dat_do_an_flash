@@ -32,7 +32,7 @@ const HomeScreen = (props) => {
 
     const getListPro = async () => {
 
-        let api_url_pro = 'http://172.20.10.11:9997/sanpham';
+        let api_url_pro = 'http://172.16.10.106:9997/sanpham';
         try {
             const response = await fetch(api_url_pro);
             const json = await response.json();
@@ -46,7 +46,7 @@ const HomeScreen = (props) => {
 
     const getListDanhMuc = async () => {
 
-        let api_url_danhmuc = 'http://172.20.10.11:9997/danhmuc';
+        let api_url_danhmuc = 'http://172.16.10.106:9997/danhmuc';
         try {
             const response = await fetch(api_url_danhmuc);
             const json = await response.json();
@@ -119,7 +119,7 @@ const HomeScreen = (props) => {
                             <Text style={styles.name}>{item.tensp}</Text>
                             <View style={{ flexDirection: 'row' }}>
 
-                                <Text style={styles.discountedPrice}> {item.giasp} đ     </Text>
+                          
                                 <Text style={{ marginLeft: 32 }}>Đã bán : {item.soluongban}</Text>
                                 {/* <Text> ${discountedPrice.toFixed(2)}</Text> */}
                             </View>

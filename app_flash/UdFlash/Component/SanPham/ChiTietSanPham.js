@@ -3,9 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from 'react-native'
 import React, { useState, useEffect } from "react";
+import DropDownPicker from 'react-native-dropdown-picker';
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
@@ -13,16 +15,30 @@ import { FlatList, ScrollView } from 'react-native-gesture-handler';
 const ChiTietSanPham = ({ route, navigation }) => {
   const [img, setimg] = useState(route.params.item_sp.img);
   const [tensp, settensp] = useState(route.params.item_sp.tensp);
-  const [giasp, setgiasp] = useState(route.params.item_sp.giasp);
+const [chitietsp, setchitietsp] = useState([]);
+const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+
   const [motasp, setmotasp] = useState(route.params.item_sp.motasp);
   const [soluong, setsoluong] = useState(route.params.item_sp.soluong);
   const [idsp, setidsp] = useState(route.params.item_sp._id);
   const [dsBl, setdsBl] = useState([]);
-
+  const listItems = [
+    { id: 1, label: 'Item 1' },
+    { id: 2, label: 'Item 2' },
+    { id: 3, label: 'Item 3' },
+  ];
 
 
   const [loginInfo, setloginInfo] = useState('');
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
+
+
+  const handleSelectItem = (item) => {
+    setSelectedItem(item);
+    setModalVisible(false);
+  };
 
   const Save_Pro = () => {
     let objPro = { img: img, tensp: tensp, giasp: giasp, soluongmua: 1 };
@@ -91,6 +107,20 @@ const ChiTietSanPham = ({ route, navigation }) => {
       });
   };
 
+  const loaddl = async () => {
+    let url_api = 'http://172.16.10.106:9997/chitietsanpham/' + idsp;
+    try {
+        const response = await fetch(url_api);
+        const json = await response.json();
+
+        setchitietsp(json.chitietsp)
+        console.log(json.chitietsp);
+    } catch (e) {
+        console.log(e);
+
+    } 
+}
+
 
 
   const getBl = async () => {
@@ -136,6 +166,7 @@ const ChiTietSanPham = ({ route, navigation }) => {
     const unsubscribe = navigation.addListener('focus', () => {
       // khi màn hình đc active thì lệnh hoạt động
       getLoginInfo();
+      loaddl()
       getBl();
     });
 
@@ -168,13 +199,34 @@ const ChiTietSanPham = ({ route, navigation }) => {
           <Text style={{ color: "black", left: 10, paddingTop: 20, fontSize: 22, fontWeight: '900' }}>
             {route.params.item_sp.tensp}
           </Text>
-          <Text style={{ color: "white", left: 10, paddingTop: 10, fontSize: 20, fontWeight: '700' }}>
-            Giá: {route.params.item_sp.giasp} đ
-          </Text>
+          
+          <View>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text>Open List</Text>
+      </TouchableOpacity>
 
+      <Modal visible={isModalVisible} animationType="slide"   transparent={true} >
+        <View style={{width:200, height:200, backgroundColor:'red'}}>
+          {chitietsp.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => handleSelectItem(item)}
+            >
+              <Text>{item.size}</Text>
+              <Text>{item.giasp}</Text>
+              <Text>{item.soluong}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </Modal>
+
+      {selectedItem && (
+        <Text>Size: {selectedItem.size}</Text>
+      )}
+    </View>
 
           <Text style={{ left: 10, color: "black", paddingTop: 10, fontSize: 15, }}>
-            Tổng số lượng trong kho: {route.params.item_sp.soluong}    |   Đã bán: {route.params.item_sp.soluongban}
+            Tổng số lượng trong kho: {route.params.item_sp.soluongsp}    |   Đã bán: {route.params.item_sp.soluongban}
           </Text>
           <Text style={{
             borderBottomColor: '#F38E8E',

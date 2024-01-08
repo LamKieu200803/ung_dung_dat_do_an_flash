@@ -407,6 +407,42 @@ app.delete('/chitietsp/xoa/:id', (req, res) => {
     });
 });
 
+// xóa sản phẩm
+app.delete("/sanpham/xoa/:id", (req, res) => {
+  const deleteSanPham = req.params.id;
+  SanPham.findByIdAndRemove(deleteSanPham)
+    .then((data) => {
+      if (data) {
+        res
+          .status(200)
+          .json({ message: "Dữ liệu đã được xóa thành công", data: data });
+      } else {
+        res.status(404).json({ error: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
+    });
+});
+
+// xem chi tiết sản phẩm
+app.get("/chitietsanpham/:id", async (req, res) => {
+  const idSanPham = req.params.id;
+  try {
+    const spct = await SanPham.findById(idSanPham);
+    if (!spct) {
+      // sản phẩm ko tồn tại
+      res.status(404).json({ message: "sản phẩm ko tồn tại" });
+    } else {
+      res.json(spct);
+    }
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server");
+  }
+});
+
+
 
 // Xem giỏ hàng của khách hàng
 

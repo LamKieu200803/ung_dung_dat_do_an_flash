@@ -30,7 +30,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='MhChao'>
+        <Stack.Navigator initialRouteName='Main'>
         <Stack.Screen name="SuaDiaChi" component={SuaDiaChi} />
           <Stack.Screen name="MhChao" component={MhChao} />
           <Stack.Screen name="SignUp" component={DangKi} options={{title:'Đăng ký'}}/>
