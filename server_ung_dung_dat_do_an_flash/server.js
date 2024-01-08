@@ -486,7 +486,102 @@ app.post("/giohang/them/:idKhachHang/:idSanPham", async (req, res) => {
   }
 });
 
+// xóa sản phẩm trong giỏ
 
+app.delete("/giohang/xoa/:idKhachHang/:idSanPham", async (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const idSanPham = req.params.idSanPham;
+
+  try {
+    await gioHang.deleteOne({ idKhachHang: idKhachHang, idSanPham: idSanPham });
+    res.status(200).send("Sản phẩm đã được xóa khỏi giỏ hàng thành công");
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
+  }
+});
+
+// xóa giỏ hàng khi mua thành công
+app.delete("/giohang/xoa/:idKhachHang", async (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const { tensp, giasp, img, soluongmua } = req.body;
+
+  try {
+    await gioHang.deleteMany({
+      idKhachHang: idKhachHang,
+    });
+    console.log("Giỏ hàng đã được làm mới");
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
+  }
+});
+
+// sửa số lượng trong giỏ khi thay đổi số lượng
+
+app.put("/giohang/sua/:idKhachHang/:idSanPham", (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const idSanPham = req.params.idSanPham;
+
+  const updateSoluong = {
+    soluongmua: req.body.soluongmua,
+  };
+
+  gioHang
+    .findOneAndUpdate({ idKhachHang: idKhachHang, idSanPham: idSanPham }, updateSoluong, {
+      new: true,
+    })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Thay đổi số lượng thành công",
+          data: data,
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
+});
+
+// tính số lượng mới khi đã mua
+app.post("/giohang/cap-nhat-sanpham", async (req, res) => {
+  const gioHang = req.body.gioHang;
+
+  try {
+    for (const item of gioHang) {
+      const sanPhamId = item.sanPhamId;
+      const soLuongMoi = item.soLuongMoi;
+      const soLuongBan = item.soLuongBan;
+
+      const sanPham = await SanPham.findById(sanPhamId);
+      if (sanPham) {
+        sanPham.soluongsp= soLuongMoi;
+sanPham.soluongban = soLuongBan; // Cập nhật số lượng đã bán
+        await sanPham.save();
+      }
+    }
+
+    res.send("Cập nhật số lượng sản phẩm và số lượng đã bán thành công");
+  } catch (err) {
+    console.log("Lỗi ", err);
+    res.status(500).send("Lỗi máy chủ");
+  }
+});
+
+// xem hóa đơn theo id người dùng
+app.get("/hoadon/:idKhachHang", async (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  try {
+    const hoadon = await hoaDon.find({ idKhachHang: idKhachHang });
+    res.json(hoadon);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server");
+  }
+});
 //khởi chạy server
 const port = 9997;
 app.listen(port, () => {
