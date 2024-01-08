@@ -18,6 +18,8 @@ const ChiTietSanPham = ({ route, navigation }) => {
 const [chitietsp, setchitietsp] = useState([]);
 const [isModalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const { item_sp } = route.params;
+  const soluongsp = item_sp.chitietsp.reduce((acc, item) => acc + item.soluong, 0);
 
 
   const [motasp, setmotasp] = useState(route.params.item_sp.motasp);
@@ -226,7 +228,7 @@ const [isModalVisible, setModalVisible] = useState(false);
     </View>
 
           <Text style={{ left: 10, color: "black", paddingTop: 10, fontSize: 15, }}>
-            Tổng số lượng trong kho: {route.params.item_sp.soluongsp}    |   Đã bán: {route.params.item_sp.soluongban}
+            Tổng số lượng trong kho: {soluongsp}    |   Đã bán: {route.params.item_sp.soluongban}
           </Text>
           <Text style={{
             borderBottomColor: '#F38E8E',

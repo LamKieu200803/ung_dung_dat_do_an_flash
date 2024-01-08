@@ -43,7 +43,6 @@ const sanPhamSchema = new mongoose.Schema({
   tensp: String,
   img: String,
   motasp: String,
-  soluongsp: Number,
   soluongban: {
     type: Number,
     default: 0,
@@ -58,6 +57,15 @@ const sanPhamSchema = new mongoose.Schema({
     giasp: Number,
     soluong: Number
   }]
+});
+
+// Define a virtual property
+sanPhamSchema.virtual('soluongsp').get(function() {
+  let total = 0;
+  if (this.chitietsp && this.chitietsp.length > 0) {
+    total = this.chitietsp.reduce((acc, item) => acc + item.soluong, 0);
+  }
+  return total;
 });
 const SanPham = mongoose.model("SanPhams", sanPhamSchema);
 
@@ -404,6 +412,45 @@ app.delete('/chitietsp/xoa/:id', (req, res) => {
     })
     .catch((err) => {
       res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa chitietsp' });
+    });
+});
+
+// sửa biến thể sản phẩm theo size ,soluong và
+
+app.put('/chitietsp/sua/:id', (req, res) => {
+  const idctsp = req.params.id;
+  const updatechitietsp = {};
+
+  if (req.body.size) {
+    updatechitietsp['chitietsp.$.size'] = req.body.size;
+  }
+
+  if (req.body.soluong) {
+    updatechitietsp['chitietsp.$.soluong'] = req.body.soluong;
+  }
+  
+  if (req.body.giasp) {
+    updatechitietsp['chitietsp.$.giasp'] = req.body.giasp;
+  }
+
+  SanPham.findOneAndUpdate(
+    { 'chitietsp._id': idctsp },
+    { $set: updatechitietsp },
+    { new: true }
+  )
+    .then((updatedSanPham) => {
+      if (!updatedSanPham) {
+        return res.status(404).json({ error: 'Không tìm thấy sản phẩm' });
+      }
+      res.status(200).json({
+        message: 'Cập nhật thông tin chitietsp thành công',
+        sanPham: updatedSanPham,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: 'Đã xảy ra lỗi khi cập nhật thông tin chitietsp',
+      });
     });
 });
 
