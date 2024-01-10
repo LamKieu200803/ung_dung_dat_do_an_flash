@@ -700,6 +700,10 @@ app.get("/hoadon/:idKhachHang", async (req, res) => {
     res.status(500).send("lỗi server");
   }
 });
+
+// thêm hóa đơn theo id người dùng
+
+
 //khởi chạy server
 const port = 9997;
 app.listen(port, () => {

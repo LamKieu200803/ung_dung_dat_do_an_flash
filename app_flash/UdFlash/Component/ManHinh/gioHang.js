@@ -67,10 +67,10 @@ const [ctsp, setctsp] = useState([]);
   const check = () => {
     for (const giohang of dspro) {
       console.log("Số lượng mua:", giohang.soluongmua);
-      console.log("Số lượng sản phẩm:", giohang.chitietsp.soluong);
+      console.log("Số lượng sản phẩm:", giohang.chitietsp[0].soluong);
   
       // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm theo size
-      if (giohang.soluongmua <= giohang.chitietsp.soluong) {
+      if (giohang.soluongmua <= giohang.chitietsp[0].soluong) {
         console.log("Đủ hàng để mua");
       } else {
         console.log("Không đủ hàng để mua, mặt hàng " + giohang.tensp + " đã hết");

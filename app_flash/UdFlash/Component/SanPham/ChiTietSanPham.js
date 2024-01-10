@@ -217,7 +217,7 @@ if (res.status == 201) {
               key={item.id}
 onPress={() => handleSelectItem(item)}
             >
-              <Text>Size: {item.size} {"\n"} giasp: {item.giasp}</Text>
+              <Text>Size: {item.size} {"\n"} giasp: {item.giasp} {"\n"} soluong: {item.soluong}</Text>
       
             </TouchableOpacity>
           ))}
