@@ -177,17 +177,40 @@ res.json(khachhang);
 }
 })
 
-// xem chi tiết tài khoản theo email
+// dn
+app.post("/dangnhap", (req, res) => {
+  var email = req.body.email;
+  var password = req.body.password;
+
+  KhachHang.findOne({
+    email: email,
+    password: password,
+  })
+    .then((data) => {
+      if (data) {
+        res.json({ success: true, message: "Đăng nhập thành công", data });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Email hoặc mật khẩu không chính xác",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ success: false, message: "Lỗi server" });
+    });
+});
 app.get("/khachhang/email", async (req, res) => {
   try {
     const email = req.query.email;
 
     const kh = await KhachHang.findOne({ email });
-if (!kh) {
+    if (!kh) {
       return res.status(404).json({ message: "Tài khoản không tồn tại" });
     }
 
-    res.json(user);
+    res.json(kh); // Trả về đối tượng kh đã tìm thấy
   } catch (err) {
     console.log("error", err);
     res.status(500).send("Lỗi server");
@@ -197,7 +220,7 @@ if (!kh) {
 // xóa tài khoản
 app.delete("/khachhang/xoa/:id", (req, res) => {
   const deletetk = req.params.id;
-  User.findByIdAndRemove(deletetk)
+  KhachHang.findByIdAndRemove(deletetk)
     .then((data) => {
       if (data) {
         res
@@ -247,7 +270,7 @@ app.get("/khachhang/:id", async (req, res) => {
       return res.status(404).json({ message: "Người dùng không tồn tại" });
     }
 
-    res.json(user);
+    res.json(khachHang);
   } catch (err) {
     console.log("error", err);
     res.status(500).send("Lỗi server");
@@ -316,7 +339,19 @@ app.delete("/danhmuc/xoa/:id", (req, res) => {
     });
 });
 
-
+// xem sản phẩm theo danh mục
+app.get("/sanpham/danhsach/:danhMucId", (req, res) => {
+  const danhMucId = req.params.danhMucId;
+  SanPham.find({ danhMucId })
+    .then((sanPhams) => {
+      res.status(200).json(sanPhams);
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ error: "Đã xảy ra lỗi khi lấy danh sách sản phẩm" });
+    });
+});
 
 
 // xem sản phẩm

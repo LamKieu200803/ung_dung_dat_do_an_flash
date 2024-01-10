@@ -17,10 +17,9 @@ const ChiTietSanPham = ({ route, navigation }) => {
   const [tensp, settensp] = useState(route.params.item_sp.tensp);
 const [chitietsp, setchitietsp] = useState([]);
 const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState([]);
   const { item_sp } = route.params;
   const soluongsp = item_sp.chitietsp.reduce((acc, item) => acc + item.soluong, 0);
-
 
   const [motasp, setmotasp] = useState(route.params.item_sp.motasp);
   const [soluong, setsoluong] = useState(route.params.item_sp.soluong);
@@ -43,10 +42,14 @@ const [isModalVisible, setModalVisible] = useState(false);
   };
 
   const Save_Pro = () => {
-    let objPro = { img: img, tensp: tensp, giasp: giasp, soluongmua: 1 };
+    if (!selectedItem.size) {
+      alert("Vui lòng chọn size trước khi thêm vào giỏ hàng");
+      return;
+    }
+    let objPro = { img: img, tensp: tensp, chitietsp: selectedItem, soluongmua: 1 };
 
-    let url_api_giohang = "http://172.20.10.11:9997/giohang/them/" + loginInfo._id + "/" + idsp;
-    let url_api_gio = "http://172.20.10.11:9997/giohang/" + loginInfo._id;
+    let url_api_giohang = "http://172.16.10.106:9997/giohang/them/" + loginInfo._id + "/" + idsp;
+    let url_api_gio = "http://172.16.10.106:9997/giohang/" + loginInfo._id;
 
     fetch(url_api_gio)
       .then((response) => {
@@ -56,13 +59,13 @@ const [isModalVisible, setModalVisible] = useState(false);
         return response.json();
       })
       .then((json) => {
-        let existingProduct = json.find((product) => product.productId === idsp);
+        let existingProduct = json.find((product) => product.idSanPham === idsp);
 
         if (existingProduct) {
           existingProduct.soluongmua += 1;
 
           return fetch(
-            "http://172.20.10.11:9997/giohang/sua/" + loginInfo._id + "/" + idsp,
+            "http://172.16.10.106:9997/giohang/sua/" + loginInfo._id + "/" + idsp,
             {
               method: "PUT",
               headers: {
@@ -89,8 +92,8 @@ const [isModalVisible, setModalVisible] = useState(false);
             },
             body: JSON.stringify(objPro),
           })
-            .then((res) => {
-              if (res.status == 201) {
+.then((res) => {
+if (res.status == 201) {
                 console.log("Thêm sản phẩm vào giỏ hàng thành công");
                 return res.json();
               } else {
@@ -126,7 +129,7 @@ const [isModalVisible, setModalVisible] = useState(false);
 
 
   const getBl = async () => {
-    let api_bl = 'http://172.20.10.11:9997/binhluan/' + idsp
+    let api_bl = 'http://192.168.0.141:9997/binhluan/' + idsp
     try {
       const response = await fetch(api_bl);
       const json = await response.json();
@@ -179,89 +182,96 @@ const [isModalVisible, setModalVisible] = useState(false);
 
   return (
 
-    <View style={styles.container} backgroundColor="#DF5A5A">
-      <ScrollView>
-        <View>
+    <View style={styles.container}>
+    <View>
           <Image
             style={{
-              width: 480, height: 250, borderWidth: 1, backgroundColor: "white",
+              width: 480, height: 220, borderWidth: 1, backgroundColor: "white",
               borderColor: "black"
             }}
             source={{ uri: route.params.item_sp.img }}
           />
         </View>
-
         <View
           style={{
-            backgroundColor: "#DF5A5A",
             width: "100%",
             height: 150
           }}
         >
-          <Text style={{ color: "black", left: 10, paddingTop: 20, fontSize: 22, fontWeight: '900' }}>
+          <Text style={{ color: "#DF5A5A", left: 10, fontSize: 22, fontWeight: '900' }}>
             {route.params.item_sp.tensp}
           </Text>
           
-          <View>
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <Text>Open List</Text>
-      </TouchableOpacity>
+        <View>
+      
 
-      <Modal visible={isModalVisible} animationType="slide"   transparent={true} >
-        <View style={{width:200, height:200, backgroundColor:'red'}}>
+      <View style={{}}>
+      <TouchableOpacity style={{paddingLeft: 10}} onPress={() => setModalVisible(true)}>
+      <Text>Chọn Size</Text>
+      </TouchableOpacity>
+      <Modal style={{marginLeft: 10, padding: 6, paddingBottom: 15}} visible={isModalVisible} animationType="slide"   transparent={true} >
+        <View style={{width:175, height: 180, backgroundColor:'white',borderWidth: 5, borderRadius: 10,marginTop: 275,marginLeft: 135, padding: 10,}}>
           {chitietsp.map((item) => (
             <TouchableOpacity
+              style={{borderBottomWidth: 2, marginBottom: 9, paddingBottom:9}}
               key={item.id}
-              onPress={() => handleSelectItem(item)}
+onPress={() => handleSelectItem(item)}
             >
-              <Text>{item.size}</Text>
-              <Text>{item.giasp}</Text>
-              <Text>{item.soluong}</Text>
+              <Text>Size: {item.size} {"\n"} giasp: {item.giasp}</Text>
+      
             </TouchableOpacity>
           ))}
         </View>
       </Modal>
+      </View>
 
       {selectedItem && (
-        <Text>Size: {selectedItem.size}</Text>
+        <Text style={{paddingLeft: 10}}>Size: {selectedItem.size}</Text>
+      )}
+      {selectedItem && (
+        <Text style={{paddingLeft: 10}}>Giá sản phẩm: {selectedItem.giasp}</Text>
       )}
     </View>
-
-          <Text style={{ left: 10, color: "black", paddingTop: 10, fontSize: 15, }}>
-            Tổng số lượng trong kho: {soluongsp}    |   Đã bán: {route.params.item_sp.soluongban}
+      
+          <Text style={{ left: 10, color: "black", fontSize: 15, }}>
+            Tổng số lượng: {soluongsp}  |   Đã bán: {route.params.item_sp.soluongban}
           </Text>
+          
           <Text style={{
-            borderBottomColor: '#F38E8E',
+            borderBottomColor: 'black',
             borderBottomWidth: 1
           }}></Text>
-
         </View>
-
+      <ScrollView>
+        
 
         <View style={{
-          backgroundColor: "#DF5A5A",
-          width: "100%",
-          height: 250
+          width: 450,
         }}>
+        <View style={{width: '100%', height: 250,}}>
           <Text style={{ marginLeft: 12, fontSize: 16, fontWeight: 'bold' }}>Mô tả sản phẩm </Text>
-          <Text style={{
-            borderBottomColor: '#F38E8E',
-            borderBottomWidth: 1
-          }}></Text>
-          <ScrollView>
-            <Text style={styles.texthello}>{route.params.item_sp.motasp}
-            </Text></ScrollView>
-          <Text style={{
-            borderBottomColor: '#F38E8E',
-            borderBottomWidth: 1
-          }}></Text>
+            <Text style={{
+              borderBottomColor: 'black',
+              borderBottomWidth: 1
+
+            }}></Text>
+            <ScrollView>
+              <Text style={styles.texthello}>{route.params.item_sp.motasp}
+              </Text>
+            </ScrollView>
+            <Text style={{
+              borderBottomColor: 'black',
+              borderBottomWidth: 1
+            }}>
+          </Text>
         </View>
-        <View style={{ width: '100%', height: 250, marginTop: 10 }}>
-          <Text style={{ marginLeft: 12, fontSize: 16, fontWeight: 'bold' }}>Đánh giá từ người mua</Text>
-          <Text style={{
-            borderBottomColor: '#F38E8E',
-            borderBottomWidth: 1
-          }}></Text>
+        </View>
+          <View style={{ width: '100%', height: 250, marginTop: 15 }}>
+            <Text style={{ marginLeft: 12, fontSize: 16, fontWeight: 'bold' }}>Đánh giá từ người mua</Text>
+            <Text style={{
+              borderBottomColor: 'black',
+              borderBottomWidth: 1
+            }}></Text>
           <ScrollView>
             {dsBl.length > 0 ? (
               dsBl.map((itembl) => (
@@ -284,13 +294,13 @@ const [isModalVisible, setModalVisible] = useState(false);
             ) : (
               <View>
               <Text style={{textAlign:'center', fontSize:20, marginTop:60}}>Chưa có đánh giá nào</Text>
-              <Text style={{textAlign:'center', fontSize:15}}>Hãy là người đầu tiên đánh giá cho sản phẩm này.</Text>
+<Text style={{textAlign:'center', fontSize:15}}>Hãy là người đầu tiên đánh giá cho sản phẩm này.</Text>
           </View>
           )}
           </ScrollView>
         
           <Text style={{
-            borderBottomColor: '#F38E8E',
+            borderBottomColor: 'black',
             borderBottomWidth: 1,
 
           }}></Text>
@@ -299,9 +309,7 @@ const [isModalVisible, setModalVisible] = useState(false);
       </ScrollView>
 
       <TouchableOpacity onPress={Save_Pro} >
-        <Text style={styles.button}
-
-        >Thêm vào giỏ hàng</Text>
+        <Text style={styles.button}>Thêm vào giỏ hàng</Text>
       </TouchableOpacity>
     </View>
   )
@@ -326,15 +334,15 @@ const styles = StyleSheet.create({
   button: {
     margin: 5,
     marginBottom: 20,
-    width: 300,
+    width: 170,
     alignContent: 'center',
     paddingVertical: 10,
     borderRadius: 10,
-    color: "#DF5A5A",
+    color: "white",
     fontSize: 15,
     fontWeight: "700",
     textAlign: "center",
-    backgroundColor: "white",
+    backgroundColor: "#DF5A5A",
   },
 });
-export default ChiTietSanPham 
+export default ChiTietSanPham

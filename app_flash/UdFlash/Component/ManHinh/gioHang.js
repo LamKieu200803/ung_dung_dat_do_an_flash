@@ -15,6 +15,7 @@ const GioHang = (props) => {
 
 
 
+const [ctsp, setctsp] = useState([]);
 
   const [cartItemsCount, setCartItemsCount] = useState(0);
   const [isLoading, setisLoading] = useState(true);
@@ -22,12 +23,17 @@ const GioHang = (props) => {
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0); // Thêm state để lưu trữ totalPrice
   const getListPro = async () => {
-    let url_api_giohang = 'http://172.20.10.11:9997/giohang/' + loginInfo._id;
+    let url_api_giohang = 'http://172.16.10.106:9997/giohang/' + loginInfo._id;
     try {
       const response = await fetch(url_api_giohang);
       const json = await response.json();
       setdspro(json);
-      setidsp(json[0].productId)
+      setidsp(json[0].idSanPham)
+      console.log(dspro);
+
+  // Lưu trữ chi tiết sản phẩm của tất cả các sản phẩm trong giỏ hàng
+  const chiTietSanPhamArray = json.map(item => item.chitietsp);
+  setctsp(chiTietSanPhamArray);
 
       setCartItemsCount(json.length);
 
@@ -35,10 +41,12 @@ const GioHang = (props) => {
       let totalPrice = 0;
 
       json.forEach((item) => {
-        totalPrice += item.giasp * item.soluongmua;
-
+        const chiTietSp = item.chitietsp[0]; // Lấy phần tử đầu tiên trong mảng chitietsp
+      
+        totalPrice += chiTietSp.giasp * item.soluongmua;
       });
-      setTotalPrice(totalPrice);
+      
+      setTotalPrice(totalPrice); // Cập nhật lại giá trị totalPrice
       // for (const giohang of json) {
       //   console.log("Số lượng mua:", giohang.soluongmua);
       //   console.log("Số lượng sản phẩm:", giohang.sanPham.soluong);
@@ -56,25 +64,21 @@ const GioHang = (props) => {
       console.log(e);
     }
   };
-
   const check = () => {
-   
-  
     for (const giohang of dspro) {
       console.log("Số lượng mua:", giohang.soluongmua);
-      console.log("Số lượng sản phẩm:", giohang.sanPham.soluong);
+      console.log("Số lượng sản phẩm:", giohang.chitietsp.soluong);
   
-      // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
-      if (giohang.soluongmua <= giohang.sanPham.soluong) {
+      // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm theo size
+      if (giohang.soluongmua <= giohang.chitietsp.soluong) {
         console.log("Đủ hàng để mua");
-      }
-       else {
+      } else {
         console.log("Không đủ hàng để mua, mặt hàng " + giohang.tensp + " đã hết");
         alert("Không đủ hàng để mua, mặt hàng " + giohang.tensp + " đã hết");
         return giohang;
       }
     }
-  }
+  };
 
   const BUY = () => {
     if (dspro.length === 0) {
@@ -160,7 +164,7 @@ const GioHang = (props) => {
     // console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.20.10.11:9997/giohang/sua/' + loginInfo._id + "/" + itemToUpdate.productId, {
+      fetch('http://172.16.10.106:9997/giohang/sua/' + loginInfo._id + "/" + itemToUpdate.idSanPham, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -191,11 +195,11 @@ const GioHang = (props) => {
     );
 
     const itemToUpdate = dspro.find((item) => item.giohangId === itemId);
-    console.log(itemToUpdate.productId);
+    console.log(itemToUpdate.idSanPham);
     console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.20.10.11:9997/giohang/sua/' + loginInfo._id + "/" + itemToUpdate.productId, {
+      fetch('http://172.16.10.106:9997/giohang/sua/' + loginInfo._id + "/" + itemToUpdate.idSanPham, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -219,16 +223,17 @@ const GioHang = (props) => {
     setTotalPrice((prevTotalPrice) => {
       const item = dspro.find((item) => item.giohangId === itemId);
       if (item) {
-        const productPrice = item.giasp;
+        const productPrice = item.chitietsp[0].giasp; // Lấy giá sản phẩm từ phần tử đầu tiên trong mảng chitietsp
+  
         const newQuantity = item.soluongmua + quantityChange;
-
+  
         let updatedPrice = prevTotalPrice - productPrice * item.soluongmua + productPrice * newQuantity;
-
+  
         if (newQuantity === 0) {
           // Xóa sản phẩm khỏi giỏ hàng, giá trị totalPrice sẽ là 0
           updatedPrice = 0;
         }
-
+  
         // Đảm bảo totalPrice không nhỏ hơn 0
         const totalPrice = Math.max(0, updatedPrice);
         return totalPrice;
@@ -244,9 +249,19 @@ const GioHang = (props) => {
   //   };
 
   const renderCartItem = ({ item }) => {
-
+    const renderchitiet = () => {
+      console.log("Render chi tiet:", item);
+      const chiTietSp = item.chitietsp[0]; // Lấy phần tử đầu tiên trong mảng chitietsp
+    
+      return (
+        <View>
+          <Text>size: {chiTietSp.size}</Text>
+          <Text>giasp: {chiTietSp.giasp}</Text>
+        </View>
+      );
+    };
     const DelPro = () => {
-      let url_api_del = 'http://172.20.10.11:9997/giohang/xoa/' + loginInfo._id + "/" + item.productId;
+      let url_api_del = 'http://172.16.10.106:9997/giohang/xoa/' + loginInfo._id + "/" + item.idSanPham;
 
       fetch(url_api_del, {
 
@@ -286,14 +301,15 @@ const GioHang = (props) => {
         ])
     }
 
-
-
+   
     return (
       <View style={styles.cartItemContainer}>
         <Image source={{ uri: item.img }} style={styles.productImage} />
         <View style={styles.productDetails}>
           <Text style={styles.productName}>{item.tensp}</Text>
-          <Text style={styles.productPrice}>Giá: {item.giasp} đ</Text>
+
+          {renderchitiet()}
+     
           <View style={styles.quantityContainer}>
             <TouchableOpacity
               onPress={() => decreaseQuantity(item.giohangId)}
@@ -328,10 +344,11 @@ const GioHang = (props) => {
   const renderCart = () => (
     <View style={{ flex: 1 }}>
       {dspro.length > 0 ? (
+    
         <FlatList
           data={dspro}
           renderItem={renderCartItem}
-          keyExtractor={(item) => item.giohangId}
+          keyExtractor={(item) => item._id}
           ListEmptyComponent={renderEmptyCart}
         />
       ) : (
