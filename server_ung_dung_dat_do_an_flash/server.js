@@ -184,10 +184,7 @@ const AddressSChema = new mongoose.Schema({
   name: String,
   phone: String,
   address: String,
-  idKhachHang: {
-    type: String,
-    required: true
-  },
+
 });
 const Address = mongoose.model("Diachis", AddressSChema);
 
@@ -591,7 +588,7 @@ app.get("/chitietsanpham/:id", async (req, res) => {
 
 // Xem giỏ hàng của khách hàng
 
-app.get("/giohang/:idKhachHang", async (req, res) => {
+app.get("/giohang", async (req, res) => {
   const idKhachHang = req.params.idKhachHang;
 
   try {
