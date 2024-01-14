@@ -27,7 +27,7 @@ const AddAddressScreen = (props) => {
 
   const handleSaveAddress = () => {
     let objPro = { name: name, phone: phone, address: address }
-    let url_api_diachi = 'http://172.20.10.11:9997/themdiachi';
+    let url_api_diachi = 'http://172.16.10.109:9997/themdiachi';
 
     fetch(url_api_diachi, {
         method: 'POST',
@@ -50,34 +50,34 @@ const AddAddressScreen = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Add a new address</Text>
-      <Text style={styles.label}>Name</Text>
+      <Text style={styles.heading}>Thêm địa chỉ mới</Text>
+      <Text style={styles.label}>Tên người nhận hàng</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Name"
+          placeholder="Nhập tên người nhận hàng"
           value={name}
           onChangeText={(txt)=>setName(txt)}
         />
       </View>
 
 
-      <Text style={styles.label}>Phone</Text>
+      <Text style={styles.label}>Số điện thoại</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Phone"
+          placeholder="Nhập số điện thoại nhận hàng"
           value={phone}
           onChangeText={(txt)=>setPhone(txt)}
         />
       </View>
 
 
-      <Text style={styles.label}>Street address</Text>
+      <Text style={styles.label}>Địa chỉ </Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder=" address"
+          placeholder=" Nhập địa chỉ nhận hàng"
           value={address}
           onChangeText={(txt)=>setAddress(txt)}
         />

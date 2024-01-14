@@ -41,9 +41,9 @@ const [ctsp, setctsp] = useState([]);
       let totalPrice = 0;
 
       json.forEach((item) => {
-        const chiTietSp = item.chitietsp[0]; // Lấy phần tử đầu tiên trong mảng chitietsp
       
-        totalPrice += chiTietSp.giasp * item.soluongmua;
+      
+        totalPrice += item.giasp * item.soluongmua;
       });
       
       setTotalPrice(totalPrice); // Cập nhật lại giá trị totalPrice
@@ -67,10 +67,10 @@ const [ctsp, setctsp] = useState([]);
   const check = () => {
     for (const giohang of dspro) {
       console.log("Số lượng mua:", giohang.soluongmua);
-      console.log("Số lượng sản phẩm:", giohang.chitietsp[0].soluong);
+      console.log("Số lượng sản phẩm:", giohang.soluong);
   
       // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm theo size
-      if (giohang.soluongmua <= giohang.chitietsp[0].soluong) {
+      if (giohang.soluongmua <= giohang.soluong) {
         console.log("Đủ hàng để mua");
       } else {
         console.log("Không đủ hàng để mua, mặt hàng " + giohang.tensp + " đã hết");
@@ -177,7 +177,7 @@ const [ctsp, setctsp] = useState([]);
           console.log('Dữ liệu đã được cập nhật trên server:', data);
           setCartItemsCount((prevCount) => prevCount + 1);
           updateTotalPrice(itemId, 1); // Increase totalPrice by the product's price
-        })
+        }) 
         .catch((error) => {
           // Xử lý lỗi (nếu có)
           console.error('Lỗi khi cập nhật dữ liệu:', error);
@@ -202,7 +202,7 @@ const [ctsp, setctsp] = useState([]);
       fetch('http://172.16.10.109:9997/giohang/sua/' + loginInfo._id + "/" + itemToUpdate.idSanPham, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', 
         },
         body: JSON.stringify({ soluongmua: itemToUpdate.soluongmua - 1 }),
       })
@@ -223,7 +223,7 @@ const [ctsp, setctsp] = useState([]);
     setTotalPrice((prevTotalPrice) => {
       const item = dspro.find((item) => item.giohangId === itemId);
       if (item) {
-        const productPrice = item.chitietsp[0].giasp; // Lấy giá sản phẩm từ phần tử đầu tiên trong mảng chitietsp
+        const productPrice = item.giasp; // Lấy giá sản phẩm từ phần tử đầu tiên trong mảng chitietsp
   
         const newQuantity = item.soluongmua + quantityChange;
   

@@ -41,7 +41,7 @@ const ThanhToan = ({ route }) => {
 
 
   const getlistgiohang = async () => {
-    const url_api_giohang = 'http://172.20.10.11:9997/giohang/' + loginInfo._id;
+    const url_api_giohang = 'http://172.16.10.109:9997/giohang/' + loginInfo._id;
 
     try {
       const response = await fetch(url_api_giohang);
@@ -260,12 +260,13 @@ const ThanhToan = ({ route }) => {
       <View style={styles.productDetails}>
         <View style={{ padding: 10}}>
           <Image
-            style={{ width: 80, height: 85 }}
+            style={{ width: 95, height: 95 }}
             source={{ uri: item.img }} /></View>
         <View>
           <Text style={styles.productName}>{item.tensp}</Text>
           <Text style={styles.productPrice}>giá sản phẩm: {item.giasp} đ</Text>
           <Text style={styles.productPrice}>số lượng mua: {item.soluongmua}</Text>
+          <Text style={styles.productPrice}>size: {item.size}</Text>
         </View>
       </View>
 

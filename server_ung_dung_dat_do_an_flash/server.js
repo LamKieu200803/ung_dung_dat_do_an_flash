@@ -701,7 +701,7 @@ app.put("/giohang/sua/:idKhachHang/:idSanPham", (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu rùi" });
     });
 });
 
@@ -760,7 +760,9 @@ app.post("/hoadon/them/idKhachhang",(req,res)=>{
     tensp: sp.tensp,
     img: sp.img,
     soluongmua: sp.soluongmua,
-    chitietsp
+    soluong: sp.soluong,
+    giasp: sp.giasp,
+    size: sp.size
   }));
 
    // Tạo hóa đơn mới với thông tin người dùng và danh sách sản phẩm
@@ -794,6 +796,56 @@ app.post("/hoadon/them/idKhachhang",(req,res)=>{
 })
 
 
+// app.post("/themdiachi/:idKhachHang", (req, res) => {
+//   const idKhachHang = req.params.idKhachHang;
+//   const { name, phone, address } = req.body;
+
+//   Address.findByIdAndUpdate(
+//     idKhachHang,
+//     { name, phone, address },
+//     { new: true, upsert: true }
+//   )
+//     .then((updatedAddress) => {
+//       res.status(201).json({
+//         message: "Bạn đã thêm địa chỉ thành công",
+//         address: updatedAddress,
+//       });
+//     })
+//     .catch((error) => {
+//       res.status(500).json({ error: "Đã xảy ra lỗi khi thêm địa chỉ" });
+//     });
+// });
+
+// // xem địa chỉ
+// app.get("/diachi/:idKhachHang", async (req, res) => {
+//   try {
+//     const idKhachHang = req.params.idKhachHang;
+//     const addresses = await Address.find({ idKhachHang });
+//     res.json(addresses);
+//   } catch (err) {
+//     console.log("error ", err);
+//     res.status(500).send("lỗi server");
+//   }
+// }); 
+
+
+app.post("/themdiachi", (req, res) => {
+  const { name, phone, address } = req.body;
+
+  const newUser = new Address({ name, phone, address });
+  newUser.save().then(() => {
+    res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công" });
+  });
+}); //thêm địa chỉ
+app.get("/diachi", async (req, res) => {
+  try {
+    const user = await Address.find({});
+    res.json(user);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server");
+  }
+}); //get địa chỉ
 //khởi chạy server
 const port = 9997;
 app.listen(port, () => {
