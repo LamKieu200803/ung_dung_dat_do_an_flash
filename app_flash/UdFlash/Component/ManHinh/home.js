@@ -32,7 +32,7 @@ const HomeScreen = (props) => {
 
     const getListPro = async () => {
 
-        let api_url_pro = 'http://172.16.10.106:9997/sanpham';
+        let api_url_pro = 'http://172.16.10.109:9997/sanpham';
         try {
             const response = await fetch(api_url_pro);
             const json = await response.json();
@@ -46,7 +46,7 @@ const HomeScreen = (props) => {
 
     const getListDanhMuc = async () => {
 
-        let api_url_danhmuc = 'http://172.16.10.106:9997/danhmuc';
+        let api_url_danhmuc = 'http://172.16.10.109:9997/danhmuc';
         try {
             const response = await fetch(api_url_danhmuc);
             const json = await response.json();
@@ -60,7 +60,7 @@ const HomeScreen = (props) => {
 
     const gettop5sp = async () => {
 
-        let api_url_top5 = 'http://172.20.10.11:9997/top5sold';
+        let api_url_top5 = 'http://172.16.10.109:9997/top5sold';
         try {
             const response = await fetch(api_url_top5);
             const json = await response.json();

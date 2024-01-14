@@ -83,11 +83,10 @@ const gioHangSchema = new mongoose.Schema({
   tensp: String,
   img: String,
   soluongmua: Number,
-  chitietsp: [{
-    size: String,
-    giasp: Number,
-    soluong: Number
-  }]
+  size: String,
+  giasp: Number,
+  soluong: Number
+
 });
 const gioHang = mongoose.model("GioHangs", gioHangSchema);
 
@@ -117,12 +116,12 @@ const hoaDonSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  giohang: [{
+  chitietsp: [{
     idSanPham: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'SanPham'
     },
-    chitietsp: [{
+    giohang: [{
       size: String,
       giasp: Number,
       soluong: Number
@@ -141,6 +140,44 @@ const hoaDonSchema = new mongoose.Schema({
 });
 
 const hoaDon = mongoose.model("HoaDons", hoaDonSchema);
+
+app.post("/hoadon/them/:idKhachHang", (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const { giohang, diachi, sdt, tennguoimua, pttt, trangthai } = req.body;
+
+  // Lấy thông tin người dùng dựa trên idKhachHang
+  KhachHang.findById(idKhachHang)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ message: "Người dùng không tồn tại" });
+      }
+
+      // Tạo hóa đơn mới với thông tin người dùng và danh sách sản phẩm
+      const newHoaDon = new hoaDon({
+        idKhachHang,
+        chitietsp: giohang,
+        diachi,
+        sdt,
+        tennguoimua,
+        pttt,
+        trangthai,
+      });
+
+      newHoaDon
+        .save()
+        .then(() => {
+          res.status(201).json({ message: "Thêm hóa đơn thành công" });
+        })
+        .catch((err) => {
+          console.log("error ", err);
+          res.status(500).send("Lỗi server");
+        });
+    })
+    .catch((err) => {
+      console.log("error ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
 
 //Schema và model địa chỉ
 const AddressSChema = new mongoose.Schema({
@@ -556,7 +593,9 @@ app.get("/giohang/:idKhachHang", async (req, res) => {
           idKhachHang: giohang.idKhachHang,
           idSanPham: giohang.idSanPham,
           tensp: giohang.tensp,
-          chitietsp: giohang.chitietsp,
+        size:giohang.size,
+        soluong:giohang.soluong,
+        giasp:giohang.giasp,
           img: giohang.img,
           soluongmua: giohang.soluongmua,
           sanPham: sanPham, // Thêm thông tin chi tiết của sản phẩm
@@ -578,7 +617,7 @@ app.get("/giohang/:idKhachHang", async (req, res) => {
 app.post("/giohang/them/:idKhachHang/:idSanPham", async (req, res) => {
   const idKhachHang = req.params.idKhachHang;
   const idSanPham = req.params.idSanPham;
-  const { tensp, img, soluongmua, chitietsp } = req.body;
+  const { tensp, img, soluongmua, size , soluong, giasp } = req.body;
 
   try {
     // Kiểm tra xem sản phẩm có tồn tại trong collection "SanPham" không
@@ -594,7 +633,9 @@ app.post("/giohang/them/:idKhachHang/:idSanPham", async (req, res) => {
       tensp: tensp,
       img: img,
       soluongmua: soluongmua,
-      chitietsp: chitietsp,
+      size:size,
+      giasp:giasp,
+      soluong:soluong
     });
 
     res.json(giohang);
@@ -701,7 +742,56 @@ app.get("/hoadon/:idKhachHang", async (req, res) => {
   }
 });
 
-// thêm hóa đơn theo id người dùng
+// thêm hóa đơn theo id người dungf
+
+app.post("/hoadon/them/idKhachhang",(req,res)=>{
+  const idKhachHang = req.params.idKhachHang ;
+  const {giohang ,diachi,sdt,tennguoimua,pttt,trangthai} = req.body
+ // Lấy thông tin người dùng dựa trên idKhachHang
+ KhachHang.findById(idKhachHang)
+ .then((user) => {
+   if (!user) {
+     return res.status(404).json({ message: "Người dùng không tồn tại" });
+   }
+
+   // Tạo danh sách sản phẩm mới với các thông tin, bao gồm cả productId
+   const newDanhSachSanPham = giohang.map((sp) => ({
+    idSanPham: sp.idSanPham, // Thêm productId vào danh sách sản phẩm
+    tensp: sp.tensp,
+    img: sp.img,
+    soluongmua: sp.soluongmua,
+    chitietsp
+  }));
+
+   // Tạo hóa đơn mới với thông tin người dùng và danh sách sản phẩm
+   const newHoaDon = new hoaDon({
+     chitietsp: newDanhSachSanPham,
+     idKhachHang,
+     diachi,
+     sdt,
+     tennguoimua,
+     pttt,
+     tongtien,
+     thoigian,
+     trangthai,
+   });
+
+   newHoaDon
+     .save()
+     .then(() => {
+       res.status(201).json({ message: "Thêm hóa đơn thành công" });
+     })
+     .catch((err) => {
+       console.log("error ", err);
+       res.status(500).send("Lỗi server");
+     });
+ })
+ .catch((err) => {
+   console.log("error ", err);
+   res.status(500).send("Lỗi server");
+ });
+  
+})
 
 
 //khởi chạy server

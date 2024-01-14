@@ -46,10 +46,17 @@ const [isModalVisible, setModalVisible] = useState(false);
       alert("Vui lòng chọn size trước khi thêm vào giỏ hàng");
       return;
     }
-    let objPro = { img: img, tensp: tensp, chitietsp: selectedItem, soluongmua: 1 };
+    let objPro = {
+      img: img,
+      tensp: tensp,
+      size: selectedItem.size,
+      soluong: selectedItem.soluong,
+      giasp: selectedItem.giasp,
+      soluongmua: 1,
+    };
 
-    let url_api_giohang = "http://172.16.10.106:9997/giohang/them/" + loginInfo._id + "/" + idsp;
-    let url_api_gio = "http://172.16.10.106:9997/giohang/" + loginInfo._id;
+    let url_api_giohang = "http://172.16.10.109:9997/giohang/them/" + loginInfo._id + "/" + idsp;
+    let url_api_gio = "http://172.16.10.109:9997/giohang/" + loginInfo._id;
 
     fetch(url_api_gio)
       .then((response) => {
@@ -65,7 +72,7 @@ const [isModalVisible, setModalVisible] = useState(false);
           existingProduct.soluongmua += 1;
 
           return fetch(
-            "http://172.16.10.106:9997/giohang/sua/" + loginInfo._id + "/" + idsp,
+            "http://172.16.10.109:9997/giohang/sua/" + loginInfo._id + "/" + idsp,
             {
               method: "PUT",
               headers: {
@@ -113,7 +120,7 @@ if (res.status == 201) {
   };
 
   const loaddl = async () => {
-    let url_api = 'http://172.16.10.106:9997/chitietsanpham/' + idsp;
+    let url_api = 'http://172.16.10.109:9997/chitietsanpham/' + idsp;
     try {
         const response = await fetch(url_api);
         const json = await response.json();
@@ -129,7 +136,7 @@ if (res.status == 201) {
 
 
   const getBl = async () => {
-    let api_bl = 'http://192.168.0.141:9997/binhluan/' + idsp
+    let api_bl = 'http://172.16.10.109:9997/binhluan/' + idsp
     try {
       const response = await fetch(api_bl);
       const json = await response.json();

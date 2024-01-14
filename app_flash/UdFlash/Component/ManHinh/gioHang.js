@@ -23,7 +23,7 @@ const [ctsp, setctsp] = useState([]);
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0); // Thêm state để lưu trữ totalPrice
   const getListPro = async () => {
-    let url_api_giohang = 'http://172.16.10.106:9997/giohang/' + loginInfo._id;
+    let url_api_giohang = 'http://172.16.10.109:9997/giohang/' + loginInfo._id;
     try {
       const response = await fetch(url_api_giohang);
       const json = await response.json();
@@ -31,9 +31,9 @@ const [ctsp, setctsp] = useState([]);
       setidsp(json[0].idSanPham)
       console.log(dspro);
 
-  // Lưu trữ chi tiết sản phẩm của tất cả các sản phẩm trong giỏ hàng
-  const chiTietSanPhamArray = json.map(item => item.chitietsp);
-  setctsp(chiTietSanPhamArray);
+  // // Lưu trữ chi tiết sản phẩm của tất cả các sản phẩm trong giỏ hàng
+  // const chiTietSanPhamArray = json.map(item => item.chitietsp);
+  // setctsp(chiTietSanPhamArray);
 
       setCartItemsCount(json.length);
 
@@ -164,7 +164,7 @@ const [ctsp, setctsp] = useState([]);
     // console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.16.10.106:9997/giohang/sua/' + loginInfo._id + "/" + itemToUpdate.idSanPham, {
+      fetch('http://172.16.10.109:9997/giohang/sua/' + loginInfo._id + "/" + itemToUpdate.idSanPham, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ const [ctsp, setctsp] = useState([]);
     console.log(loginInfo._id);
     if (itemToUpdate) {
       // Gửi yêu cầu PUT đến server để cập nhật giá trị soluongmua
-      fetch('http://172.16.10.106:9997/giohang/sua/' + loginInfo._id + "/" + itemToUpdate.idSanPham, {
+      fetch('http://172.16.10.109:9997/giohang/sua/' + loginInfo._id + "/" + itemToUpdate.idSanPham, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -251,17 +251,17 @@ const [ctsp, setctsp] = useState([]);
   const renderCartItem = ({ item }) => {
     const renderchitiet = () => {
       console.log("Render chi tiet:", item);
-      const chiTietSp = item.chitietsp[0]; // Lấy phần tử đầu tiên trong mảng chitietsp
+   
     
       return (
         <View>
-          <Text>size: {chiTietSp.size}</Text>
-          <Text>giasp: {chiTietSp.giasp}</Text>
+          <Text>size: {item.size}</Text>
+          <Text>giasp: {item.giasp}</Text>
         </View>
       );
     };
     const DelPro = () => {
-      let url_api_del = 'http://172.16.10.106:9997/giohang/xoa/' + loginInfo._id + "/" + item.idSanPham;
+      let url_api_del = 'http://172.16.10.109:9997/giohang/xoa/' + loginInfo._id + "/" + item.idSanPham;
 
       fetch(url_api_del, {
 
