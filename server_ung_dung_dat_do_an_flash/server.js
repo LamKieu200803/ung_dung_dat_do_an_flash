@@ -116,16 +116,15 @@ const hoaDonSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  chitietsp: [{
+  danhsachsp: [{
     idSanPham: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'SanPham'
+      ref: 'SanPhams'
     },
-    giohang: [{
-      size: String,
-      giasp: Number,
-      soluong: Number
-    }],
+
+    size: String,
+    giasp: Number,
+    soluong: Number,
     tensp: String,
     img: String,
     soluongmua: String
@@ -141,43 +140,7 @@ const hoaDonSchema = new mongoose.Schema({
 
 const hoaDon = mongoose.model("HoaDons", hoaDonSchema);
 
-app.post("/hoadon/them/:idKhachHang", (req, res) => {
-  const idKhachHang = req.params.idKhachHang;
-  const { giohang, diachi, sdt, tennguoimua, pttt, trangthai } = req.body;
 
-  // Lấy thông tin người dùng dựa trên idKhachHang
-  KhachHang.findById(idKhachHang)
-    .then((user) => {
-      if (!user) {
-        return res.status(404).json({ message: "Người dùng không tồn tại" });
-      }
-
-      // Tạo hóa đơn mới với thông tin người dùng và danh sách sản phẩm
-      const newHoaDon = new hoaDon({
-        idKhachHang,
-        chitietsp: giohang,
-        diachi,
-        sdt,
-        tennguoimua,
-        pttt,
-        trangthai,
-      });
-
-      newHoaDon
-        .save()
-        .then(() => {
-          res.status(201).json({ message: "Thêm hóa đơn thành công" });
-        })
-        .catch((err) => {
-          console.log("error ", err);
-          res.status(500).send("Lỗi server");
-        });
-    })
-    .catch((err) => {
-      console.log("error ", err);
-      res.status(500).send("Lỗi server");
-    });
-});
 
 //Schema và model địa chỉ
 const AddressSChema = new mongoose.Schema({
@@ -588,7 +551,7 @@ app.get("/chitietsanpham/:id", async (req, res) => {
 
 // Xem giỏ hàng của khách hàng
 
-app.get("/giohang", async (req, res) => {
+app.get("/giohang/:idKhachHang", async (req, res) => {
   const idKhachHang = req.params.idKhachHang;
 
   try {
@@ -767,56 +730,56 @@ app.get("/hoadon/:idKhachHang", async (req, res) => {
 
 // thêm hóa đơn theo id người dungf
 
-app.post("/hoadon/them/idKhachhang",(req,res)=>{
-  const idKhachHang = req.params.idKhachHang ;
-  const {giohang ,diachi,sdt,tennguoimua,pttt,trangthai} = req.body
- // Lấy thông tin người dùng dựa trên idKhachHang
- KhachHang.findById(idKhachHang)
- .then((user) => {
-   if (!user) {
-     return res.status(404).json({ message: "Người dùng không tồn tại" });
-   }
+app.post("/hoadon/them/:idKhachHang", (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const { danhsachsp, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai } = req.body;
 
-   // Tạo danh sách sản phẩm mới với các thông tin, bao gồm cả productId
-   const newDanhSachSanPham = giohang.map((sp) => ({
-    idSanPham: sp.idSanPham, // Thêm productId vào danh sách sản phẩm
-    tensp: sp.tensp,
-    img: sp.img,
-    soluongmua: sp.soluongmua,
-    soluong: sp.soluong,
-    giasp: sp.giasp,
-    size: sp.size
-  }));
+  // Lấy thông tin người dùng dựa trên idKhachHang
+  KhachHang.findById(idKhachHang)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ message: "Người dùng không tồn tại" });
+      }
 
-   // Tạo hóa đơn mới với thông tin người dùng và danh sách sản phẩm
-   const newHoaDon = new hoaDon({
-     chitietsp: newDanhSachSanPham,
-     idKhachHang,
-     diachi,
-     sdt,
-     tennguoimua,
-     pttt,
-     tongtien,
-     thoigian,
-     trangthai,
-   });
+      // Tạo danh sách sản phẩm mới với các thông tin, bao gồm cả idSanPham
+      const newDanhSachSanPham = danhsachsp.map((sp) => ({
+        idSanPham: sp.idSanPham, // Thêm idSanPham vào danh sách sản phẩm
+        tensp: sp.tensp,
+        img: sp.img,
+        soluongmua: sp.soluongmua,
+        soluong: sp.soluong,
+        giasp: sp.giasp,
+        size: sp.size,
+      }));
 
-   newHoaDon
-     .save()
-     .then(() => {
-       res.status(201).json({ message: "Thêm hóa đơn thành công" });
-     })
-     .catch((err) => {
-       console.log("error ", err);
-       res.status(500).send("Lỗi server");
-     });
- })
- .catch((err) => {
-   console.log("error ", err);
-   res.status(500).send("Lỗi server");
- });
-  
-})
+      // Tạo hóa đơn mới với thông tin người dùng và danh sách sản phẩm
+      const newHoaDon = new hoaDon({
+        danhsachsp: newDanhSachSanPham,
+        idKhachHang,
+        diachi,
+        sdt,
+        tennguoimua,
+        pttt,
+        tongtien,
+        thoigian,
+        trangthai,
+      });
+
+      newHoaDon
+        .save()
+        .then(() => {
+          res.status(201).json({ message: "Thêm hóa đơn thành công" });
+        })
+        .catch((err) => {
+          console.log("error ", err);
+          res.status(500).send("Lỗi server");
+        });
+    })
+    .catch((err) => {
+      console.log("error ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
 
 
 // app.post("/themdiachi/:idKhachHang", (req, res) => {

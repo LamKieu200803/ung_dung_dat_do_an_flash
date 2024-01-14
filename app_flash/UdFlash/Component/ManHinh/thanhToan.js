@@ -58,12 +58,12 @@ const ThanhToan = ({ route }) => {
   const tinhSoLuongMoi = async (gioHang) => {
     for (const giohang of gioHang) {
       console.log("Số lượng mua:", giohang.soluongmua);
-      console.log("Số lượng sản phẩm:", giohang.sanPham.soluong);
+      console.log("Số lượng sản phẩm:", giohang.soluong);
       console.log("Số lượng đã bán:", giohang.sanPham.soluongban);
       // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
       if (giohang.soluongmua <= giohang.sanPham.soluong) {
         console.log("Đủ hàng để mua");
-        let soluongmoi = giohang.sanPham.soluong - giohang.soluongmua;
+        let soluongmoi = giohang.soluong - giohang.soluongmua;
         let soluongban = giohang.sanPham.soluongban + giohang.soluongmua;
         console.log("soluongmoi = " + soluongmoi);
         console.log("soluongban = " + soluongban);
@@ -86,7 +86,7 @@ const ThanhToan = ({ route }) => {
   };
 
   const capNhatSanPham = async (sanPhamId, soLuongMoi, soLuongBan) => {
-    const url_api_capnhat = 'http://172.20.10.11:9997/giohang/cap-nhat-sanpham';
+    const url_api_capnhat = 'http://172.16.10.109:9997/giohang/cap-nhat-sanpham';
     const data = {
       gioHang: [
         {
@@ -136,10 +136,10 @@ const ThanhToan = ({ route }) => {
       tongtien: tongtien,
       thoigian: thoigian,
       trangthai: trangthai,
-      danhSachSanPham: dspro
+      danhsachsp: dspro
     };
   
-    let url_api_hoadon = 'http://172.20.10.11:9997/hoadon/them/' + loginInfo._id;
+    let url_api_hoadon = 'http://172.16.10.109:9997/hoadon/them/' + loginInfo._id;
   
     fetch(url_api_hoadon, {
       method: 'POST',
@@ -152,7 +152,6 @@ const ThanhToan = ({ route }) => {
     .then((res) => {
       if (value === 'Ví VNPay') {
         navigation.navigate('Webview')
-        DelPro();
       } else if (res.status == 201) {
         alert("đặt hàng thành công")
         DelPro();
@@ -164,7 +163,7 @@ const ThanhToan = ({ route }) => {
     });
   };
   const DelPro = () => {
-    let url_api_del = 'http://172.20.10.11:9997/giohang/xoa/' + loginInfo._id;
+    let url_api_del = 'http://1172.16.10.109:9997/giohang/xoa/' + loginInfo._id;
 
     fetch(url_api_del, {
       method: 'DELETE',
