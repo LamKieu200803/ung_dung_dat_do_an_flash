@@ -433,6 +433,32 @@ const newSanPham = new SanPham({
     });
 });
 
+// SỬa các thuộc tính bên ngoài biến thể của sản phẩm
+app.put("/sanpham/sua/:id", (req, res) => {
+  const id = req.params.id;
+  const updateSanPham = {
+    tensp: req.body.tensp, 
+    img: req.body.img,
+    motasp: req.body.motasp,
+    danhMucId: req.body.danhMucId, // Cập nhật giá trị danhMucId
+  };
+  SanPham.findByIdAndUpdate(id, updateSanPham, { new: true })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Cập nhật dữ liệu thành công",
+          data: data,
+        });
+      } else {
+res.status(404).json({ err: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
+});
+
+
 
 // Route POST để thêm đối tượng mới vào "chitietsp"
 app.post('/chitietsp/them/:id', (req, res) => {
