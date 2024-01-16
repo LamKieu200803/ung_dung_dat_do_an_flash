@@ -12,6 +12,10 @@ const DangKi = (props) => {
 
   const [email, setemail] = useState('');
   const [password, setpassword] = useState('');
+  const [tenkhachhang, setTenkhachhang] = useState('');
+  const [diachi, setDiachi] = useState('');
+  const [sdt, setSdt] = useState('');
+  const [anhdaidien, setAnhdaidien] = useState('');
   const [enterpasswd, setenterpasswd] = useState('');
   const validateEmail = (email) => {
     // Biểu thức chính quy để kiểm tra tính hợp lệ của email
@@ -30,13 +34,24 @@ const DangKi = (props) => {
     }if(password ==0){
       alert("chưa nhập password")
         return
-    }if(password != enterpasswd){
+        
+    }if(tenkhachhang ==0){
+      alert("chưa nhập password")
+        return
+        
+    }
+    if(sdt ==0){
+      alert("chưa nhập password")
+        return
+        
+    }
+    if(password != enterpasswd){
       alert("password nhập lại không trùng khớp ")
         return
     }
 
-    let objUser  = {email:email, password:password }
-    let url_api = "http://172.16.10.106:9997/dangki"
+    let objUser  = {email:email, password:password,tenkhachhang:tenkhachhang ,diachi:diachi,sdt:sdt,anhdaidien:"https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"}
+    let url_api = "http://172.16.10.109:9997/dangki"
 
     fetch(url_api,{
         method:'POST',
@@ -48,7 +63,7 @@ const DangKi = (props) => {
     }).then((res)=>{
         if(res.status==201)
         alert("dang ki thanh cong")
-        props.navigation.navigate('Login',{email,password})
+        props.navigation.navigate('Login',{email,password,tenkhachhang,diachi,sdt,anhdaidien})
     })
     .catch((e)=>{
         console.log(e);
@@ -64,9 +79,9 @@ const DangKi = (props) => {
   };
 
   return (
-    <View style={styles.container} backgroundColor="#DF5A5A">
+    <View style={styles.container} backgroundColor="#fff">
       <Text style={styles.texthello}>Chào mừng bạn đến với app Flash Shop</Text>
-      <Text style={{ color: 'white', paddingBottom: 50, paddingTop: 30 ,fontSize:20}}>
+      <Text style={{ color: '#da5f5f', paddingBottom: 50, paddingTop: 30 ,fontSize:20}}>
         Đăng ký tài khoản của bạn
       </Text>
       <View style={styles.inputcontainer}>
@@ -83,7 +98,28 @@ const DangKi = (props) => {
         <View
           style={[styles.textInput, { flexDirection: 'row', alignItems: 'center' }]}
         >
-          <TextInput style={{ flex: 1 ,color:'black'  }} secureTextEntry={true} placeholder="Nhập lại mật khẩu" onChangeText={(txt)=>setenterpasswd(txt)} />
+          <TextInput style={{ flex: 1, color:'black' }}secureTextEntry={true} placeholder="Nhập lại mật khẩu" onChangeText={(txt)=>setenterpasswd(txt)} />
+        </View>
+      </View>
+      <View style={styles.inputcontainer}>
+        <View
+          style={[styles.textInput, { flexDirection: 'row', alignItems: 'center' }]}
+        >
+          <TextInput style={{ flex: 1, color:'black' }} placeholder="Nhập địa chỉ" onChangeText={(txt)=>setDiachi(txt)} />
+        </View>
+      </View>
+      <View style={styles.inputcontainer}>
+        <View
+          style={[styles.textInput, { flexDirection: 'row', alignItems: 'center' }]}
+        >
+          <TextInput style={{ flex: 1 ,color:'black'  }}  placeholder="Nhập tên" onChangeText={(txt)=>setTenkhachhang(txt)} />
+        </View>
+      </View>
+      <View style={styles.inputcontainer}>
+        <View
+          style={[styles.textInput, { flexDirection: 'row', alignItems: 'center' }]}
+        >
+          <TextInput style={{ flex: 1 ,color:'black'  }}  placeholder="Nhập SDT" onChangeText={(txt)=>setSdt(txt)} />
         </View>
       </View>
       <TouchableOpacity
@@ -93,7 +129,7 @@ const DangKi = (props) => {
           width: '80%',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingTop: 50,
+          paddingTop: 30,
           marginVertical: 10,
           
         }}
@@ -114,18 +150,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   texthello: {
-    paddingTop: 100,
-    color: '#FFFFFF',
+    paddingTop: 70,
+    color: '#da5f5f',
     fontSize: 24,
     fontWeight: '700',
     paddingVertical: 20,
   },
   inputcontainer: {
-    color: 'white',
+    color: '#da5f5f',
     position: 'relative',
     marginHorizontal: 30,
     width: '85%',
-    padding: 10,
+    padding: 5,
   },
   textInput: {
     paddingHorizontal: 15,
@@ -134,7 +170,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 8,
     color:'black',
-    borderColor: 'white',
+    borderColor: '#da5f5f',
   },
   bottominput: {
     flexDirection: 'row',
@@ -145,16 +181,16 @@ const styles = StyleSheet.create({
     width: '50%',
     paddingVertical: 10,
     borderRadius: 8,
-    color: 'red',
+    color: '#000',
     fontSize: 15,
     fontWeight: '700',
     textAlign: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#da5f5f',
   },
 
   signIn: {
-    marginTop: 70,
-    color: 'white',
+    marginTop: 30,
+    color: '#000',
     textDecorationLine: 'underline',
     textAlign: 'center',
     fontSize:20

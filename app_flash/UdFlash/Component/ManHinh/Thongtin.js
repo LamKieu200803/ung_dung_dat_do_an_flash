@@ -15,9 +15,9 @@ const Thongtin = ({ route, navigation }) => {
   const handleSavett = () => {
     console.log(loginInfo._id);
     let objPro = { tennguoimua: tennguoimua, phone: phone, anh: anh };
-    let url_api_tt = 'http://172.20.10.11:9997/thongtin/sua/' +loginInfo._id;
+    let url_api_tt = 'http://172.16.10.109:9997/thongtin/sua/' +loginInfo._id;
 
-    fetch(url_api_tt, {
+    fetch(url_api_tt, { 
       method: 'PUT',
         headers: {
             Accept: 'application/json',

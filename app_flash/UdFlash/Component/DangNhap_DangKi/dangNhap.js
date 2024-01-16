@@ -17,7 +17,7 @@ const LoginScreen = (props) => {
       alert("Chưa nhập password");
       return;
     }
-      let url_api = "http://172.16.10.106:9997/khachhang/email?email=" + emaildn;
+      let url_api = "http://172.16.10.109:9997/khachhang/email?email=" + emaildn;
       fetch(url_api)
       .then ((res)=>{
        return res.json();
@@ -107,12 +107,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#DF5A5A',
+    backgroundColor: '#fff',
   },
   welcome: {
     paddingTop: 100,
     textAlign:'center',
-    color: '#FFFFFF',
+    color: '#da5f5f',
     fontSize: 27,
     fontWeight: '700',
   },
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     fontSize:20,
     textAlign: 'center',
-    color: 'white',
+    color: '#da5f5f',
   },
   input: {
     paddingHorizontal: 15,
@@ -129,9 +129,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginVertical: 5,
     borderRadius: 8,
-    marginTop:30,
+    marginTop:50,
    color:'black',
-    borderColor: 'white',
+    borderColor: '#da5f5f',
+    width: '85%',
+    alignSelf:'center'
+    
   },
   button: {
     width: 200,
@@ -142,10 +145,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     textAlign: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#da5f5f',
   },
   buttonText: {
-    color: '#DF5A5A',
+    color: '#000',
     textAlign: 'center',
     fontWeight: 'bold',
   },
@@ -158,7 +161,7 @@ const styles = StyleSheet.create({
   },
   signUp: {
     marginTop: 70,
-    color: 'white',
+    color: '#000',
     textDecorationLine: 'underline',
     textAlign: 'center',
     fontSize:20

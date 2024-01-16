@@ -1,30 +1,32 @@
+
 import React from 'react';
 import { View, TextInput, StyleSheet, FlatList, Image, Text, TouchableOpacity, Linking, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler'
 import { CommonActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const Profile = (props) => {
-
     const [loginInfo, setloginInfo] = useState('');
     const [dsPro, setdsPro] = useState([]);
     const [isLoading, setisLoading] = useState(true);
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getThongTin = async () => {
-        let api_url_pro = 'http://172.20.10.11:9997/thongtin/' + loginInfo._id
+        let api_url_pro = 'http://172.16.10.109:9997/khachhang/' + loginInfo._id
         try {
             const response = await fetch(api_url_pro);
             const json = await response.json();
             setdsPro(json);
             console.log("mang tt nguoi dung" + json);
-            console.log(loginInfo._id); 
-
+            console.log(loginInfo._id);
+            console.log(dsPro)
         } catch (e) {
             console.log(e);
         }
     };
+
     const getLoginInfo = async () => {
         try {
             const value = await AsyncStorage.getItem('loginInfo')
@@ -38,7 +40,7 @@ const Profile = (props) => {
 
             console.log(e);
         }
-    }; 
+    };
     useEffect(() => {
         const loadData = async () => {
             await getLoginInfo();
@@ -67,55 +69,28 @@ const Profile = (props) => {
     }, [isLoginInfoLoaded]);
     const showAlert = () => {
         Alert.alert(
-          'Đăng xuất',
-          'Bạn muốn đăng xuất ra khỏi ứng dụng?',
-          [
-            {
-              text: 'Chấp nhận',
-              onPress: () => {
-                // Reset navigation to the Login screen
-                props.navigation.dispatch(
-                  CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: 'Login' }],
-                  })
-                );
-              },
-            },
-            {
-              text: 'Không',
-              onPress: () => {},
-            },
-          ]
+            'Đăng xuất',
+            'Bạn muốn đăng xuất ra khỏi ứng dụng?',
+            [
+                {
+                    text: 'Chấp nhận',
+                    onPress: () => {
+                        // Reset navigation to the Login screen
+                        props.navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'Login' }],
+                            })
+                        );
+                    },
+                },
+                {
+                    text: 'Không',
+                    onPress: () => { },
+                },
+            ]
         );
-      };
-    const renderNguoidung = ({ item }) => {
-        console.log("da di den dea");
-        return (
-            <View>
-                <Text style={styles.chu2} onPress={() => { props.navigation.navigate('Thongtin', { item: item }) }}>Cập nhật thông tin</Text>
-                <View style={{ flexDirection: 'row', marginTop:20, marginLeft:20 }}>
-               
-               <View style={{borderRadius:300,backgroundColor:'white', marginTop:20,width:100, height:100,}}> 
-                    <Image
-                   style={{ width: 100, height: 100, borderRadius:200 }}
-                   source={{ uri: item.anh }} />
-                   </View>
-<View>
-                   <Text style={styles.gmail}>Email: {loginInfo.email}</Text>
-                   <Text style={styles.ten}>Tên người dùng: {item.tennguoimua}</Text>
-                   <Text style={styles.ten} >Phone: {item.phone}</Text>
-
-               </View>
-           </View>
-
-            </View>
-
-
-        )
-
-    }
-
+    };
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
             // khi màn hình đc active thì lệnh hoạt động
@@ -126,23 +101,45 @@ const Profile = (props) => {
         return unsubscribe;
     }, [props.navigation]);
     const handleLinkPress = () => {
-      props.navigation.navigate('Lienhe')
+        props.navigation.navigate('Lienhe')
     };
 
 
-
+    const renderItem = ({ item }) => {
+      
+        return (
+           <TouchableOpacity style={styles.chu2} onPress={() => { props.navigation.navigate('Thongtin', { item: item }) }}>
+                       <Icon name="pencil" size={16} color="#000" />
+                </TouchableOpacity>
+        );
+    };
     return (
 
         <View style={styles.bagach}>
             <View style={styles.container}>
-                <FlatList
-                    data={dsPro}
-                    keyExtractor={(item) => item._id}
-                    renderItem={renderNguoidung}
-                />
+            <View>
+            <TouchableOpacity style={styles.chu2} onPress={() => { props.navigation.navigate('Thongtin', { item: item }) }}>
+                       <Icon name="pencil" size={16} color="#000" />
+                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', marginTop: 20, marginLeft: 20 }}>
+
+                    <View style={{ borderRadius: 300, backgroundColor: 'white', marginTop: 20, width: 100, height: 100, }}>
+                        <Image
+                            style={{ width: 100, height: 100, borderRadius: 200 }}
+                            source={{ uri: loginInfo.anhdaidien }} />
+                    </View>
+                    <View>
+                        <Text style={styles.gmail}>Email: {loginInfo.email}</Text>
+                        <Text style={styles.ten}>Tên người dùng: {loginInfo.tenkhachhang}</Text>
+
+                    </View>
+                </View>
+
             </View>
-            <View > 
-           
+            </View>
+
+            <View >
+
                 <Text style={styles.chu1} onPress={() => { props.navigation.navigate('TrangThai') }}>Đơn Trạng Thái</Text>
                 <Text style={styles.chu1} onPress={() => showAlert()}>Đăng xuất</Text>
                 <TouchableOpacity onPress={() => { props.navigation.navigate('Doipass') }}>
@@ -168,7 +165,7 @@ const styles = StyleSheet.create({
     container: {
         height: 250,
         width: 480,
-        backgroundColor: "#DF5A5A",
+        backgroundColor: "#F5F5DC",
     },
     texthello: {
         color: "red",
@@ -180,16 +177,16 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     gmail: {
-        fontSize: 20,
+        fontSize: 17,
         marginLeft: 30,
-        marginTop: 5,
-        color: 'white',
+        marginTop: 30,
+        color: '#000',
         fontWeight: 'bold'
     },
     ten: {
-        fontSize: 20,
+        fontSize: 17,
         marginLeft: 30,
-        color: 'white',
+        color: '#000',
         fontWeight: 'bold',
         marginTop: 20
     },
@@ -200,19 +197,19 @@ const styles = StyleSheet.create({
     chu: {
         marginTop: 50,
         marginLeft: 60,
-        color: "red",
+        color: "#000",
         fontSize: 15
     },
     chu1: {
         marginTop: 50,
         marginLeft: 60,
-        color: "red",
+        color: "#000",
         fontSize: 15
     },
     chu2: {
         marginTop: 35,
-        marginLeft: 340,
-        color: "white",
+        marginLeft: 430,
+        color: "#000",
         fontSize: 15
     }
 

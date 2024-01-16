@@ -217,7 +217,7 @@ if (res.status == 201) {
       <Text>Chọn Size</Text>
       </TouchableOpacity>
       <Modal style={{marginLeft: 10, padding: 6, paddingBottom: 15}} visible={isModalVisible} animationType="slide"   transparent={true} >
-        <View style={{width:175, height: 180, backgroundColor:'white',borderWidth: 5, borderRadius: 10,marginTop: 275,marginLeft: 135, padding: 10,}}>
+        <View style={{width:250, height: 180, backgroundColor:'white',borderWidth: 5, borderRadius: 10,marginTop: 275,marginLeft: 135, padding: 10,}}>
           {chitietsp.map((item) => (
             <TouchableOpacity
               style={{borderBottomWidth: 2, marginBottom: 9, paddingBottom:9}}
