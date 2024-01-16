@@ -6,7 +6,7 @@ const Danhgia = ({ navigation, route }) => {
   const [img, setImg] = useState(route.params.item.img);
   const [tensp, setTensp] = useState(route.params.item.tensp);
   const [giasp, setGiasp] = useState(route.params.item.giasp);
-  const [idsp, setIdsp] = useState(route.params.item.productId);
+  const [idsp, setIdsp] = useState(route.params.item.idSanPham);
   const [loginInfo, setLoginInfo] = useState(null);
   const [soluongmua, setSoluongmua] = useState(route.params.item.soluongmua);
   const [noidung, setNoidung] = useState("");
@@ -30,12 +30,12 @@ const Danhgia = ({ navigation, route }) => {
   const themBl = () => {
     console.log(loginInfo._id);
     console.log(idsp);
-    const objPro = { noidung: noidung };
+    const objPro = { noidung: noidung , anhdaidien: loginInfo.anhdaidien , tenkhachhang: loginInfo.tenkhachhang};
     if(noidung==0){
       alert('Bạn chưa nhập nội dùng bình luận')
       return
     }
-    const url_api_bl = `http://172.20.10.11:9997/binhluan/them/${idsp}/${loginInfo._id}`;
+    const url_api_bl = `http://172.16.10.109:9997/binhluan/them/${idsp}/${loginInfo._id}`;
 
     fetch(url_api_bl, {
       method: "POST",

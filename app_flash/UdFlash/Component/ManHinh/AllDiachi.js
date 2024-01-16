@@ -96,7 +96,7 @@ const AllDiachi = (props) => {
                     ) : (
                         <FlatList
                             data={dsPro}
-                            keyExtractor={(itemdiachi) => itemdiachi._id.toString}
+                            keyExtractor={(item) => item._id}
                             renderItem={renderdiachi}
                         />
                     )

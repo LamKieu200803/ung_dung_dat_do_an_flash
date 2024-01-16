@@ -288,10 +288,10 @@ onPress={() => handleSelectItem(item)}
                     <View style={{ borderWidth: 0.8, width: 60, height: 60, backgroundColor: 'white', borderRadius: 50 }}>
                       <Image
                         style={{ width: 60, height: 60 , borderRadius:50}}
-                        source={{ uri: itembl.anh }} />
+                        source={{ uri: itembl.anhdaidien }} />
                     </View>
                     <View style={{backgroundColor:'silver', padding:10,borderRadius:30,marginLeft:5, marginRight:20}}>
-                    <Text style={{fontSize:15,fontWeight:'bold', color:'black'}}>{itembl.tennguoimua}</Text>
+                    <Text style={{fontSize:15,fontWeight:'bold', color:'black'}}>{itembl.tenkhachhang}</Text>
                     <Text>{itembl.noidung}</Text>
                </View>
                   </View>

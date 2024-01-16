@@ -60,19 +60,26 @@ const ThanhToan = ({ route }) => {
       console.log("Số lượng mua:", giohang.soluongmua);
       console.log("Số lượng sản phẩm:", giohang.soluong);
       console.log("Số lượng đã bán:", giohang.sanPham.soluongban);
+  
       // Kiểm tra nếu số lượng mua nhỏ hơn hoặc bằng số lượng sản phẩm
-      if (giohang.soluongmua <= giohang.sanPham.soluong) {
+      if (giohang.soluongmua <= giohang.soluong) {
         console.log("Đủ hàng để mua");
-        let soluongmoi = giohang.soluong - giohang.soluongmua;
-        let soluongban = giohang.sanPham.soluongban + giohang.soluongmua;
-        console.log("soluongmoi = " + soluongmoi);
-        console.log("soluongban = " + soluongban);
-
-        // Thực hiện việc cập nhật số lượng sản phẩm
+  
+        // Trừ số lượng mua từ số lượng của biến thể
+        const chitietIndex = giohang.sanPham.chitietsp.findIndex(
+          (chitiet) => chitiet._id.toString() === giohang.sanPhamId
+        );
+        if (chitietIndex !== -1) {
+          giohang.sanPham.chitietsp[chitietIndex].soluong -= giohang.soluongmua;
+        }
+  
+        // Cộng số lượng mua vào số lượng đã bán
+        giohang.sanPham.soluongban += giohang.soluongmua;
+  
+        // Thực hiện cập nhật số lượng sản phẩm
         const capNhatSanPhamResponse = await capNhatSanPham(
-          giohang.sanPham._id,
-          soluongmoi,
-          soluongban
+          giohang.idSanPham,
+          giohang.sanPham
         );
         if (capNhatSanPhamResponse.ok) {
           console.log("Cập nhật số lượng sản phẩm thành công");
@@ -84,19 +91,18 @@ const ThanhToan = ({ route }) => {
       }
     }
   };
-
-  const capNhatSanPham = async (sanPhamId, soLuongMoi, soLuongBan) => {
+  
+  const capNhatSanPham = async (idSanPham, sanPham) => {
     const url_api_capnhat = 'http://172.16.10.109:9997/giohang/cap-nhat-sanpham';
     const data = {
       gioHang: [
         {
-          sanPhamId: sanPhamId,
-          soLuongMoi: soLuongMoi,
-          soLuongBan: soLuongBan
+          sanPhamId: idSanPham,
+          sanPham: sanPham
         }
       ]
     };
-
+  
     try {
       const response = await fetch(url_api_capnhat, {
         method: 'POST',

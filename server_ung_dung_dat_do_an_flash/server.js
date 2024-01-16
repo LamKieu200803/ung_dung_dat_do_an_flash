@@ -691,21 +691,19 @@ app.put("/giohang/sua/:idKhachHang/:idSanPham", (req, res) => {
     });
 });
 
-// tính số lượng mới khi đã mua
 app.post("/giohang/cap-nhat-sanpham", async (req, res) => {
   const gioHang = req.body.gioHang;
 
   try {
     for (const item of gioHang) {
       const sanPhamId = item.sanPhamId;
-      const soLuongMoi = item.soLuongMoi;
-      const soLuongBan = item.soLuongBan;
+      const sanPham = item.sanPham;
 
-      const sanPham = await SanPham.findById(sanPhamId);
-      if (sanPham) {
-        sanPham.soluongsp= soLuongMoi;
-sanPham.soluongban = soLuongBan; // Cập nhật số lượng đã bán
-        await sanPham.save();
+      const existingSanPham = await SanPham.findById(sanPhamId);
+      if (existingSanPham) {
+        existingSanPham.soluong = sanPham.soluong;
+        existingSanPham.soluongban = sanPham.soluongban;
+        await existingSanPham.save();
       }
     }
 
@@ -781,6 +779,56 @@ app.post("/hoadon/them/:idKhachHang", (req, res) => {
     });
 });
 
+// xem chi tiết hóa đơn 
+app.get("/hoadonchitiet/:idKhachHang/:_id", (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const _id = req.params._id;
+
+  hoaDon
+    .findOne({ idKhachHang, _id })
+    .then((hoaDon) => {
+      if (hoaDon) {
+        res.status(200).json(hoaDon);
+      } else {
+        res.status(404).json({ message: "Không tìm thấy chi tiết hóa đơn" });
+      }
+    })
+    .catch((err) => {
+      console.log("Lỗi truy vấn hóa đơn ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
+
+// thay đổi trạng thái hóa đơn 
+app.put("/hoadon/sua/:idKhachHang/:id", (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const id = req.params.id; // Thay đổi từ req.params._id thành req.params.id
+
+  const updateTrangThai = {
+    trangthai: req.body.trangthai,
+  };
+
+  hoaDon
+    .findOneAndUpdate(
+      { idKhachHang: idKhachHang, _id: id }, // Sửa thành _id thay vì id
+      updateTrangThai, // Sửa thành updateTrangThai thay vì updatetrangthai
+      { new: true }
+    )
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Thay đổi trạng thái thành công",
+          data: data,
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((err) => {
+res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
+});
+
 
 // app.post("/themdiachi/:idKhachHang", (req, res) => {
 //   const idKhachHang = req.params.idKhachHang;
@@ -832,6 +880,55 @@ app.get("/diachi", async (req, res) => {
     res.status(500).send("lỗi server");
   }
 }); //get địa chỉ
+
+// thêm bình luận 
+app.post("/binhluan/them/:idSanPham/:idKhachHang", (req, res) => {
+  const idSanPham = req.params.idSanPham;
+  const idKhachHang = req.params.idKhachHang;
+  const { noidung, tenkhachhang, anhdaidien } = req.body;
+
+  KhachHang.findOne({ _id: idKhachHang })
+    .then((user) => {
+      if (!user) {
+        throw new Error("Thông tin không tồn tại");
+      }
+      const newBinhLuan = new BinhLuan({
+        tenkhachhang,
+        anhdaidien,
+        idSanPham,
+        idKhachHang,
+        noidung,
+      });
+
+      return newBinhLuan.save();
+    })
+    .then(() => {
+      res.status(201).json({ message: "Thêm bình luận thành công" });
+    })
+    .catch((err) => {
+      console.log("error ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
+
+// xem bình luận 
+app.get("/binhluan/:idSanPham", (req, res) => {
+  const idSanPham = req.params.idSanPham;
+  BinhLuan.find({ idSanPham })
+    .then((binhLuans) => {
+      if (binhLuans.length > 0) {
+        res.status(200).json(binhLuans);
+      } else {
+        res.status(404).json({ message: 'Không tìm thấy bình luận' });
+      }
+    })
+    .catch((err) => {
+      console.log("Lỗi truy vấn bình luận ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
+
+
 //khởi chạy server
 const port = 9997;
 app.listen(port, () => {

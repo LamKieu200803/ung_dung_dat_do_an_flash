@@ -10,18 +10,18 @@ const PaymentButton = ({route,navigation}) => {
 
     const [thoigian11, setThoigian1] = useState(route.params.item.thoigian)
     const [tenkhachhang11, setTenkhachhang] = useState(route.params.item.tennguoimua)
-    const [sodienthoai11, seSodienthoai] = useState(route.params.item.sodienthoai)
+    const [sodienthoai11, seSodienthoai] = useState(route.params.item.sdt)
     const [tongtien11, setTongtien] = useState(route.params.item.tongtien)
     const [diachi11, setDiachi11] = useState(route.params.item.diachi)
     const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
     const getListPro = async () => {
-        let url_api_lichsu = 'http://172.20.10.11:9997/hoadonchitiet/' + loginInfo._id+'/'+ idChitiet;
+        let url_api_lichsu = 'http://172.16.10.109:9997/hoadonchitiet/' + loginInfo._id+'/'+ idChitiet;
         try {
             const response = await fetch(url_api_lichsu);
             const json = await response.json();
 
-            setObject(json.danhSachSanPham)
-            console.log(json.danhSachSanPham);
+            setObject(json.danhsachsp)
+            console.log(json.danhsachsp);
         } catch (e) {
             console.log(e);
 
@@ -79,6 +79,7 @@ const PaymentButton = ({route,navigation}) => {
                     <View style={{ width: 250, marginLeft: 5 }}>
                         <Text style={styles.productName}>{item.tensp}</Text>
                         <Text style={styles.productPrice}> $ {item.giasp}</Text>
+                        <Text style={styles.productPrice}> size: {item.size}</Text>
                         <Text style={styles.productPrice1}>Số lượng mua:{item.soluongmua}</Text>
                     </View>
 
