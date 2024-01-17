@@ -109,28 +109,32 @@ const HomeScreen = (props) => {
         );
     };
     const renderItem1 = ({ item }) => {
-        // const discountedPrice = item.price - (item.price * item.discount);
+        let lowestPrice = 0;
+      
+        if (item.chitietsp && item.chitietsp.length > 0) {
+          lowestPrice = item.chitietsp.reduce((minPrice, variant) => {
+            return variant.giasp < minPrice ? variant.giasp : minPrice;
+          }, item.chitietsp[0].giasp);
+        }
+      
         return (
-            <TouchableOpacity onPress={() => { props.navigation.navigate('SanPham', { item_sp: item }) }}>
-                <View style={styles.itemContainer}>
-                    <View style={styles.imageContainer}>
-                        <Image source={{ uri: item.img }} style={styles.image} />
-                        <View style={styles.overlay}>
-                            <Text style={styles.name}>{item.tensp}</Text>
-                            <View style={{ flexDirection: 'row' }}>
-
-                          
-                                <Text style={{ marginLeft: 32 }}>Đã bán : {item.soluongban}</Text>
-                                {/* <Text> ${discountedPrice.toFixed(2)}</Text> */}
-                            </View>
-                        </View>
-                    </View>
+          <TouchableOpacity onPress={() => { props.navigation.navigate('SanPham', { item_sp: item }) }}>
+            <View style={styles.itemContainer}>
+              <View style={styles.imageContainer}>
+                <Image source={{ uri: item.img }} style={styles.image} />
+                <View style={styles.overlay}>
+                  <Text style={styles.name}>{item.tensp}</Text>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={{ marginLeft: 8 }}>Giá: {lowestPrice}đ</Text>
+                    <Text style={{ marginLeft: 22 }}>Đã bán: {item.soluongban}</Text>
+                    {/* <Text> ${discountedPrice.toFixed(2)}</Text> */}
+                  </View>
                 </View>
-            </TouchableOpacity>
-
+              </View>
+            </View>
+          </TouchableOpacity>
         );
-    };
-
+      };
     // const navigation = useNavigation();
 
    

@@ -98,7 +98,8 @@ const ThanhToan = ({ route }) => {
       gioHang: [
         {
           sanPhamId: idSanPham,
-          sanPham: sanPham
+          sanPham: sanPham,
+          
         }
       ]
     };

@@ -30,7 +30,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='SignUp'>
+        <Stack.Navigator initialRouteName='Main'>
         <Stack.Screen name="SuaDiaChi" component={SuaDiaChi} />
           <Stack.Screen name="MhChao" component={MhChao} />
           <Stack.Screen name="SignUp" component={DangKi} options={{title:'Đăng ký'}}/>
@@ -41,7 +41,7 @@ export default function App() {
           <Stack.Screen name="gioHang" component={GioHang} />
           <Stack.Screen name="Lienhe" component={Lienhe} />
           <Stack.Screen name="AllDiachi" component={AllDiachi} options={{title:'Chọn địa chỉ nhận hàng'}} />
-          <Stack.Screen name="LichSu" component={LichSu} />
+          <Stack.Screen name="LichSu" component={LichSu}  />
           <Stack.Screen name="TrangThai" component={TrangThai} options={{title:'Đơn mua'}}/>
          <Stack.Screen name='Payment' component={PaymentButton} options={{title:'Chi tiết đơn mua'}} />
           <Stack.Screen name="ThanhToan" component={ThanhToan} />

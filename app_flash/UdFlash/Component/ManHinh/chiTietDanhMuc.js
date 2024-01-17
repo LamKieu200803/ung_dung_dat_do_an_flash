@@ -24,24 +24,32 @@ const getDuLieu = async() =>{
 }
 
 const renderCart = ({ item }) => {
-    return (
-        <TouchableOpacity onPress={()=>{navigation.navigate('SanPham',{item_sp:item})}}>
-      <View style={{ backgroundColor: 'white' , padding:10, margin:5, borderRadius:10, }}>
-        <View style={{flexDirection:'row'}}>
-        <View style={{width:80, height:80,}}>
-                <Image source={{uri: item.img}} style={{width:80, height:80 }} />
-            </View>
-        <View style={{marginLeft:10}}>
-        <Text style={{fontSize:15, fontWeight:'bold'}}> {item.tensp}</Text>
-        <Text style={{fontSize:13, color:'green'}}> loại đồ ăn : {tendanhmuc}</Text>
-        <Text style={{fontSize:15, }}>{item.giasp}đ</Text>
-        <Text style={{fontSize:12, }}> đã bán: {item.soluongban}</Text>
-</View>
+  let lowestPrice = 0;
+
+  if (item.chitietsp && item.chitietsp.length > 0) {
+    lowestPrice = item.chitietsp.reduce((minPrice, variant) => {
+      return variant.giasp < minPrice ? variant.giasp : minPrice;
+    }, item.chitietsp[0].giasp);
+  }
+
+  return (
+    <TouchableOpacity onPress={() => { navigation.navigate('SanPham', { item_sp: item }) }}>
+      <View style={{ backgroundColor: 'white', padding: 10, margin: 5, borderRadius: 10 }}>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ width: 80, height: 80 }}>
+            <Image source={{ uri: item.img }} style={{ width: 80, height: 80 }} />
+          </View>
+          <View style={{ marginLeft: 10 }}>
+            <Text style={{ fontSize: 15, fontWeight: 'bold' }}> {item.tensp}</Text>
+            <Text style={{ fontSize: 13, color: 'green' }}> loại đồ ăn : {tendanhmuc}</Text>
+            <Text style={{ fontSize: 15 }}>{lowestPrice}đ</Text>
+            <Text style={{ fontSize: 12 }}> đã bán: {item.soluongban}</Text>
+          </View>
         </View>
       </View>
-      </TouchableOpacity>
-    );
-  };
+    </TouchableOpacity>
+  );
+};
 
 
 useEffect(() => {

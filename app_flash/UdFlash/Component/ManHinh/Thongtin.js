@@ -3,19 +3,19 @@ import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity} from 'reac
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const Thongtin = ({ route, navigation }) => {
-  const [tennguoimua, setTennguoimua] = useState(route.params.item.tennguoimua);
-  const [phone, setPhone] = useState(route.params.item.phone);
-  const [anh, setAnh] = useState(route.params.item.anh);
+  const [tennguoimua, setTennguoimua] = useState('');
+  const [phone, setPhone] = useState('');
+  const [anh, setAnh] = useState();
   const [loginInfo, setLoginInfo] = useState('');
-  const [userId1, setUserId1] = useState(route.params.item.userId);
+  const [userId1, setUserId1] = useState('');
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
   const [isLoading, setisLoading] = useState(true);
 
 
   const handleSavett = () => {
     console.log(loginInfo._id);
-    let objPro = { tennguoimua: tennguoimua, phone: phone, anh: anh };
-    let url_api_tt = 'http://172.16.10.109:9997/thongtin/sua/' +loginInfo._id;
+    let objPro = { tennguoimua: tennguoimua, phone: phone, anhdaidien: anh };
+    let url_api_tt = 'http://172.16.10.109:9997/khachhang/capnhatanh/' +loginInfo._id;
 
     fetch(url_api_tt, { 
       method: 'PUT',

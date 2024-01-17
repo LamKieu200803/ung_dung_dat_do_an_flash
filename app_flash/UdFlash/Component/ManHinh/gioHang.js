@@ -370,7 +370,7 @@ const [ctsp, setctsp] = useState([]);
           <Text style={styles.emptyCartText}>Giỏ hàng của bạn hiện đang trống</Text>
         </View>
       )}
-      <View style={{ flexDirection: 'row', backgroundColor: '#F2F2F2', width: '100%' }}>
+      <View style={{ flexDirection: 'row', backgroundColor: 'gray', width: '100%' }}>
 
         
           <Text style={{ marginTop: 27, marginRight: 150,paddingLeft:20, fontSize:20 }}>Tổng tiền: {totalPrice} đ</Text>
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
 
-    backgroundColor: '#DF5A5A'
+
   },
   cartItemContainer: {
     flexDirection: 'row',

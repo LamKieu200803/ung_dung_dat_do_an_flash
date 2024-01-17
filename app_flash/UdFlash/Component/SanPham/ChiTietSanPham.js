@@ -47,6 +47,7 @@ const [isModalVisible, setModalVisible] = useState(false);
       return;
     }
     let objPro = {
+idBienThe: selectedItem._id,
       img: img,
       tensp: tensp,
       size: selectedItem.size,
@@ -87,8 +88,8 @@ const [isModalVisible, setModalVisible] = useState(false);
                 console.log("Cập nhật sản phẩm trong giỏ hàng thành công");
                 return res.json();
               } else {
-                throw new Error("Cập nhật sản phẩm trong giỏ hàng thất bại");
-              }
+throw new Error("Cập nhật sản phẩm trong giỏ hàng thất bại");
+}
             });
         } else {
           return fetch(url_api_giohang, {
@@ -213,23 +214,22 @@ if (res.status == 201) {
       
 
       <View style={{}}>
-      <TouchableOpacity style={{paddingLeft: 10}} onPress={() => setModalVisible(true)}>
-      <Text>Chọn Size</Text>
-      </TouchableOpacity>
-      <Modal style={{marginLeft: 10, padding: 6, paddingBottom: 15}} visible={isModalVisible} animationType="slide"   transparent={true} >
-        <View style={{width:250, height: 180, backgroundColor:'white',borderWidth: 5, borderRadius: 10,marginTop: 275,marginLeft: 135, padding: 10,}}>
+      
+<View style={{marginLeft: 2,  }} visible={isModalVisible} >
+        <View style={{flexDirection:"row"}}>
           {chitietsp.map((item) => (
             <TouchableOpacity
-              style={{borderBottomWidth: 2, marginBottom: 9, paddingBottom:9}}
+              style={{borderWidth: 1, padding: 5, marginRight: 2}}
               key={item.id}
 onPress={() => handleSelectItem(item)}
             >
-              <Text>Size: {item.size} {"\n"} giasp: {item.giasp} {"\n"} soluong: {item.soluong}</Text>
+<Text>Size: {item.size} {"\n"}Giá sản phẩm: {item.giasp} {"\n"}Số lượng: {item.soluong}</Text>
+
       
             </TouchableOpacity>
           ))}
         </View>
-      </Modal>
+      </View>
       </View>
 
       {selectedItem && (
@@ -244,33 +244,33 @@ onPress={() => handleSelectItem(item)}
             Tổng số lượng: {soluongsp}  |   Đã bán: {route.params.item_sp.soluongban}
           </Text>
           
-          <Text style={{
-            borderBottomColor: 'black',
-            borderBottomWidth: 1
-          }}></Text>
         </View>
       <ScrollView>
+      <Text style={{
+        borderBottomColor: 'black',
+        borderBottomWidth: 1,
+      }}></Text>
         
 
         <View style={{
           width: 450,
         }}>
-        <View style={{width: '100%', height: 250,}}>
-          <Text style={{ marginLeft: 12, fontSize: 16, fontWeight: 'bold' }}>Mô tả sản phẩm </Text>
+        
+        <View style={{ width: '100%', height: 250, marginTop: 15 }}>
+            <Text style={{ marginLeft: 12, fontSize: 16, fontWeight: 'bold' }}>Mô tả sản phẩm</Text>
             <Text style={{
               borderBottomColor: 'black',
               borderBottomWidth: 1
-
             }}></Text>
             <ScrollView>
               <Text style={styles.texthello}>{route.params.item_sp.motasp}
               </Text>
+              
             </ScrollView>
             <Text style={{
               borderBottomColor: 'black',
               borderBottomWidth: 1
-            }}>
-          </Text>
+            }}></Text>
         </View>
         </View>
           <View style={{ width: '100%', height: 250, marginTop: 15 }}>
@@ -291,7 +291,7 @@ onPress={() => handleSelectItem(item)}
                         source={{ uri: itembl.anhdaidien }} />
                     </View>
                     <View style={{backgroundColor:'silver', padding:10,borderRadius:30,marginLeft:5, marginRight:20}}>
-                    <Text style={{fontSize:15,fontWeight:'bold', color:'black'}}>{itembl.tenkhachhang}</Text>
+<Text style={{fontSize:15,fontWeight:'bold', color:'black'}}>{itembl.tenkhachhang}</Text>
                     <Text>{itembl.noidung}</Text>
                </View>
                   </View>
@@ -302,7 +302,7 @@ onPress={() => handleSelectItem(item)}
               <View>
               <Text style={{textAlign:'center', fontSize:20, marginTop:60}}>Chưa có đánh giá nào</Text>
 <Text style={{textAlign:'center', fontSize:15}}>Hãy là người đầu tiên đánh giá cho sản phẩm này.</Text>
-          </View>
+</View>
           )}
           </ScrollView>
         
