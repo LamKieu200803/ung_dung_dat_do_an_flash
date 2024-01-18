@@ -3,9 +3,9 @@ import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity} from 'reac
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const Thongtin = ({ route, navigation }) => {
-  const [tennguoimua, setTennguoimua] = useState('');
-  const [phone, setPhone] = useState('');
-  const [anh, setAnh] = useState();
+  const [tennguoimua, setTennguoimua] = useState(route.params.tenkhachhang);
+  const [phone, setPhone] = useState(route.params.sdt);
+  const [anh, setAnh] = useState(route.params.anhdaidien);
   const [loginInfo, setLoginInfo] = useState('');
   const [userId1, setUserId1] = useState('');
   const [isLoginInfoLoaded, setIsLoginInfoLoaded] = useState(false);
@@ -14,8 +14,8 @@ const Thongtin = ({ route, navigation }) => {
 
   const handleSavett = () => {
     console.log(loginInfo._id);
-    let objPro = { tennguoimua: tennguoimua, phone: phone, anhdaidien: anh };
-    let url_api_tt = 'http://172.16.10.109:9997/khachhang/capnhatanh/' +loginInfo._id;
+    let objPro = { tenkhachhang: tennguoimua, sdt: phone, anhdaidien: anh };
+    let url_api_tt = 'http://172.16.10.109:9997/khachhang/sua/' +loginInfo._id;
 
     fetch(url_api_tt, { 
       method: 'PUT',

@@ -148,6 +148,10 @@ const hoaDon = mongoose.model("HoaDons", hoaDonSchema);
 
 //Schema và model địa chỉ
 const AddressSChema = new mongoose.Schema({
+  idKhachHang: {
+    type: String,
+    required: true,
+  },
   name: String,
   phone: String,
   address: String,
@@ -252,17 +256,21 @@ app.delete("/khachhang/xoa/:id", (req, res) => {
     });
 });
 
-// thay đổi mật khẩu
+// thay đổi  thông tin khách hàng
 app.put("/khachhang/sua/:id", (req, res) => {
   const id = req.params.id;
   const updatePass = {
     password: req.body.password,
+    tenkhachhang: req.body.tenkhachhang,
+    anhdaidien: req.body.anhdaidien,
+    sdt: req.body.sdt,
+    diachi: req.body.diachi
   };
   KhachHang.findByIdAndUpdate(id, updatePass, { new: true })
     .then((data) => {
       if (data) {
         res.status(200).json({
-          message: "thay đổi pass thành công",
+          message: "thay đổi thongtin thành công",
           data: data,
         });
       } else {
@@ -955,37 +963,62 @@ app.put("/hoadon/sua/:idKhachHang/:id", (req, res) => {
     });
 });
 
-// app.post("/themdiachi/:idKhachHang", (req, res) => {
-//   const idKhachHang = req.params.idKhachHang;
-//   const { name, phone, address } = req.body;
+// thêm địa chỉ
+app.post("/themdiachi/:idKhachHang", async (req, res) => {
+  try {
+    const { idKhachHang } = req.params;
+    const { name, phone, address } = req.body;
 
-//   Address.findByIdAndUpdate(
-//     idKhachHang,
-//     { name, phone, address },
-//     { new: true, upsert: true }
-//   )
-//     .then((updatedAddress) => {
-//       res.status(201).json({
-//         message: "Bạn đã thêm địa chỉ thành công",
-//         address: updatedAddress,
-//       });
-//     })
-//     .catch((error) => {
-//       res.status(500).json({ error: "Đã xảy ra lỗi khi thêm địa chỉ" });
-//     });
-// });
+    const newAddress = new Address({ idKhachHang, name, phone, address });
+    await newAddress.save();
 
-// // xem địa chỉ
-// app.get("/diachi/:idKhachHang", async (req, res) => {
-//   try {
-//     const idKhachHang = req.params.idKhachHang;
-//     const addresses = await Address.find({ idKhachHang });
-//     res.json(addresses);
-//   } catch (err) {
-//     console.log("error ", err);
-//     res.status(500).send("lỗi server");
-//   }
-// });
+    res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công", address: newAddress });
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("Lỗi server");
+  }
+});
+
+// xem địa chỉ
+app.get("/diachi/:idKhachHang", async (req, res) => {
+  try {
+    const { idKhachHang } = req.params;
+    const addresses = await Address.find({ idKhachHang });
+    res.json(addresses);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("Lỗi server");
+  }
+});
+
+// sửa địa chỉ
+app.put("/diachi/sua/:id/:idKhachHang", (req, res) => {
+  const idDiachi = req.params.id; // Lấy id từ URL parameter
+  const idKhachHang = req.params.idKhachHang; // Lấy idKhachHang từ URL parameter
+
+  // Lấy thông tin cập nhật từ body của yêu cầu
+  const updateDiachi = {
+    name: req.body.name,
+    phone: req.body.phone,
+    address: req.body.address,
+  };
+
+  // Sử dụng phương thức findOneAndUpdate để tìm và cập nhật địa chỉ dựa trên idKhachHang và id
+  Address.findOneAndUpdate({ _id: idDiachi, idKhachHang: idKhachHang }, updateDiachi, { new: true })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Cập nhật địa chỉ thành công",
+          data: data,
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy địa chỉ" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật địa chỉ" });
+    });
+});
 
 app.post("/themdiachi", (req, res) => {
   const { name, phone, address } = req.body;

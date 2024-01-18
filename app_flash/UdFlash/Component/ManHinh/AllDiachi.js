@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const AllDiachi = (props) => {
     const [isLoading, setisLoading] = useState(true);
@@ -14,8 +16,10 @@ const AllDiachi = (props) => {
     const [addressselect, setAddressselcect] = useState();
     const [email, setEmail] = useState('');
     const [stateselect, setStateselect] = useState('');
+    const [loginInfo, setloginInfo] = useState('');
     const getListPro = async () => {
-        let url_api_diachi = 'http://172.16.10.109:9997/diachi'
+        console.log("id"+loginInfo._id);
+        let url_api_diachi = 'http://172.16.10.109:9997/diachi/'+loginInfo._id
 
         try {
             const response = await fetch(url_api_diachi);
@@ -35,8 +39,8 @@ const AllDiachi = (props) => {
             <View>
                 <TouchableOpacity onPress={() => props.navigation.navigate('ThanhToan', { item: item })}>
 
-                    <View style={{ flexDirection: 'row', paddingLeft: 10, marginTop: 20 }}>
-                        <View style={{ flexDirection: 'column', width: 300, height: 50, marginLeft: 15 }}>
+                    <View style={{ flexDirection: 'row', paddingLeft: 10, marginTop: 30 }}>
+                        <View style={{ flexDirection: 'column', width: 300, height: 50, marginLeft: 15,marginRight: 50 }}>
                             <Text style={{ fontSize: 15 }}>
                                 {item.name}   |   {item.phone}
                             </Text>
@@ -45,17 +49,15 @@ const AllDiachi = (props) => {
                             </Text>
                         </View>
 
+                        <TouchableOpacity style={{backgroundColor: "#DF5A5A",borderRadius: 10, marginBottom:20,paddingTop:5}}>
                         <Text style={{
-
-
-                            padding: 10,
-                            marginLeft: 80,
                             fontSize: 15,
                             textAlign: 'center',
-                            color: 'red',
+                            color: 'white',
+                            paddingHorizontal:20
                         }}
-                        onPress={()=>{props.navigation.navigate('SuaDiaChi',{item:item})}}
-                        >sửa</Text>
+                        onPress={()=>{props.navigation.navigate('SuaDiaChi',{item:item})}}>Sửa</Text>
+                        </TouchableOpacity>
 
 
 
@@ -63,13 +65,34 @@ const AllDiachi = (props) => {
                     <View>
                         <Text style={{ borderBottomColor: '#F38E8E', borderBottomWidth: 1 }}></Text>
                     </View></TouchableOpacity>
-            </View>
+</View>
 
         );
     };
 
 
+    const getLoginInfo = async () => {
+        try {
+            const value = await AsyncStorage.getItem('loginInfo')
+            if (value !== null) {
+                // láy được dữ liệu 
+                setloginInfo(JSON.parse(value))
+                setisLoading(false)
 
+            }
+        } catch (e) {
+
+            console.log(e);
+        }
+    };
+    useEffect(() => {
+        const loadData = async () => {
+            await getLoginInfo();
+            getListPro()
+            getLoginInfo()
+        };
+        loadData();
+    }, [isLoading]);
     React.useEffect(() => {
         const unsubcribe = props.navigation.addListener('focus', () => {
             getListPro();
@@ -79,16 +102,12 @@ const AllDiachi = (props) => {
     }, [props.navigation]);
 
 
+
     return (
-        <View style={styles.container}>
-            <Text style={{ padding: 8, fontSize: 15, }}>Địa chỉ</Text>
+        <View style={styles.container}>  
             <View style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: 16,
-                backgroundColor: '#FFFFFF',
-                fontWeight: 'bold',
-                marginTop: 5
+                width: 500,
+                height:640
             }}>
                 {
                     (isLoading) ? (
@@ -104,12 +123,15 @@ const AllDiachi = (props) => {
 
             </View>
 
-            <TouchableOpacity  onPress={() => { props.navigation.navigate('AddAddress') }}>
-                <View style={{ alignItems: 'center', backgroundColor: 'white', paddingTop: 10, paddingBottom: 10 }}>
-                    <Text style={{ color: 'red' }}>  Thêm địa chỉ</Text>
-                </View>
-            </TouchableOpacity>
+            <View style={{paddingVertical: 20, borderTopWidth: 1, }}>
+                <TouchableOpacity  onPress={() => { props.navigation.navigate('AddAddress') }}>
+                    <View style={{ alignItems: 'center', backgroundColor: '#DF5A5A', paddingTop: 10, paddingBottom: 10, marginHorizontal:150, borderRadius:15 }}>
+                        <Text style={{ color: 'white' }}>Thêm địa chỉ</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
         </View>
+        
 
 
     );
@@ -120,7 +142,7 @@ export default AllDiachi
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#DF5A5A',
+        
     },
     button: {
         left: 90,

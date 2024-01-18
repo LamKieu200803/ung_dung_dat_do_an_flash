@@ -30,7 +30,9 @@ const [ctsp, setctsp] = useState([]);
       setdspro(json);
       setidsp(json[0].idSanPham)
       console.log(dspro);
-
+     
+      
+ 
   // // Lưu trữ chi tiết sản phẩm của tất cả các sản phẩm trong giỏ hàng
   // const chiTietSanPhamArray = json.map(item => item.chitietsp);
   // setctsp(chiTietSanPhamArray);
@@ -45,7 +47,8 @@ const [ctsp, setctsp] = useState([]);
       
         totalPrice += item.giasp * item.soluongmua;
       });
-      
+         // Kiểm tra nếu giỏ hàng rỗng, tổng tiền sẽ được set về 0
+    
       setTotalPrice(totalPrice); // Cập nhật lại giá trị totalPrice
       // for (const giohang of json) {
       //   console.log("Số lượng mua:", giohang.soluongmua);
@@ -59,7 +62,11 @@ const [ctsp, setctsp] = useState([]);
       //     console.log("Không đủ hàng để mua");
       //   }
       // }
+       if(json.length === 0){
+        setTotalPrice(0)
+      }
     }
+    
     catch (e) {
       console.log(e);
     }
@@ -82,6 +89,7 @@ const [ctsp, setctsp] = useState([]);
 
   const BUY = () => {
     if (dspro.length === 0) {
+      
       alert("Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.");
       return;
     }
@@ -221,23 +229,23 @@ const [ctsp, setctsp] = useState([]);
   };
   const updateTotalPrice = (itemId, quantityChange) => {
     setTotalPrice((prevTotalPrice) => {
-      const item = dspro.find((item) => item.giohangId === itemId);
-      if (item) {
-        const productPrice = item.giasp; // Lấy giá sản phẩm từ phần tử đầu tiên trong mảng chitietsp
+      const itemIndex = dspro.findIndex((item) => item.giohangId === itemId);
+      if (itemIndex !== -1) {
+        const item = dspro[itemIndex];
+        const productPrice = item.giasp;
+        const newQuantity = Math.max(1, item.soluongmua + quantityChange);
   
-        const newQuantity = item.soluongmua + quantityChange;
+        const updatedPrice = prevTotalPrice - productPrice * item.soluongmua + productPrice * newQuantity;
   
-        let updatedPrice = prevTotalPrice - productPrice * item.soluongmua + productPrice * newQuantity;
-  
-        if (newQuantity === 0) {
-          // Xóa sản phẩm khỏi giỏ hàng, giá trị totalPrice sẽ là 0
-          updatedPrice = 0;
-        }
-  
-        // Đảm bảo totalPrice không nhỏ hơn 0
         const totalPrice = Math.max(0, updatedPrice);
         return totalPrice;
       }
+  
+      if (dspro.length === 0) {
+      updateTotalPrice = 0 ;
+        return 0;
+      }
+  
       return prevTotalPrice;
     });
   };

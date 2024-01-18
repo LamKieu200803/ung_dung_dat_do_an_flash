@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from 'react';
 const AddAddressScreen = (props) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
- 
-
+  const [isLoading, setisLoading] = useState(true);
+  const [loginInfo, setloginInfo] = useState('');
   // const handleAutoFillAddress = () => {
   //   // Thực hiện tự động điền địa chỉ
   //   // Gọi API hoặc thực hiện xử lý ở đây
@@ -24,10 +25,31 @@ const AddAddressScreen = (props) => {
   //   setEmail(autoFilledAddress.email);
   //   setState(autoFilledAddress.state);
   // };
+  const getLoginInfo = async () => {
+    try {
+        const value = await AsyncStorage.getItem('loginInfo')
+        if (value !== null) {
+            // láy được dữ liệu 
+            setloginInfo(JSON.parse(value))
+            setisLoading(false)
 
+        }
+    } catch (e) {
+
+        console.log(e);
+    }
+};
+useEffect(() => {
+    const loadData = async () => {
+        await getLoginInfo();
+        getLoginInfo()
+    };
+    loadData();
+}, [isLoading]);
   const handleSaveAddress = () => {
+    console.log("dd"+loginInfo._id);
     let objPro = { name: name, phone: phone, address: address }
-    let url_api_diachi = 'http://172.16.10.109:9997/themdiachi';
+    let url_api_diachi = 'http://172.16.10.109:9997/themdiachi/'+ loginInfo._id;
 
     fetch(url_api_diachi, {
         method: 'POST',
