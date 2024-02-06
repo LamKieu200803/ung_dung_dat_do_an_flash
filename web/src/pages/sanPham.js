@@ -25,6 +25,16 @@ const Products = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedFilterCategory, setSelectedFilterCategory] = useState("");
+  const [sizes, setSizes] = useState([
+    { size: "nhỏ", giasp: "", soluong: "" },
+    { size: "vừa", giasp: "", soluong: "" },
+    { size: "lớn", giasp: "", soluong: "" },
+  ]);
+  const handleSizeChange = (index, property, value) => {
+    const newSizes = [...sizes];
+    newSizes[index][property] = value;
+    setSizes(newSizes);
+  };
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
@@ -60,7 +70,7 @@ const Products = () => {
   };
 
   const columns = [
-    { name: "STT", selector: (row, index) => `${index + 1}` },
+    { name: "ID", selector: (row, index) => `#${index + 1}` },
     {
       name: "Ảnh",
       selector: (row) => (
@@ -82,23 +92,13 @@ const Products = () => {
       sortable: true,
     },
     {
-      name: "Giá sản phẩm",
-      selector: (row) => row.giasp,
-      sortable: true,
-    },
-    {
-      name: "Số lượng",
-      selector: (row) => row.soluong,
-      sortable: true,
-    },
-    {
       name: "Mô tả sản phẩm",
       selector: (row) =>
-        row.motasp.substring(0, 40) + (row.motasp.length > 50 ? "..." : ""),
+        row?.motasp?.substring(0, 40) + (row?.motasp?.length > 50 ? "..." : ""),
       sortable: true,
     },
     {
-      name: "Sửa ",
+      name: "Sửa sản phẩm",
       cell: (row) => (
         <Button variant="outline-success" onClick={() => handleEdit(row)}>
           Sửa sản phẩm
@@ -141,6 +141,11 @@ const Products = () => {
       alert("Tên sản phẩm đã tồn tại. Vui lòng chọn tên khác.");
       return;
     }
+    const chitietspData = sizes.map((size) => ({
+      size: size.size,
+      giasp: parseInt(size.giasp, 10) || 0, // convert to integer, handle empty string
+      soluong: parseInt(size.soluong, 10) || 0,
+    }));
 
     try {
       await axios.post("http://localhost:9997/sanpham/them", {
@@ -150,6 +155,7 @@ const Products = () => {
         motasp: productDescription,
         soluong: productQuantity,
         danhMucId: selectedCategory,
+        chitietsp: chitietspData,
       });
 
       handleClose();
@@ -160,36 +166,41 @@ const Products = () => {
   };
 
   const handleEdit = (rowData) => {
-    const { _id, tensp, giasp, img, soluong, motasp } = rowData;
-    console.log(rowData);
-
+    const { _id, tensp, img, motasp, chitietsp, danhMucId } = rowData;
+  
     setProductId(_id);
     setProductName(tensp);
-    setProductPrice(giasp);
     setProductImage(img);
-    setProductQuantity(soluong);
     setProductDescription(motasp);
-
+    setSizes(chitietsp.map((detail) => ({ ...detail })));
+    setSelectedCategory(danhMucId?._id); // Thêm dòng này để set danhMucId vào state
     setShow(true);
   };
+  
   const handleUpdate = async () => {
     const form = document.getElementById("addProductForm");
-
+  
     if (form.checkValidity() === false) {
       setValidated(true);
       return;
     }
-
+  
     try {
-      await axios.put(`http://localhost:9997/sanpham/sua/${productId}`, {
+      const chitietspData = sizes.map((size) => ({
+        idctsp: size._id, // Thêm idctsp để định danh chi tiết sản phẩm trong trường hợp sửa
+        size: size.size,
+        giasp: size.giasp !== "" ? parseInt(size.giasp, 10) : null,
+        soluong: size.soluong !== "" ? parseInt(size.soluong, 10) : null,
+      }));
+  
+      await axios.put(`http://localhost:9997/sua/${productId}`, {
         tensp: productName,
-        giasp: productPrice,
         img: productImage,
         motasp: productDescription,
-        soluong: productQuantity,
         danhMucId: selectedCategory,
+        chitietsp: chitietspData,
       });
-
+  
       handleClose();
       fetchData();
       resetForm();
@@ -197,6 +208,8 @@ const Products = () => {
       console.log(error);
     }
   };
+  
+
 
   const resetForm = () => {
     setProductId("");
@@ -207,7 +220,6 @@ const Products = () => {
     setProductDescription("");
     setValidated(false);
   };
-
   return (
     <div style={{ padding: "20px 50px" }}>
       <Modal show={detailShow} onHide={() => setDetailShow(false)}>
@@ -228,9 +240,26 @@ const Products = () => {
               />
               <p>Tên sản phẩm: {selectedProduct.tensp}</p>
               <p>Danh mục: {selectedProduct?.danhMucId?.tendanhmuc}</p>
-              <p>Giá sản phẩm: {selectedProduct.giasp}</p>
-              <p>Số lượng phẩm: {selectedProduct.soluong}</p>
-              <p>Mô tả sản phẩm: {selectedProduct.motasp}</p>
+
+              <p>Thuộc tính sản phẩm: {selectedProduct.soluongsp}</p>
+              <DataTable
+                columns={[
+                  {
+                    name: "Size",
+                    selector: (row) => row?.size,
+                  },
+                  {
+                    name: "Giá",
+                    selector: (row) => row?.giasp,
+                  },
+                  {
+                    name: "Số lượng",
+                    selector: (row) => row?.soluong,
+                  },
+                ]}
+                data={selectedProduct.chitietsp}
+              />
+              <p>Chi tiết sản phẩm: {selectedProduct.motasp}</p>
             </div>
           )}
         </Modal.Body>
@@ -282,17 +311,36 @@ const Products = () => {
               />
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} controlId="productPrice">
-              <Form.Label>Giá sản phẩm</Form.Label>
-              <Form.Control
-                required
-                type="number"
-                placeholder="Giá sản phẩm"
-                value={productPrice}
-                onChange={(e) => setProductPrice(e.target.value)}
-              />
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            </Form.Group>
+            {sizes.map((size, index) => (
+              <div key={index} className="mb-3">
+                <Form.Group controlId={`size${index}`}>
+                  <Form.Label>{`Giá - ${size.size}`}</Form.Label>
+                  <Form.Control
+                    required
+                    type="number"
+                    placeholder="Giá sản phẩm"
+                    value={size.giasp}
+                    onChange={(e) =>
+                      handleSizeChange(index, "giasp", e.target.value)
+                    }
+                  />
+                  <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId={`quantity${index}`}>
+                  <Form.Label>{`Số lượng - ${size.size}`}</Form.Label>
+                  <Form.Control
+                    required
+                    type="number"
+                    placeholder="Số lượng sản phẩm"
+                    value={size.soluong}
+                    onChange={(e) =>
+                      handleSizeChange(index, "soluong", e.target.value)
+                    }
+                  />
+                  <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                </Form.Group>
+              </div>
+            ))}
             <Form.Group as={Col} controlId="productImage">
               <Form.Label>Ảnh sản phẩm</Form.Label>
               <Form.Control
@@ -304,17 +352,7 @@ const Products = () => {
               />
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} controlId="productQuantity">
-              <Form.Label>Số lượng sản phẩm</Form.Label>
-              <Form.Control
-                required
-                type="number"
-                placeholder="Số lượng sản phẩm"
-                value={productQuantity}
-                onChange={(e) => setProductQuantity(e.target.value)}
-              />
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            </Form.Group>
+
             <Form.Group as={Col} controlId="productDescription">
               <Form.Label>Mô tả sản phẩm</Form.Label>
               <Form.Control
@@ -350,10 +388,7 @@ const Products = () => {
           (product) =>
             (selectedFilterCategory === "" ||
               product.danhMucId?._id === selectedFilterCategory) &&
-            (product.tensp.toLowerCase().includes(searchText.toLowerCase()) ||
-              product.giasp.toString().includes(searchText) ||
-              product.soluong.toString().includes(searchText) ||
-              product.motasp.toLowerCase().includes(searchText.toLowerCase()))
+            product.tensp.toLowerCase().includes(searchText.toLowerCase())
         )}
         pagination
         paginationPerPage={5}
@@ -379,8 +414,8 @@ const Products = () => {
                 }}
                 value={selectedFilterCategory || ""}
               >
-                <option value="" key="all" style={{textAlign: "center"}}>
-                  Danh sách danh mục
+                <option value="" key="all">
+                  Tất cả danh mục
                 </option>
                 {categories.map((category) => (
                   <option key={category._id} value={category._id}>

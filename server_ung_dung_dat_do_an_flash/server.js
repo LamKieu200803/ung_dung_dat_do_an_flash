@@ -19,18 +19,16 @@ mongoose
     console.error("lỗi kết nối", error);
   });
 
-// Schema và model user 
-const userSchema = new mongoose.Schema({
+// Schema và model Khách hàng
+const khachHangSchema = new mongoose.Schema({
   email: String,
   password: String,
-  thongtinId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ThongTins',
-    required: false
-  },
+  tenkhachhang: String,
+  diachi: String,
+  sdt: String,
+  anhdaidien: String,
 });
-
-const User = mongoose.model("Users", userSchema);
+const KhachHang = mongoose.model("KhachHangs", khachHangSchema);
 
 // Schema và model danh mục
 const danhMucSchema = new mongoose.Schema({
@@ -39,12 +37,11 @@ const danhMucSchema = new mongoose.Schema({
 });
 const DanhMuc = mongoose.model("DanhMucs", danhMucSchema);
 
+//Schema và model sản phẩm
 const sanPhamSchema = new mongoose.Schema({
   tensp: String,
-  giasp: String,
   img: String,
   motasp: String,
-  soluong: Number,
   soluongban: {
     type: Number,
     default: 0,
@@ -54,140 +51,159 @@ const sanPhamSchema = new mongoose.Schema({
     ref: "DanhMucs",
     required: true,
   },
+  chitietsp: [
+    {
+      size: String,
+      giasp: Number,
+      soluong: Number,
+    },
+  ],
 });
 
+// Define a virtual property
+sanPhamSchema.virtual("soluongsp").get(function () {
+  let total = 0;
+  if (this.chitietsp && this.chitietsp.length > 0) {
+    total = this.chitietsp.reduce((acc, item) => acc + item.soluong, 0);
+  }
+  return total;
+});
 const SanPham = mongoose.model("SanPhams", sanPhamSchema);
-const AddressSChema = new mongoose.Schema({
-  name: String,
-  phone: String,
-  address: String,
-});
-const Address = mongoose.model("Diachis", AddressSChema);
 
-// Schema và model chitietsanpham
-const chiTietSanPhamSchema = new mongoose.Schema({
-  tensp: String,
-  giasp: String,
-  img: String,
-  motasp: String,
-  soluong: Number,
-});
-
-const chiTietSanPham = mongoose.model("ChiTietSanPhams", chiTietSanPhamSchema);
-
-// Schema và model giohang
 const gioHangSchema = new mongoose.Schema({
-  userId: {
+  idKhachHang: {
     type: String,
     required: true,
   },
-  productId: {
+  idBienThe: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "SanPhams",
+    required: true,
+  },
+  idSanPham: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "SanPham",
     required: true,
   },
   tensp: String,
-  giasp: String,
   img: String,
   soluongmua: Number,
+  size: String,
+  giasp: Number,
+  soluong: Number,
 });
 
-const gioHang = mongoose.model("GioHangs", gioHangSchema);
+const GioHang = mongoose.model("GioHangs", gioHangSchema);
 
-// Schema và model hóa đơn 
-const hoaDonSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true
+// Schema và model bình luận
+const binhLuanSchema = new mongoose.Schema({
+  tenkhachhang: String,
+  anhdaidien: String,
+  noidung: String,
+  idSanPham: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "SanPhams",
+    required: true,
   },
-  danhSachSanPham: [{
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'SanPham'
+
+  idKhachHang: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "KhachHangs",
+    required: true,
+  },
+});
+const BinhLuan = mongoose.model("BinhLuans", binhLuanSchema);
+
+// Schema và model hóa đơn
+const hoaDonSchema = new mongoose.Schema({
+  idKhachHang: {
+    type: String,
+    required: true,
+  },
+  danhsachsp: [
+    {
+      idSanPham: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SanPhams",
+      },
+
+      size: String,
+      giasp: Number,
+soluong: Number,
+      tensp: String,
+      img: String,
+      soluongmua: String,
     },
-    tensp: String,
-    giasp: String,
-    img: String,
-    soluongmua: String
-  }],
+  ],
   diachi: String,
   sdt: String,
   tennguoimua: String,
   pttt: String,
   tongtien: Number,
   thoigian: String,
-  trangthai: String
+  trangthai: String,
 });
 
 const hoaDon = mongoose.model("HoaDons", hoaDonSchema);
 
-
-// Schema và model thông tin
-const thongTinSchema = new mongoose.Schema({
-  userId: {
+//Schema và model địa chỉ
+const AddressSChema = new mongoose.Schema({
+  idKhachHang: {
     type: String,
     required: true,
   },
+  name: String,
   phone: String,
-  anh: String,
-  tennguoimua: String,
+  address: String,
 });
+const Address = mongoose.model("Diachis", AddressSChema);
 
-const thongTin = mongoose.model("ThongTins", thongTinSchema);
+///////////////////////////////////////////////////////////////////////////////
+//
 
-// Schema và model bình luận
-
-const binhLuanSchema = new mongoose.Schema({
-  tennguoimua: String,
-  anh: String,
-  noidung: String,
-  productId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'SanPhams',
-    required: true
-  },
-  
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Users',
-    required: true
-  },
+app.get("/binhluan", async (req, res) => {
+  try {
+    const binhluan = await BinhLuan.find({}).populate("idSanPham");
+    res.json(binhluan);
+  } catch (error) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server");
+  }
 });
-
-const BinhLuan = mongoose.model('BinhLuans', binhLuanSchema);
-
-// dki tài khoản
+// đăng kí tài khoản
 app.post("/dangki", (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, tenkhachhang, diachi, anhdaidien, sdt } = req.body;
 
-  const newUser = new User({ email, password });
-  newUser.save().then(() => {
+  const newKhachHang = new KhachHang({
+    email,
+    password,
+    tenkhachhang,
+    sdt,
+    anhdaidien,
+    diachi,
+  });
+  newKhachHang.save().then(() => {
     res.status(201).json({ message: "tạo tài khoản thành công" });
   });
 });
-app.post("/themdiachi", (req, res) => {
-  const { name, phone, address } = req.body;
 
-  const newUser = new Address({ name, phone, address });
-  newUser.save().then(() => {
-    res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công" });
-  });
-}); //thêm địa chỉ
-app.get("/diachi", async (req, res) => {
+// xem toàn bộ tài khoản
+app.get("/khachhang", async (req, res) => {
   try {
-    const user = await Address.find({});
-    res.json(user);
+    const khachhang = await KhachHang.find({});
+    res.json(khachhang);
   } catch (err) {
     console.log("error ", err);
     res.status(500).send("lỗi server");
   }
-}); //get địa chỉ
+});
 
+// dn
 app.post("/dangnhap", (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
 
-  User.findOne({
+  KhachHang.findOne({
     email: email,
     password: password,
   })
@@ -206,59 +222,16 @@ app.post("/dangnhap", (req, res) => {
       res.status(500).json({ success: false, message: "Lỗi server" });
     });
 });
-
-// xem toàn bộ tài khoản
-app.get('/user', async (req, res) => {
-  try {
-    const users = await User.find({});
-    const usersWithDetails = [];
-
-    for (const user of users) {
-      const userId = user._id;
-
-      // Lấy thông tin từ bảng "thongTin" dựa trên userId
-      const thongtin = await thongTin.findOne({ userId: userId });
-
-      if (thongtin) {
-        const userWithDetails = {
-          userId: userId,
-          email: user.email,
-          password: user.password,
-          phone: thongtin.phone,
-          anh: thongtin.anh,
-          tennguoimua: thongtin.tennguoimua
-        };
-
-        usersWithDetails.push(userWithDetails);
-      } else {
-        const userWithoutDetails = {
-          userId: userId,
-          email: user.email,
-          password: user.password,
-          phone: '',
-          anh: '',
-          tennguoimua: ''
-        };
-        usersWithDetails.push(userWithoutDetails);
-      }
-    }
-    res.json(usersWithDetails);
-  } catch (err) {
-    console.log('Lỗi', err);
-    res.status(500).send('Lỗi server');
-  }
-});
-// xem chi tiết tk theo email
-app.get("/user/email", async (req, res) => {
+app.get("/khachhang/email", async (req, res) => {
   try {
     const email = req.query.email;
 
-    const user = await User.findOne({ email });
-if (!user) {
+    const kh = await KhachHang.findOne({ email });
+    if (!kh) {
       return res.status(404).json({ message: "Tài khoản không tồn tại" });
     }
 
-    res.json(user);
+    res.json(kh); // Trả về đối tượng kh đã tìm thấy
   } catch (err) {
     console.log("error", err);
     res.status(500).send("Lỗi server");
@@ -266,9 +239,9 @@ if (!user) {
 });
 
 // xóa tài khoản
-app.delete("/User/xoa/:id", (req, res) => {
-  const deleteUser = req.params.id;
-  User.findByIdAndRemove(deleteUser)
+app.delete("/khachhang/xoa/:id", (req, res) => {
+  const deletetk = req.params.id;
+  KhachHang.findByIdAndRemove(deletetk)
     .then((data) => {
       if (data) {
         res
@@ -278,58 +251,52 @@ app.delete("/User/xoa/:id", (req, res) => {
         res.status(404).json({ error: "Không tìm thấy dữ liệu" });
       }
     })
-    .catch((error) => {
+.catch((error) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
     });
 });
-// thay đổi mật khẩu
-app.put("/user/sua/:id", (req, res) => {
+
+// thay đổi  thông tin khách hàng
+app.put("/khachhang/sua/:id", (req, res) => {
   const id = req.params.id;
   const updatePass = {
-   
-    password: req.body.password
+    password: req.body.password,
+    tenkhachhang: req.body.tenkhachhang,
+    anhdaidien: req.body.anhdaidien,
+    sdt: req.body.sdt,
+    diachi: req.body.diachi
   };
-  User.findByIdAndUpdate(id, updatePass, { new: true })
+  KhachHang.findByIdAndUpdate(id, updatePass, { new: true })
     .then((data) => {
       if (data) {
         res.status(200).json({
-          message: "thay đổi pass thành công",
-          data: data
+          message: "thay đổi thongtin thành công",
+          data: data,
         });
       } else {
-        res.status(404).json({ err: "không tìm thấy dữ liệu" })
+        res.status(404).json({ err: "không tìm thấy dữ liệu" });
       }
-
-    }
-    ).catch((err) => {
-      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
     })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
 });
+
 // chi tiết người dùng theo id
-app.get("/user/:id", async (req, res) => {
+app.get("/khachhang/:id", async (req, res) => {
   try {
     const id = req.params.id;
 
-    const user = await User.findById(id);
+    const khachHang = await KhachHang.findById(id);
 
-    if (!user) {
+    if (!khachHang) {
       return res.status(404).json({ message: "Người dùng không tồn tại" });
     }
 
-    res.json(user);
+    res.json(khachHang);
   } catch (err) {
     console.log("error", err);
     res.status(500).send("Lỗi server");
-  }
-});
-//
-app.get("/hoadon", async (req, res) => {
-  try {
-    const hoadon = await hoaDon.find({});
-    res.json(hoadon);
-  } catch (err) {
-    console.log("error ", err);
-    res.status(500).send("lỗi server");
   }
 });
 
@@ -370,7 +337,7 @@ app.put("/danhmuc/sua/:id", (req, res) => {
         });
       } else {
         res.status(404).json({ err: "Không tìm thấy dữ liệu" });
-}
+      }
     })
     .catch((err) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
@@ -392,57 +359,23 @@ app.delete("/danhmuc/xoa/:id", (req, res) => {
     })
     .catch((error) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
-    });
 });
-app.get("/top5products", async (req, res) => {
-  try {
-    const result = await hoaDon.aggregate([
-      { $unwind: "$danhSachSanPham" },
-      {
-        $group: {
-          _id: "$danhSachSanPham.tensp",
-          soluongban: { $sum: { $toInt: "$danhSachSanPham.soluongmua" } },
-        },
-      },
-      { $sort: { soluongban: -1 } },
-      { $limit: 5 },
-      {
-        $lookup: {
-          from: "SanPhams",
-          localField: "_id",
-          foreignField: "tensp",
-          as: "sanpham",
-        },
-      },
-      { $unwind: "$sanpham" },
-      {
-        $project: {
-          _id: 0,
-          tensp: "$sanpham.tensp",
-          soluongban: 1,
-          giasp: "$sanpham.giasp",
-          img: "$sanpham.img",
-        },
-      },
-    ]);
-
-    res.status(200).json(result);
-  } catch (err) {
-    console.log("error ", err);
-    res.status(500).send("Internal Server Error");
-  }
 });
 
-//top5 san pham
-app.get("/top5sold", (req, res) => {
-  SanPham.find({})
-    .populate("danhMucId")
-    .sort({ soluongban: -1 })
-    .limit(5)
-    .then((data) => {
-      res.json(data);
+// xem sản phẩm theo danh mục
+app.get("/sanpham/danhsach/:danhMucId", (req, res) => {
+  const danhMucId = req.params.danhMucId;
+  SanPham.find({ danhMucId })
+    .then((sanPhams) => {
+      res.status(200).json(sanPhams);
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ error: "Đã xảy ra lỗi khi lấy danh sách sản phẩm" });
     });
 });
+
 // xem sản phẩm
 app.get("/sanpham", async (req, res) => {
   try {
@@ -456,17 +389,22 @@ app.get("/sanpham", async (req, res) => {
 });
 // thêm sản phẩm
 app.post("/sanpham/them", (req, res) => {
-  const { tensp, giasp, img, motasp, soluong, soluongban, danhMucId } =
+  const { tensp, img, motasp, soluongsp, soluongban, danhMucId, chitietsp } =
     req.body;
-
+  // tạo ra new chitietsp
+  const newchitiet = chitietsp.map((sp) => ({
+    size: sp.size,
+    giasp: sp.giasp,
+    soluong: sp.soluong,
+  }));
   const newSanPham = new SanPham({
     tensp,
-    giasp,
     img,
     motasp,
-    soluong,
+    soluongsp,
     soluongban,
     danhMucId,
+    chitietsp: newchitiet, // Thay đổi từ newchitiet thành chitietsp
   });
   newSanPham
     .save()
@@ -477,15 +415,14 @@ app.post("/sanpham/them", (req, res) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi thêm sản phẩm" });
     });
 });
-// sửa sản phẩm
+
+// SỬa các thuộc tính bên ngoài biến thể của sản phẩm
 app.put("/sanpham/sua/:id", (req, res) => {
   const id = req.params.id;
   const updateSanPham = {
     tensp: req.body.tensp,
-    giasp: req.body.giasp,
     img: req.body.img,
     motasp: req.body.motasp,
-    soluong: req.body.soluong,
     danhMucId: req.body.danhMucId, // Cập nhật giá trị danhMucId
   };
   SanPham.findByIdAndUpdate(id, updateSanPham, { new: true })
@@ -496,13 +433,197 @@ app.put("/sanpham/sua/:id", (req, res) => {
           data: data,
         });
       } else {
-res.status(404).json({ err: "Không tìm thấy dữ liệu" });
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" });
       }
     })
     .catch((err) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
     });
 });
+
+app.put("/sanpham/sua/:id", (req, res) => {
+  const id = req.params.id;
+  const updateSanPham = {
+    tensp: req.body.tensp,
+    img: req.body.img,
+    motasp: req.body.motasp,
+    danhMucId: req.body.danhMucId, // Cập nhật giá trị danhMucId
+  };
+  SanPham.findByIdAndUpdate(id, updateSanPham, { new: true })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Cập nhật dữ liệu thành công",
+          data: data,
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy dữ liệu" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+    });
+});
+
+// Route POST để thêm đối tượng mới vào "chitietsp"
+app.post("/chitietsp/them/:id", (req, res) => {
+const sanPhamId = req.params.id; // Lấy ID của sản phẩm từ tham số đường dẫn
+  const newChitietSp = {
+    size: req.body.size,
+    soluong: req.body.soluong,
+    giasp: req.body.giasp,
+  };
+
+  SanPham.findById(sanPhamId)
+    .then((sanPham) => {
+      if (!sanPham) {
+        return res.status(404).json({ error: "Không tìm thấy sản phẩm" });
+      }
+
+      sanPham.chitietsp.push(newChitietSp);
+      return sanPham.save();
+    })
+    .then((updatedSanPham) => {
+      res.status(200).json({
+        message: "Thêm chitietsp thành công",
+        sanPham: updatedSanPham,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi thêm chitietsp" });
+    });
+});
+
+// Route DELETE để xóa đối tượng trong "chitietsp" dựa trên ID của "chitietsp"
+app.delete("/chitietsp/xoa/:id", (req, res) => {
+  const chitietSpId = req.params.id; // ID của đối tượng chitietsp cần xóa
+
+  SanPham.findOneAndUpdate(
+    { "chitietsp._id": chitietSpId },
+    { $pull: { chitietsp: { _id: chitietSpId } } },
+    { new: true }
+  )
+    .then((updatedSanPham) => {
+      if (!updatedSanPham) {
+        return res.status(404).json({ error: "Không tìm thấy chitietsp" });
+      }
+
+      res.status(200).json({
+        message: "Xóa chitietsp thành công",
+        sanPham: updatedSanPham,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi xóa chitietsp" });
+    });
+});
+
+// sửa biến thể sản phẩm theo size ,soluong và
+
+app.put("/chitietsp/sua/:id", (req, res) => {
+  const idctsp = req.params.id;
+  const updatechitietsp = {};
+
+  if (req.body.size) {
+    updatechitietsp["chitietsp.$.size"] = req.body.size;
+  }
+
+  if (req.body.soluong) {
+    updatechitietsp["chitietsp.$.soluong"] = req.body.soluong;
+  }
+
+  if (req.body.giasp) {
+    updatechitietsp["chitietsp.$.giasp"] = req.body.giasp;
+  }
+
+  SanPham.findOneAndUpdate(
+    { "chitietsp._id": idctsp },
+    { $set: updatechitietsp },
+    { new: true }
+  )
+    .then((updatedSanPham) => {
+      if (!updatedSanPham) {
+        return res.status(404).json({ error: "Không tìm thấy sản phẩm" });
+      }
+      res.status(200).json({
+        message: "Cập nhật thông tin chitietsp thành công",
+        sanPham: updatedSanPham,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: "Đã xảy ra lỗi khi cập nhật thông tin chitietsp",
+      });
+    });
+});
+//
+app.put("/sua/:id", (req, res) => {
+  console.log(req.params.id);
+  const id = req.params.id;
+
+  // Kiểm tra nếu có thông số size, soluong hoặc giasp trong request body
+  if (req.body.size || req.body.soluong || req.body.giasp) {
+    // Cập nhật thông tin chi tiết sản phẩm
+    const updateChiTietSP = {};
+
+    if (req.body.size) {
+      updateChiTietSP["chitietsp.$.size"] = req.body.size;
+    }
+
+    if (req.body.soluong) {
+updateChiTietSP["chitietsp.$.soluong"] = req.body.soluong;
+    }
+
+    if (req.body.giasp) {
+      updateChiTietSP["chitietsp.$.giasp"] = req.body.giasp;
+    }
+
+    // Cập nhật thông tin chi tiết sản phẩm trong SanPham
+    SanPham.findOneAndUpdate(
+      { "chitietsp._id": id },
+      { $set: updateChiTietSP },
+      { new: true }
+    )
+      .then((updatedSanPham) => {
+        if (!updatedSanPham) {
+          return res.status(404).json({ error: "Không tìm thấy sản phẩm" });
+        }
+        res.status(200).json({
+          message: "Cập nhật thông tin chitietsp thành công",
+          sanPham: updatedSanPham,
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          error: "Đã xảy ra lỗi khi cập nhật thông tin chitietsp",
+        });
+      });
+  } else {
+    // Nếu không có thông số size, soluong hoặc giasp, cập nhật thông tin sản phẩm chung
+    const updateSanPham = {
+      tensp: req.body.tensp,
+      img: req.body.img,
+      motasp: req.body.motasp,
+      danhMucId: req.body.danhMucId,
+    };
+
+    SanPham.findByIdAndUpdate(id, updateSanPham, { new: true })
+      .then((data) => {
+        if (data) {
+          res.status(200).json({
+            message: "Cập nhật dữ liệu thành công",
+            data: data,
+          });
+        } else {
+          res.status(404).json({ err: "Không tìm thấy dữ liệu" });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+      });
+  }
+});
+
 // xóa sản phẩm
 app.delete("/sanpham/xoa/:id", (req, res) => {
   const deleteSanPham = req.params.id;
@@ -520,11 +641,12 @@ app.delete("/sanpham/xoa/:id", (req, res) => {
       res.status(500).json({ error: "Đã xảy ra lỗi khi xóa dữ liệu" });
     });
 });
+
 // xem chi tiết sản phẩm
 app.get("/chitietsanpham/:id", async (req, res) => {
-  const productId = req.params.id;
+  const idSanPham = req.params.id;
   try {
-    const spct = await SanPham.findById(productId);
+    const spct = await SanPham.findById(idSanPham);
     if (!spct) {
       // sản phẩm ko tồn tại
       res.status(404).json({ message: "sản phẩm ko tồn tại" });
@@ -537,50 +659,39 @@ app.get("/chitietsanpham/:id", async (req, res) => {
   }
 });
 
-// xem sản phẩm theo danh mục
-app.get("/sanpham/danhsach/:danhMucId", (req, res) => {
-  const danhMucId = req.params.danhMucId;
-  SanPham.find({ danhMucId })
-    .then((sanPhams) => {
-      res.status(200).json(sanPhams);
-    })
-    .catch((err) => {
-      res
-        .status(500)
-        .json({ error: "Đã xảy ra lỗi khi lấy danh sách sản phẩm" });
-    });
-});
+// Xem giỏ hàng của khách hàng
 
-// Xem giỏ hàng của người dùng
-
-app.get("/giohang/:userId", async (req, res) => {
-  const userId = req.params.userId;
+app.get("/giohang/:idKhachHang", async (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
 
   try {
     // Lấy thông tin giỏ hàng của người dùng
-    const giohangs = await gioHang.find({ userId: userId });
+    const giohangs = await GioHang.find({ idKhachHang: idKhachHang });
 
     // Tạo một mảng rỗng để lưu trữ thông tin sản phẩm trong giỏ hàng
     const giohangsWithDetails = [];
 
     // Lặp qua từng mục giỏ hàng
-    for (const giohang of giohangs) {
+for (const giohang of giohangs) {
       // Kiểm tra giá trị soluongmua, nếu nhỏ hơn 1, đặt lại là 1
       if (giohang.soluongmua < 1) {
         giohang.soluongmua = 1;
       }
 
       // Lấy thông tin chi tiết của sản phẩm từ collection "SanPham"
-      const sanPham = await SanPham.findById(giohang.productId);
+      const sanPham = await SanPham.findById(giohang.idSanPham);
 
       // Kiểm tra xem sản phẩm có tồn tại không
       if (sanPham) {
         // Tạo một đối tượng mới chứa thông tin sản phẩm và thông tin giỏ hàng
         const giohangWithDetails = {
+          idBienThe: giohang.idBienThe,
           giohangId: giohang._id,
-          userId: giohang.userId,
-          productId: giohang.productId,
+          idKhachHang: giohang.idKhachHang,
+          idSanPham: giohang.idSanPham,
           tensp: giohang.tensp,
+          size: giohang.size,
+          soluong: giohang.soluong,
           giasp: giohang.giasp,
           img: giohang.img,
           soluongmua: giohang.soluongmua,
@@ -594,32 +705,35 @@ app.get("/giohang/:userId", async (req, res) => {
 
     res.json(giohangsWithDetails);
   } catch (err) {
-console.log("Lỗi ", err);
+    console.log("Lỗi ", err);
     res.status(500).send("Lỗi máy chủ");
   }
 });
 
-// Thêm vào giỏ hàng của người dùng
-app.post("/giohang/them/:userId/:productId", async (req, res) => {
-  const userId = req.params.userId;
-  const productId = req.params.productId;
-  const { tensp, giasp, img, soluongmua } = req.body;
+// thêm sản phẩm vào giỏ hàng người dùng
+app.post("/giohang/them/:idKhachHang/:idSanPham", async (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const idSanPham = req.params.idSanPham;
+  const { tensp, img, soluongmua, size, soluong, giasp, idBienThe } = req.body;
 
   try {
     // Kiểm tra xem sản phẩm có tồn tại trong collection "SanPham" không
-    const sanPham = await SanPham.findById(productId);
+    const sanPham = await SanPham.findById(idSanPham);
     if (!sanPham) {
       return res.status(404).send("Sản phẩm không tồn tại");
     }
 
-    // Tạo mục giỏ hàng mới và gán productId từ URL
-    const giohang = await gioHang.create({
-      userId: userId,
-      productId: productId,
+    // Tạo mục giỏ hàng mới
+    const giohang = await GioHang.create({
+      idBienThe: idBienThe,
+      idKhachHang: idKhachHang,
+      idSanPham: idSanPham,
       tensp: tensp,
-      giasp: giasp,
       img: img,
       soluongmua: soluongmua,
+      size: size,
+      giasp: giasp,
+      soluong: soluong,
     });
 
     res.json(giohang);
@@ -631,12 +745,12 @@ app.post("/giohang/them/:userId/:productId", async (req, res) => {
 
 // xóa sản phẩm trong giỏ
 
-app.delete("/giohang/xoa/:userId/:productId", async (req, res) => {
-  const userId = req.params.userId;
-  const productId = req.params.productId;
+app.delete("/giohang/xoa/:idKhachHang/:idSanPham", async (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const idSanPham = req.params.idSanPham;
 
   try {
-    await gioHang.deleteOne({ userId: userId, productId: productId });
+    await GioHang.deleteOne({ idKhachHang: idKhachHang, idSanPham: idSanPham });
     res.status(200).send("Sản phẩm đã được xóa khỏi giỏ hàng thành công");
   } catch (err) {
     console.log("Lỗi ", err);
@@ -645,15 +759,15 @@ app.delete("/giohang/xoa/:userId/:productId", async (req, res) => {
 });
 
 // xóa giỏ hàng khi mua thành công
-app.delete("/giohang/xoa/:userId", async (req, res) => {
-  const userId = req.params.userId;
+app.delete("/giohang/xoa/:idKhachHang", async (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
   const { tensp, giasp, img, soluongmua } = req.body;
 
   try {
-    await gioHang.deleteMany({
-      userId: userId,
+    await GioHang.deleteMany({
+      idKhachHang: idKhachHang,
     });
-    console.log("Giỏ hàng đã được làm mới");
+console.log("Giỏ hàng đã được làm mới");
   } catch (err) {
     console.log("Lỗi ", err);
     res.status(500).send("Lỗi máy chủ");
@@ -662,18 +776,22 @@ app.delete("/giohang/xoa/:userId", async (req, res) => {
 
 // sửa số lượng trong giỏ khi thay đổi số lượng
 
-app.put("/giohang/sua/:userId/:productId", (req, res) => {
-  const userId = req.params.userId;
-  const productId = req.params.productId;
+app.put("/giohang/sua/:idKhachHang/:idSanPham", (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const idSanPham = req.params.idSanPham;
 
   const updateSoluong = {
     soluongmua: req.body.soluongmua,
   };
 
-  gioHang
-    .findOneAndUpdate({ userId: userId, productId: productId }, updateSoluong, {
-      new: true,
-    })
+  GioHang
+    .findOneAndUpdate(
+      { idKhachHang: idKhachHang, idSanPham: idSanPham },
+      updateSoluong,
+      {
+        new: true,
+      }
+    )
     .then((data) => {
       if (data) {
         res.status(200).json({
@@ -685,25 +803,23 @@ app.put("/giohang/sua/:userId/:productId", (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu rùi" });
     });
 });
 
-// tính số lượng mới khi đã mua
 app.post("/giohang/cap-nhat-sanpham", async (req, res) => {
   const gioHang = req.body.gioHang;
 
   try {
     for (const item of gioHang) {
       const sanPhamId = item.sanPhamId;
-      const soLuongMoi = item.soLuongMoi;
-      const soLuongBan = item.soLuongBan;
+      const sanPham = item.sanPham;
 
-      const sanPham = await SanPham.findById(sanPhamId);
-      if (sanPham) {
-        sanPham.soluong = soLuongMoi;
-sanPham.soluongban = soLuongBan; // Cập nhật số lượng đã bán
-        await sanPham.save();
+      const existingSanPham = await SanPham.findById(sanPhamId);
+      if (existingSanPham) {
+        existingSanPham.soluong = sanPham.soluong;
+existingSanPham.soluongban = sanPham.soluongban;
+await existingSanPham.save();
       }
     }
 
@@ -714,11 +830,20 @@ sanPham.soluongban = soLuongBan; // Cập nhật số lượng đã bán
   }
 });
 
-// xem hóa đơn theo id người dùng
-app.get("/hoadon/:userId", async (req, res) => {
-  const userId = req.params.userId;
+app.get("/hoadon", async (req, res) => {
   try {
-    const hoadon = await hoaDon.find({ userId: userId });
+    const hoadon = await hoaDon.find();
+    res.json(hoadon);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server");
+  }
+});
+// xem hóa đơn theo id người dùng
+app.get("/hoadon/:idKhachHang", async (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  try {
+    const hoadon = await hoaDon.find({ idKhachHang: idKhachHang });
     res.json(hoadon);
   } catch (err) {
     console.log("error ", err);
@@ -726,30 +851,43 @@ app.get("/hoadon/:userId", async (req, res) => {
   }
 });
 
-app.post("/hoadon/them/:userId", (req, res) => {
-  const userId = req.params.userId;
-  const { danhSachSanPham, diachi, sdt, tennguoimua, pttt, tongtien, thoigian, trangthai } = req.body;
+// thêm hóa đơn theo id người dungf
 
-  // Lấy thông tin người dùng dựa trên userId
-  User.findById(userId)
+app.post("/hoadon/them/:idKhachHang", (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const {
+    danhsachsp,
+    diachi,
+    sdt,
+    tennguoimua,
+    pttt,
+    tongtien,
+    thoigian,
+    trangthai,
+  } = req.body;
+
+  // Lấy thông tin người dùng dựa trên idKhachHang
+  KhachHang.findById(idKhachHang)
     .then((user) => {
       if (!user) {
         return res.status(404).json({ message: "Người dùng không tồn tại" });
       }
 
-      // Tạo danh sách sản phẩm mới với các thông tin, bao gồm cả productId
-      const newDanhSachSanPham = danhSachSanPham.map((sp) => ({
-        productId: sp.productId, // Thêm productId vào danh sách sản phẩm
+      // Tạo danh sách sản phẩm mới với các thông tin, bao gồm cả idSanPham
+      const newDanhSachSanPham = danhsachsp.map((sp) => ({
+        idSanPham: sp.idSanPham, // Thêm idSanPham vào danh sách sản phẩm
         tensp: sp.tensp,
-        giasp: sp.giasp,
         img: sp.img,
-        soluongmua: sp.soluongmua,
+soluongmua: sp.soluongmua,
+        soluong: sp.soluong,
+        giasp: sp.giasp,
+        size: sp.size,
       }));
 
       // Tạo hóa đơn mới với thông tin người dùng và danh sách sản phẩm
       const newHoaDon = new hoaDon({
-        danhSachSanPham: newDanhSachSanPham,
-        userId,
+        danhsachsp: newDanhSachSanPham,
+        idKhachHang,
         diachi,
         sdt,
         tennguoimua,
@@ -774,68 +912,30 @@ app.post("/hoadon/them/:userId", (req, res) => {
       res.status(500).send("Lỗi server");
     });
 });
-// thông tin người dùng theo idUser
 
-app.get("/thongtin/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  try {
-    const thongtin = await thongTin.find({ userId: userId });
-    if (thongtin) {
-      res.json(thongtin);
-    } else {
-      res.status(404).json({ message: "Không tìm thấy thông tin người dùng" });
-    }
-  } catch (err) {
-    console.log("error ", err);
-    res.status(500).send("lỗi server");
-  }
-});
+// xem chi tiết hóa đơn
+app.get("/hoadonchitiet/:idKhachHang/:_id", (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
+  const _id = req.params._id;
 
-// thêm thông tin người dùng
-app.post("/thongtin/them/:userId", (req, res) => {
-  const userId = req.params.userId;
-  const { tennguoimua, anh, phone } = req.body;
-
-  const newThongTin = new thongTin({ userId, tennguoimua, anh, phone });
-  newThongTin
-    .save()
-    .then(() => {
-      res.status(201).json({ message: "Thêm thông tin người dùng thành công" });
-    })
-    .catch((err) => {
-      console.log("error ", err);
-      res.status(500).send("lỗi server");
-    });
-});
-
-// sửa thông tin người dùng 
-
-app.put("/thongtin/sua/:userId", (req, res) => {
-  const userId = req.params.userId;
-  const updateThongTin = {
-    tennguoimua: req.body.tennguoimua,
-    phone: req.body.phone,
-    anh: req.body.anh
-
-  };
-  thongTin.findOneAndUpdate({ userId: userId }, updateThongTin, { new: true })
-    .then((data) => {
-      if (data) {
-        res.status(200).json({
-          message: "Cập nhật dữ liệu thành công",
-          data: data
-        });
+  hoaDon
+    .findOne({ idKhachHang, _id })
+    .then((hoaDon) => {
+      if (hoaDon) {
+        res.status(200).json(hoaDon);
       } else {
-        res.status(404).json({ err: "Không tìm thấy dữ liệu" })
+        res.status(404).json({ message: "Không tìm thấy chi tiết hóa đơn" });
       }
     })
     .catch((err) => {
-      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+      console.log("Lỗi truy vấn hóa đơn ", err);
+      res.status(500).send("Lỗi server");
     });
 });
 
-app.put("/hoadon/sua/:userId/:id", (req, res) => {
-  const userId = req.params.userId;
+// thay đổi trạng thái hóa đơn
+app.put("/hoadon/sua/:idKhachHang/:id", (req, res) => {
+  const idKhachHang = req.params.idKhachHang;
   const id = req.params.id; // Thay đổi từ req.params._id thành req.params.id
 
   const updateTrangThai = {
@@ -844,7 +944,7 @@ app.put("/hoadon/sua/:userId/:id", (req, res) => {
 
   hoaDon
     .findOneAndUpdate(
-      { userId: userId, _id: id }, // Sửa thành _id thay vì id
+      { idKhachHang: idKhachHang, _id: id }, // Sửa thành _id thay vì id
       updateTrangThai, // Sửa thành updateTrangThai thay vì updatetrangthai
       { new: true }
     )
@@ -859,49 +959,143 @@ app.put("/hoadon/sua/:userId/:id", (req, res) => {
       }
     })
     .catch((err) => {
-res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật dữ liệu" });
     });
 });
 
-// // top3 sản phẩm bán chạy
-// app.get("/thongke/top3sanpham", async (req, res) => {
-//   try {
-//     const result = await hoaDon.aggregate([
-//       { $unwind: "$danhSachSanPham" },
-//       {
-//         $group: {
-//           _id: "$danhSachSanPham.tensp",
-//           soluongban: { $sum: { $toInt: "$danhSachSanPham.soluongmua" } },
-//         },
-//       },
-//       { $sort: { soluongban: -1 } },
-//       { $limit: 3 },
-//       {
-//         $lookup: {
-//           from: "SanPhams",
-//           localField: "_id",
-//           foreignField: "tensp",
-//           as: "sanpham",
-//         },
-//       },
-//       { $unwind: "$sanpham" },
-//       {
-//         $project: {
-//           _id: 0,
-//           tensp: "$sanpham.tensp",
-//           soluongban: 1,
-//         },
-//       },
-//     ]);
+// thêm địa chỉ
+app.post("/themdiachi/:idKhachHang", async (req, res) => {
+  try {
+    const { idKhachHang } = req.params;
+    const { name, phone, address } = req.body;
 
-//     res.status(200).json(result);
-//   } catch (err) {
-//     console.log("error ", err);
-//     res.status(500).send("Lỗi server");
-//   }
-// });
+    const newAddress = new Address({ idKhachHang, name, phone, address });
+    await newAddress.save();
 
-// thống kê
+    res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công", address: newAddress });
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("Lỗi server");
+  }
+});
+
+// xem địa chỉ
+app.get("/diachi/:idKhachHang", async (req, res) => {
+  try {
+    const { idKhachHang } = req.params;
+    const addresses = await Address.find({ idKhachHang });
+    res.json(addresses);
+  } catch (err) {
+console.log("error ", err);
+    res.status(500).send("Lỗi server");
+  }
+});
+
+// sửa địa chỉ
+app.put("/diachi/sua/:id/:idKhachHang", (req, res) => {
+  const idDiachi = req.params.id; // Lấy id từ URL parameter
+  const idKhachHang = req.params.idKhachHang; // Lấy idKhachHang từ URL parameter
+
+  // Lấy thông tin cập nhật từ body của yêu cầu
+  const updateDiachi = {
+    name: req.body.name,
+    phone: req.body.phone,
+    address: req.body.address,
+  };
+
+  // Sử dụng phương thức findOneAndUpdate để tìm và cập nhật địa chỉ dựa trên idKhachHang và id
+  Address.findOneAndUpdate({ _id: idDiachi, idKhachHang: idKhachHang }, updateDiachi, { new: true })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Cập nhật địa chỉ thành công",
+          data: data,
+        });
+      } else {
+        res.status(404).json({ err: "Không tìm thấy địa chỉ" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Đã xảy ra lỗi khi cập nhật địa chỉ" });
+    });
+});
+
+app.post("/themdiachi", (req, res) => {
+  const { name, phone, address } = req.body;
+
+  const newUser = new Address({ name, phone, address });
+  newUser.save().then(() => {
+    res.status(201).json({ message: "Bạn đã thêm địa chỉ thành công" });
+  });
+}); //thêm địa chỉ
+app.get("/diachi", async (req, res) => {
+  try {
+    const user = await Address.find({});
+    res.json(user);
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).send("lỗi server");
+  }
+}); //get địa chỉ
+
+// thêm bình luận
+app.post("/binhluan/them/:idSanPham/:idKhachHang", (req, res) => {
+  const idSanPham = req.params.idSanPham;
+  const idKhachHang = req.params.idKhachHang;
+  const { noidung, tenkhachhang, anhdaidien } = req.body;
+
+  KhachHang.findOne({ _id: idKhachHang })
+    .then((user) => {
+      if (!user) {
+        throw new Error("Thông tin không tồn tại");
+      }
+      const newBinhLuan = new BinhLuan({
+        tenkhachhang,
+        anhdaidien,
+        idSanPham,
+        idKhachHang,
+        noidung,
+      });
+
+      return newBinhLuan.save();
+    })
+    .then(() => {
+      res.status(201).json({ message: "Thêm bình luận thành công" });
+    })
+    .catch((err) => {
+      console.log("error ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
+
+// xem bình luận
+app.get("/binhluan/:idSanPham", (req, res) => {
+  const idSanPham = req.params.idSanPham;
+  BinhLuan.find({ idSanPham })
+    .then((binhLuans) => {
+      if (binhLuans.length > 0) {
+        res.status(200).json(binhLuans);
+      } else {
+        res.status(404).json({ message: "Không tìm thấy bình luận" });
+      }
+    })
+    .catch((err) => {
+      console.log("Lỗi truy vấn bình luận ", err);
+      res.status(500).send("Lỗi server");
+    });
+});
+
+//
+app.get("/top5sold", (req, res) => {
+  SanPham.find({})
+    .populate("danhMucId")
+.sort({ soluongban: -1 })
+    .limit(5)
+    .then((data) => {
+      res.json(data);
+    });
+});
+
 app.get("/thongke", async (req, res) => {
   try {
     const invoices = await hoaDon.find();
@@ -966,7 +1160,7 @@ app.get("/orderstats", async (req, res) => {
 
     res.json(data);
   } catch (err) {
-console.error("Error:", err);
+    console.error("Error:", err);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -996,7 +1190,7 @@ app.get("/amountstats", async (req, res) => {
 
     // Chuẩn bị dữ liệu để trả về
     const amountFormattedData = amountDataArray.map(
-      ({ month, totalAmount }) => [month.toString(), totalAmount]
+({ month, totalAmount }) => [month.toString(), totalAmount]
     );
 
     const data = [["Tháng", "Tổng tiền"], ...amountFormattedData];
@@ -1007,158 +1201,6 @@ app.get("/amountstats", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-
-// // thêm lịch sử mua hàng
-// app.post("/lichsu/them/:userId", (req, res) => {
-//   const userId = req.params.userId;
-//   const { tensp, giasp, img, soluongmua, pttt, tongtien, trangthai, tennguoimua, thoigian } = req.body;
-
-//   const newLichSu = new lichSu({
-//     userId,
-//     tensp,
-//     giasp,
-//     img,
-//     soluongmua,
-//     pttt,
-//     tongtien,
-//     trangthai,
-//     tennguoimua,
-//     thoigian
-//   });
-//   newLichSu
-//     .save()
-//     .then(() => {
-//       res.status(201).json({ message: "Thêm lịch sử mua hàng thành công" });
-//     })
-//     .catch((err) => {
-//       console.log("error ", err);
-//       res.status(500).send("lỗi server");
-//     });
-// });
-
-// xem hóa đơn chi tiết
-app.get("/hoadonchitiet/:userId/:_id", (req, res) => {
-  const userId = req.params.userId;
-  const _id = req.params._id;
-
-  hoaDon
-    .findOne({ userId, _id })
-    .then((hoaDon) => {
-      if (hoaDon) {
-        res.status(200).json(hoaDon);
-      } else {
-        res.status(404).json({ message: "Không tìm thấy chi tiết hóa đơn" });
-      }
-    })
-    .catch((err) => {
-      console.log("Lỗi truy vấn hóa đơn ", err);
-      res.status(500).send("Lỗi server");
-    });
-});
-app.get("/binhluan", (req, res) => {
-  BinhLuan.find({})
-    .populate("productId")
-    .then((binhLuans) => {
-      if (binhLuans.length > 0) {
-        res.status(200).json(binhLuans);
-      } else {
-        res.status(404).json({ message: "Không tìm thấy bình luận" });
-      }
-    })
-    .catch((err) => {
-      console.log("Lỗi truy vấn bình luận ", err);
-      res.status(500).send("Lỗi server");
-    });
-});
-app.get("/binhluan/:productId", (req, res) => {
-  const productId = req.params.productId;
-  BinhLuan.find({ productId })
-    .then((binhLuans) => {
-      if (binhLuans.length > 0) {
-        res.status(200).json(binhLuans);
-      } else {
-        res.status(404).json({ message: 'Không tìm thấy bình luận' });
-      }
-    })
-    .catch((err) => {
-      console.log("Lỗi truy vấn bình luận ", err);
-      res.status(500).send("Lỗi server");
-    });
-});
-
-// thêm bình luận
-app.post("/binhluan/them/:productId/:userId", (req, res) => {
-  const productId = req.params.productId;
-  const userId = req.params.userId;
-  const { noidung } = req.body;
-
-  thongTin.findOne({ userId }) // Tìm thông tin từ collection ThongTins dựa trên userId
-    .then((user) => {
-      if (!user) {
-        throw new Error("Thông tin không tồn tại");
-      }
-      const newBinhLuan = new BinhLuan({
-        tennguoimua: user.tennguoimua,
-        anh: user.anh,
-        productId,
-        userId,
-        noidung,
-      });
-
-      return newBinhLuan.save();
-    })
-    .then(() => {
-      res.status(201).json({ message: "Thêm bình luận thành công" });
-    })
-    .catch((err) => {
-      console.log("error ", err);
-      res.status(500).send("Lỗi server");
-    });
-});
-// Xóa bình luận 
-app.delete("/binhluan/xoa/:binhLuanId", (req, res) => {
-  const binhLuanId = req.params.binhLuanId;
-
-  BinhLuan.findByIdAndDelete(binhLuanId)
-    .then((deletedBinhLuan) => {
-      if (!deletedBinhLuan) {
-        throw new Error("Bình luận không tồn tại");
-      }
-
-      res.status(200).json({ message: "Xóa bình luận thành công" });
-    })
-    .catch((err) => {
-      console.log("error", err);
-      res.status(500).send("Lỗi server");
-    });
-});
-
-// app.post("/hoadonchitiet/:userId/:hoaDonId/add", (req, res) => {
-//   const userId = req.params.userId;
-//   const hoaDonId = req.params.hoaDonId;
-//   const chiTietList = req.body;
-
-//   const newChiTietList = chiTietList.map((chiTiet) => {
-//     const { tensp, giasp, img, soluongmua } = chiTiet;
-//     return new hoaDonChiTiet({
-//       userId,
-//       hoaDonId,
-//       tensp,
-//       giasp,
-//       img,
-//       soluongmua,
-//     });
-//   });
-
-//   hoaDonChiTiet.insertMany(newChiTietList)
-//     .then(() => {
-//       res.status(201).json({ message: "Thêm danh sách chi tiết hóa đơn thành công" });
-//     })b
-//     .catch((err) => {
-//       console.log("error ", err);
-//       res.status(500).send("lỗi server");
-//     });
-// });
 
 //khởi chạy server
 const port = 9997;

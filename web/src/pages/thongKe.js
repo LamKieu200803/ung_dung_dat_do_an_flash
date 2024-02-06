@@ -66,11 +66,6 @@ const ThongKe = () => {
       sortable: true,
     },
     {
-      name: "Giá sản phẩm",
-      selector: (row) => row.giasp,
-      sortable: true,
-    },
-    {
       name: "Số lượng bán",
       selector: (row) => row.soluongban,
       sortable: true,

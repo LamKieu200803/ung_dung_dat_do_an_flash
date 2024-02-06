@@ -11,9 +11,16 @@ const KhachHang = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showPassword, setShowPassword] = useState({});
 
-  const handleRowClick = (row) => {
-    setSelectedUser(row);
-    setDetailShow(true);
+  const handleRowClick = async (row) => {
+    try {
+      console.log(row._id);
+      const res = await axios.get(`http://localhost:9997/khachhang/${row._id}`);
+      console.log(res);
+      setSelectedUser(res.data);
+      setDetailShow(true);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const togglePasswordVisibility = (userId) => {
@@ -25,7 +32,7 @@ const KhachHang = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get("http://localhost:9997/user");
+      const res = await axios.get("http://localhost:9997/khachhang");
       setUsers(res.data);
       console.log(res.data);
     } catch (error) {
@@ -38,7 +45,7 @@ const KhachHang = () => {
   }, []);
 
   const columns = [
-    { name: "STT", selector: (row, index) => `${index + 1}` },
+    { name: "ID", selector: (row, index) => `#${index + 1}` },
     {
       name: "Email",
       selector: (row) => row.email,
@@ -80,11 +87,13 @@ const KhachHang = () => {
         <Modal.Body>
           {selectedUser && (
             <div>
-              <img src={selectedUser?.anh} style={{width: "200px", height: "150px"}}/>
-              <p>Tên Khách Hàng: {selectedUser.tennguoimua}</p>
-              <p>Số Điện Thoại: {selectedUser.phone}</p>
-              <p>Email: {selectedUser.email}</p>
-              <p>Mật Khẩu: {selectedUser.password}</p>
+              <div>
+                <img src={selectedUser?.anhdaidien} />
+                <p>Email: {selectedUser.email}</p>
+                <p>Tên khách hàng: {selectedUser.tenkhachhang}</p>
+                <p>Địa chỉ: {selectedUser.diachi}</p>
+                <p>Số điện thoại: {selectedUser.sdt}</p>
+              </div>
             </div>
           )}
         </Modal.Body>
@@ -94,8 +103,9 @@ const KhachHang = () => {
         columns={columns}
         data={users}
         pagination
-        paginationPerPage={5}
+paginationPerPage={5}
         striped
+        onRowClicked={(row) => handleRowClick(row)} // Remove duplicate onRowClicked prop
       />
     </div>
   );

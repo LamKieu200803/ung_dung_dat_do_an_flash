@@ -13,7 +13,10 @@ const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
   const [filterStatus, setFilterStatus] = useState("Tất cả");
-  const [notification, setNotification] = useState({ show: false, message: "" });
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+  });
   const [originalStatus, setOriginalStatus] = useState("");
 
   const fetchData = async () => {
@@ -50,7 +53,7 @@ const Orders = () => {
     setShowDetailModal(true);
     setSelectedOrder(order);
   };
-  
+
   const columns = [
     { name: "Mã đơn hàng", selector: (row, index) => row._id },
     {
@@ -114,33 +117,52 @@ const Orders = () => {
         console.error("No order selected.");
         return;
       }
-
-      if (selectedOrder.trangthai === "Đã hủy") {
-        setNotification({ show: true, message: "Cannot change status for Đã hủy order." });
-        return;
+  
+      // Allow changing to "Đã hủy" directly from "Đang giao"
+      if (newStatus === "Đã hủy" && selectedOrder.trangthai === "Đang giao") {
+        const res = await axios.put(
+          `http://localhost:9997/hoadon/sua/${selectedOrder.idKhachHang}/${selectedOrder._id}`,
+          { trangthai: newStatus }
+        );
+        console.log(res.data);
+      } else {
+        // Handle other status transitions
+        const statusOrder = ["Chờ xác nhận", "Đang giao", "Đã giao", "Đã hủy"];
+        const currentIndex = statusOrder.indexOf(selectedOrder.trangthai);
+        const newIndex = statusOrder.indexOf(newStatus);
+  
+        if (newIndex < currentIndex || newIndex - currentIndex > 1) {
+          setNotification({
+            show: true,
+            message: "Không thể chuyển trạng thái.",
+          });
+          return;
+        }
+  
+        // Disallow changing from "Đã giao" to "Đã hủy"
+        if (selectedOrder.trangthai === "Đã giao" && newStatus === "Đã hủy") {
+          setNotification({
+            show: true,
+            message: "Không thể chuyển từ Đã giao sang Đã hủy.",
+          });
+          return;
+        }
+  
+        const res = await axios.put(
+          `http://localhost:9997/hoadon/sua/${selectedOrder.idKhachHang}/${selectedOrder._id}`,
+          { trangthai: newStatus }
+        );
+        console.log(res.data);
       }
-
-      const statusOrder = ["Chưa xác nhận", "Đang giao", "Đã giao", "Đã hủy"];
-      const currentIndex = statusOrder.indexOf(selectedOrder.trangthai);
-      const newIndex = statusOrder.indexOf(newStatus);
-
-      if (newIndex < currentIndex || newIndex - currentIndex > 1) {
-        setNotification({ show: true, message: "Không thể chuyển trạng thái." });
-        return;
-      }
-
-      const res = await axios.put(
-        `http://localhost:9997/hoadon/sua/${selectedOrder.userId}/${selectedOrder._id}`,
-        { trangthai: newStatus }
-      );
-      console.log(res.data);
-
+  
       fetchData();
       setShowStatusModal(false);
     } catch (error) {
       console.error(error);
     }
   };
+  
+  
   const filteredData = orders.filter((order) => {
     if (filterStatus === "Tất cả") return true;
     return order.trangthai === filterStatus;
@@ -154,7 +176,7 @@ const Orders = () => {
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item eventKey="Tất cả">Tất cả</Dropdown.Item>
-          <Dropdown.Item eventKey="Chưa xác nhận">Chưa xác nhận</Dropdown.Item>
+          <Dropdown.Item eventKey="Chờ xác nhận">Chờ xác nhận</Dropdown.Item>
           <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
           <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
           <Dropdown.Item eventKey="Đã hủy">Đã hủy</Dropdown.Item>
@@ -169,7 +191,10 @@ const Orders = () => {
         subHeader
         subHeaderAlign="left"
       />
-      <Modal show={notification.show} onHide={() => setNotification({ show: false, message: "" })}>
+      <Modal
+        show={notification.show}
+        onHide={() => setNotification({ show: false, message: "" })}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Notification</Modal.Title>
         </Modal.Header>
@@ -177,7 +202,10 @@ const Orders = () => {
           <p>{notification.message}</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => setNotification({ show: false, message: "" })}>
+          <Button
+            variant="primary"
+            onClick={() => setNotification({ show: false, message: "" })}
+          >
             Close
           </Button>
         </Modal.Footer>
@@ -193,7 +221,9 @@ const Orders = () => {
               {newStatus}
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item eventKey="Chưa xác nhận">Chưa xác nhận</Dropdown.Item>
+              <Dropdown.Item eventKey="Chờ xác nhận">
+                Chờ xác nhận
+              </Dropdown.Item>
               <Dropdown.Item eventKey="Đang giao">Đang giao</Dropdown.Item>
               <Dropdown.Item eventKey="Đã giao">Đã giao</Dropdown.Item>
               <Dropdown.Item eventKey="Đã hủy">Đã hủy</Dropdown.Item>
@@ -235,7 +265,7 @@ const Orders = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedOrder.danhSachSanPham.map((product) => (
+                  {selectedOrder.danhsachsp.map((product) => (
                     <tr key={product._id}>
                       <td>{product.tensp}</td>
                       <td>{product.soluongmua}</td>

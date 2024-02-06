@@ -42,18 +42,14 @@ const BinhLuan = ({ productId }) => {
   }, []);
 
   const columns = [
-    { name: "STT", selector: (row, index) => `${index + 1}` },
+    { name: "ID", selector: (row, index) => `#${index + 1}` },
     {
-      name: "Ảnh sản phẩm",
+      name: "Ảnh khách hàng",
       selector: (row) => (
-        <img
-          style={{ width: "70px", padding: "5px" }}
-          src={row?.productId?.img}
-        />
+        <img style={{ width: "70px", padding: "5px" }} src={row?.anhdaidien} />
       ),
     },
-    { name: "Tên sản phẩm", selector: (row) => row.productId?.tensp},
-    { name: "Tên khách hàng", selector: (row) => row.tennguoimua },
+    { name: "Tên khách hàng", selector: (row) => row.tenkhachhang },
     { name: "Nội dung", selector: (row) => row.noidung },
     {
       name: "Xem chi tiết",
@@ -82,32 +78,31 @@ const BinhLuan = ({ productId }) => {
         <Modal.Body>
           {selectedCmt && (
             <div>
-              <img src={selectedCmt.productId.img} style={{width: "200px", height: "150px"}}/>
-              <p>Tên sản phẩm: {selectedCmt.productId?.tensp}</p>
-              <p>Tên Khách Hàng: {selectedCmt.tennguoimua}</p>
-              <p>Số Điện Thoại: {selectedCmt.noidung}</p>
+              <img
+                src={selectedCmt.anhdaidien}
+                style={{ width: "200px", height: "200px" }}
+              />
+              <p>Tên Khách Hàng: {selectedCmt?.tenkhachhang}</p>
+              <p>Nội dung: {selectedCmt?.noidung}</p>
+              <img
+                src={selectedCmt?.idSanPham?.img}
+                style={{ width: "200px", height: "150px" }}
+              />
+              <p>Tên sản phẩm: {selectedCmt?.idSanPham.tensp}</p>
             </div>
           )}
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>
-      <Modal
-        show={deleteCmt}
-        onHide={() => setDeleteCmt(false)}
-      >
+      <Modal show={deleteCmt} onHide={() => setDeleteCmt(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Xác nhận xóa bình luận</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>
-            Bạn có chắc muốn xóa bình luận không?
-          </p>
+          <p>Bạn có chắc muốn xóa bình luận không?</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setDeleteCmt(false)}
-          >
+          <Button variant="secondary" onClick={() => setDeleteCmt(false)}>
             Hủy bỏ
           </Button>
           <Button variant="danger" onClick={handleDeleteConfirm}>
